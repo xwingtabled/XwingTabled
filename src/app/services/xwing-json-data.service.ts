@@ -20,6 +20,8 @@ export class XwingJsonDataService {
   queued: any = [ ];
   download_error: boolean = false;
   last_message: string = "";
+  // Data structure containing filename => json mapping
+  data: any = { };
   
   constructor(file: File, storage: Storage, http: HttpClient, events: Events) { 
     this.file = file;
@@ -67,6 +69,7 @@ export class XwingJsonDataService {
             this.manifest = new_manifest;
           } else {
             this.status("manifest_current", "Manifest is current.");
+            this.check_json_data();
           }
         }
       },
@@ -85,10 +88,22 @@ export class XwingJsonDataService {
       }
     );
     let data_missing = false;
+    let last_key = "";
+    // Stream keys one at a time
     from(keys).pipe(
-      concatMap(key => this.storage.get(key) )
+      concatMap(key => { 
+        // Save last key streamed, attempt to get the data
+        last_key = key;
+        return this.storage.get(key) 
+      })
     ).subscribe(
       (data) => {
+        // Save retrieved data from storage
+        if (data == null) {
+          data_missing = true;
+        } else {
+          this.data[last_key] = data;
+        }
       },
       (error) => {
         data_missing = true;
@@ -97,7 +112,8 @@ export class XwingJsonDataService {
         if (data_missing) {
           this.status("data_missing", "Some X-Wing data is missing and needs to be downloaded");
         } else {
-          this.status("data_complete", "All X-Wing data has been found");
+          this.status("data_complete", "X-Wing data loaded");
+          console.log("X-Wing Data", this.data);
         }
       }
     )
@@ -198,6 +214,9 @@ export class XwingJsonDataService {
   }
 
   store_json_response(response: any) {
-    this.storage.set(XwingJsonDataService.url_to_key_name(response.url), JSON.parse(response.body));
+    let key = XwingJsonDataService.url_to_key_name(response.url);
+    let value = JSON.parse(response.body);
+    this.data[key] = value;
+    this.storage.set(key, value);
   }
 }

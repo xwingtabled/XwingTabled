@@ -12,5 +12,8 @@
 <ion-content padding>
   <xwing-text text="Render [Critical Hit] and alphaclassstarwing"></xwing-text>
   <xwing-icon name="Hit"></xwing-icon>
+  <div>
+    <span>{{ this.dataService.last_message }}</span>
+  </div>
   <progress-bar [progress]="100" [color]="'#488aff'"></progress-bar>
 </ion-content>

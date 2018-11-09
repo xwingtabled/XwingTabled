@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { XwingJsonDataService } from '../services/xwing-json-data.service';
 import { Events } from '@ionic/angular';
 @Component({
@@ -8,7 +8,26 @@ import { Events } from '@ionic/angular';
 })
 export class HomePage {
   events: Events;
+  download_data: boolean = false;
+  dataService: XwingJsonDataService;
+
   constructor(dataService: XwingJsonDataService, events: Events) {
+    this.dataService = dataService;
     this.events = events;
+  }
+
+  ngOnInit() {
+    this.events.subscribe(XwingJsonDataService.topic, (event) => {
+      this.data_event_handler(event);
+    });
+  }
+
+  data_event_handler(event: any) {
+    if (event.status == "data_missing") {
+      this.download_data = true;
+    }
+    if (event.status == "data_complete") {
+      this.download_data = false;
+    }
   }
 }
