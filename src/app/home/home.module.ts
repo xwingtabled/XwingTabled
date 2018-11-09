@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { XwingModule } from '../components/xwing.module';
+import { ProgressBarModule } from 'angular-progress-bar';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +18,8 @@ import { XwingModule } from '../components/xwing.module';
         component: HomePage
       }
     ]),
-    XwingModule
+    XwingModule,
+    ProgressBarModule
   ],
   declarations: [HomePage],
 })

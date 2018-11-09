@@ -18,60 +18,89 @@ export class XwingJsonDataService {
   events: Events;
   downloaded: any = [ ];
   queued: any = [ ];
-  status: string = "";
   download_error: boolean = false;
+  last_message: string = "";
   
   constructor(file: File, storage: Storage, http: HttpClient, events: Events) { 
-
     this.file = file;
     this.storage = storage;
     this.http = http;
     this.events = events;
     this.storage.ready().then(
       () => {
-        this.events.publish(XwingJsonDataService.topic, 'ready');
+        this.status("service_ready", "X-Wing Data Service Ready");
+        this.check_manifest();
       }
     )
   }
 
-  start_downloads() {
-    this.check_manifest();
+  status(status: string, message: string = "") {
+    this.events.publish(XwingJsonDataService.topic, { 'status' : status, 'message' : message });
+    this.last_message = message;
   }
 
   check_manifest() {
-    this.status = "Loading cached manifest... ";
+    this.status("manifest_loading", "Loading cached manifest... ");
     this.storage.get('manifest').then(
       (data) => {
-        this.status = "Loading cached manifest... found!";
+        this.status("manifest_loading", "Loading cached manifest... found!");
         this.manifest = data;
         this.download_manifest();
       },
       (error) => {
-        this.status = "Loading cached manifest... none found";
+        this.status("manifest_loading", "Loading cached manifest... none found");
         this.download_manifest();
       }
     );
   }
 
   download_manifest() {
-    this.status = "Downloading current manifest...";
+    this.status("manifest_downloading", "Downloading current manifest...");
     this.http.get(XwingJsonDataService.manifest_url + "data/manifest.json").subscribe(
       (data) => {
         if (data instanceof Object) {
-          this.status = "Downloading current manifest... received!";
+          this.status("manifest_downloading", "Downloading current manifest... received!");
           var new_manifest = data;
           if (!this.manifest || this.manifest["version"] != new_manifest["version"]) {
-            this.status = "Current manifest out of date";
+            this.status("manifest_outofdate", "Current manifest out of date");
             this.storage.set('manifest', new_manifest);
             this.manifest = new_manifest;
-            this.download_data();
-          }         
+          } else {
+            this.status("manifest_current", "Manifest is current.");
+          }
         }
       },
       (error) => {
-        this.status = "Downloading current manifest... unavailable!";
+        this.status("manifest_error", "Downloading current manifest... unavailable!");
       }
     );
+  }
+
+  check_json_data() {
+    // See if any json files are missing from storage
+    let keys = [];
+    XwingJsonDataService.create_file_list(this.manifest, ".json").forEach(
+      (filename) => {
+        keys.push(XwingJsonDataService.url_to_key_name(filename));
+      }
+    );
+    let data_missing = false;
+    from(keys).pipe(
+      concatMap(key => this.storage.get(key) )
+    ).subscribe(
+      (data) => {
+      },
+      (error) => {
+        data_missing = true;
+      },
+      () => {
+        if (data_missing) {
+          this.status("data_missing", "Some X-Wing data is missing and needs to be downloaded");
+        } else {
+          this.status("data_complete", "All X-Wing data has been found");
+        }
+      }
+    )
   }
 
   static create_file_list(manifest: any, extension: string) {
@@ -129,7 +158,7 @@ export class XwingJsonDataService {
     this.download_urls(this.queued).subscribe(
       (response) => {
         if (response.status == 200) {
-          this.status = "Saving " + XwingJsonDataService.url_to_key_name(response.url);
+          this.status("downloading_data", "Saving " + XwingJsonDataService.url_to_key_name(response.url));
           this.store_json_response(response);
         } else {
           this.download_error = true;
@@ -140,9 +169,9 @@ export class XwingJsonDataService {
       },
       () => {
         if (this.download_error) {
-          this.status = "Download complete with errors";
+          this.status("download_errors", "Download complete with errors");
         } else {
-          this.status = "Download complete!";
+          this.status("download_complete", "Download complete!")
         }
       }
     );
