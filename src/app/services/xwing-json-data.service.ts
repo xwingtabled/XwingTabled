@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
-import { HTTP } from '@ionic-native/http/ngx';
-import { stringify } from '@angular/core/src/util';
+import { HttpClient } from '@angular/common/http';
+import { Observable, from, of, defer } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root'
@@ -13,49 +15,63 @@ export class XwingJsonDataService {
   manifest: any = null;
   storage: Storage;
   file: File;
-  http: HTTP;
+  http: HttpClient;
   downloaded: any = [ ];
   queued: any = [ ];
+  status: string = "";
 
 
-  constructor(file: File, storage: Storage, http: HTTP) { 
+  constructor(file: File, storage: Storage, http: HttpClient) { 
     this.file = file;
     this.storage = storage;
     this.http = http;
+    this.storage.ready().then(
+      () => {
+        this.check_manifest();
+      }
+    );
   }
 
   check_manifest() {
+    this.status = "Loading cached manifest... ";
     this.storage.get('manifest').then(
       (data) => {
+        this.status = "Loading cached manifest... found!";
         this.manifest = data;
         this.download_manifest();
       },
       (error) => {
+        this.status = "Loading cached manifest... none found";
         this.download_manifest();
       }
     );
   }
 
   download_manifest() {
-    this.http.get(XwingJsonDataService.manifest_url + "data/manifest.json", {}, {}).then(
+    this.status = "Downloading current manifest...";
+    this.http.get(XwingJsonDataService.manifest_url + "data/manifest.json").subscribe(
       (data) => {
-        if (data.status == 200 && data.data) {
-          var new_manifest = JSON.parse(data.data);
+        console.log("MANIFEST", data);
+        /*
+        if (data. == 200) {
+          this.status = "Downloading current manifest... received!";
+          var new_manifest = JSON.parse(data.);
           if (!this.manifest || this.manifest["version"] != new_manifest["version"]) {
-            console.log("Manifest missing or out of date. Downloading data");
+            this.status = "Current manifest out of date";
             this.storage.set('manifest', new_manifest);
             this.manifest = new_manifest;
             this.download_data();
           }
         }
+        */
       },
       (error) => {
-        console.log("manifest could not be downloaded");
+        this.status = "Downloading current manifest... unavailable!";
       }
     );
   }
 
-  create_json_list(manifest: any) {
+  static create_file_list(manifest: any, extension: string) {
     let unpack_queue = [ ];
     let download_list = [ ];
     if (manifest) {
@@ -63,7 +79,7 @@ export class XwingJsonDataService {
       while (unpack_queue.length > 0) {
         let item = unpack_queue.shift();
         if (typeof item == "string") {
-          if (item.endsWith(".json")) {
+          if (item.endsWith(extension)) {
             download_list.push(item);
           }
         } else if (item instanceof Array) {
@@ -85,6 +101,13 @@ export class XwingJsonDataService {
   }
 
   download_data() {
+    let download_queue = XwingJsonDataService.create_file_list(this.manifest, ".json");
+    let source = from(download_queue);
+    source.subscribe({
+      next(response) { console.log(response); },
+      error(err) { console.error('Error: ' + err); },
+      complete() { console.log('Completed'); }
+     });
 
   }
 }
