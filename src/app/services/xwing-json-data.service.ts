@@ -4,31 +4,38 @@ import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from  } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-
+import { Events } from '@ionic/angular';
 @Injectable({
   providedIn: 'root'
 })
 export class XwingJsonDataService {
-
+  static topic: string = "XwingJsonDataService";
   static manifest_url = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
   manifest: any = null;
   storage: Storage;
   file: File;
   http: HttpClient;
+  events: Events;
   downloaded: any = [ ];
   queued: any = [ ];
   status: string = "";
+  download_error: boolean = false;
+  
+  constructor(file: File, storage: Storage, http: HttpClient, events: Events) { 
 
-
-  constructor(file: File, storage: Storage, http: HttpClient) { 
     this.file = file;
     this.storage = storage;
     this.http = http;
+    this.events = events;
     this.storage.ready().then(
       () => {
-        this.check_manifest();
+        this.events.publish(XwingJsonDataService.topic, 'ready');
       }
-    );
+    )
+  }
+
+  start_downloads() {
+    this.check_manifest();
   }
 
   check_manifest() {
@@ -106,15 +113,62 @@ export class XwingJsonDataService {
   }
 
   download_urls(urls: string[]) {
+    // Returns an observable of HTTP responses from urls
     return from(urls).pipe(
-      concatMap(url => this.http.get(url))
+      concatMap(url => this.http.get(url, { observe: 'response'} ))
     );
   }
 
   download_data() {
-    let download_queue = XwingJsonDataService.create_file_list(this.manifest, ".json");
-    for (var i in download_queue) {
-      download_queue[i] = XwingJsonDataService.manifest_url + download_queue[i];
+    this.downloaded = [ ];
+    this.download_error = false;
+    this.queued = XwingJsonDataService.create_file_list(this.manifest, ".json");
+    for (var i in this.queued) {
+      this.queued[i] = XwingJsonDataService.manifest_url + this.queued[i];
     }
+    this.download_urls(this.queued).subscribe(
+      (response) => {
+        if (response.status == 200) {
+          this.status = "Saving " + XwingJsonDataService.url_to_key_name(response.url);
+          this.store_json_response(response);
+        } else {
+          this.download_error = true;
+        }
+      },
+      (error) => {
+        this.download_error = true;
+      },
+      () => {
+        if (this.download_error) {
+          this.status = "Download complete with errors";
+        } else {
+          this.status = "Download complete!";
+        }
+      }
+    );
+  }
+
+  mark_download_complete(url: string) {
+    // Move url from queued to downloaded
+    this.downloaded.push(url);
+    let index = this.queued.indexOf(url);
+    if (index !== -1) {
+      this.queued.splice(index, 1);
+    }
+  }
+
+  static mangle_name(name: string) : string {
+    return name.replace(/\s/g, '').replace(/\-/g, '').toLowerCase();
+  }
+
+  static url_to_key_name(url: string) : string {
+    // Extract file.json from end of URL and strip to friendly keyname
+    let url_elements = url.split('/');
+    let name = url_elements[url_elements.length - 1];
+    return XwingJsonDataService.mangle_name(name).replace(/.json$/, '');
+  }
+
+  store_json_response(response: any) {
+    this.storage.set(XwingJsonDataService.url_to_key_name(response.url), JSON.parse(response.body));
   }
 }

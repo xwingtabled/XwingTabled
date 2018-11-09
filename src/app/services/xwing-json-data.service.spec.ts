@@ -3,6 +3,7 @@ import { File } from '@ionic-native/file/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { XwingJsonDataService } from './xwing-json-data.service';
+import { Events } from '@ionic/angular';
 
 describe('XwingJsonDataService', () => {
   let injector: TestBed;
@@ -11,7 +12,10 @@ describe('XwingJsonDataService', () => {
 
   beforeEach(() => { 
     TestBed.configureTestingModule({
-      providers: [ File ],
+      providers: [ 
+        File,
+        Events
+      ],
       imports: [ IonicStorageModule.forRoot(), HttpClientTestingModule ]  
     });
     injector = getTestBed();
@@ -66,8 +70,8 @@ describe('XwingJsonDataService', () => {
     let mock_urls = ['file1', 'file2', 'file3'];
     let downloaded_data = [ ];
     service.download_urls(['file1', 'file2', 'file3']).subscribe(
-      (data) => {
-        downloaded_data.push(data);
+      (response) => {
+        downloaded_data.push(response.body);
       }
     );
 
@@ -87,5 +91,22 @@ describe('XwingJsonDataService', () => {
       equivalence = equivalence && mock_urls[i] == downloaded_data[i];
     }
     expect(equivalence).toEqual(true);
+  });
+
+  it ('should mangle names', () => {
+    expect(XwingJsonDataService.mangle_name('t-65-x-wing')).toEqual('t65xwing');
+    expect(XwingJsonDataService.mangle_name('modified yt-1300')).toEqual('modifiedyt1300');
+  });
+
+  it ('should mangle JSON urls to friendly key names', () => {
+    expect(XwingJsonDataService.url_to_key_name('https://github.com/data/t-65-xwing.json')).toEqual('t65xwing');
+  });
+
+  it ('should transfer queued download items that are completed to downloaded list', () => {
+    service.queued = [ 'file1', 'file2', 'file3' ];
+    service.downloaded = [ ];
+    service.mark_download_complete('file2');
+    expect(service.downloaded.length).toEqual(1);
+    expect(service.queued.length).toEqual(2);
   });
 });

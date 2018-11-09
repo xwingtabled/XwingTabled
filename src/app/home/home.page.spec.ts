@@ -4,6 +4,7 @@ import { File } from '@ionic-native/file/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HomePage } from './home.page';
+import { Events } from '@ionic/angular';
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -13,7 +14,7 @@ describe('HomePage', () => {
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [File],
+      providers: [File, Events],
       imports: [ IonicStorageModule.forRoot(), HttpClientTestingModule ]
     })
       .compileComponents();
