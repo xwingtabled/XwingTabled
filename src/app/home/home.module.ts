@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { XwingModule } from '../components/xwing.module';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -20,6 +19,6 @@ import { XwingModule } from '../components/xwing.module';
     ]),
     XwingModule
   ],
-  declarations: [HomePage]
+  declarations: [HomePage],
 })
 export class HomePageModule {}
