@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
-import { XwingTextModule } from '../xwing-text/xwing-text.module';
+import { XwingModule } from '../components/xwing.module';
 
 @NgModule({
   imports: [
@@ -18,7 +18,7 @@ import { XwingTextModule } from '../xwing-text/xwing-text.module';
         component: HomePage
       }
     ]),
-    XwingTextModule
+    XwingModule
   ],
   declarations: [HomePage]
 })
