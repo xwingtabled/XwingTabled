@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from, of, defer } from 'rxjs';
+import { Observable, from  } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root'
@@ -51,19 +50,16 @@ export class XwingJsonDataService {
     this.status = "Downloading current manifest...";
     this.http.get(XwingJsonDataService.manifest_url + "data/manifest.json").subscribe(
       (data) => {
-        console.log("MANIFEST", data);
-        /*
-        if (data. == 200) {
+        if (data instanceof Object) {
           this.status = "Downloading current manifest... received!";
-          var new_manifest = JSON.parse(data.);
+          var new_manifest = data;
           if (!this.manifest || this.manifest["version"] != new_manifest["version"]) {
             this.status = "Current manifest out of date";
             this.storage.set('manifest', new_manifest);
             this.manifest = new_manifest;
             this.download_data();
-          }
+          }         
         }
-        */
       },
       (error) => {
         this.status = "Downloading current manifest... unavailable!";
@@ -72,23 +68,32 @@ export class XwingJsonDataService {
   }
 
   static create_file_list(manifest: any, extension: string) {
+    // "Flatten" a JSON dictionary, keeping only string values with a file extension
     let unpack_queue = [ ];
     let download_list = [ ];
     if (manifest) {
+      // Push the manifest dictionary as the first object
       unpack_queue.push(manifest);
+
+      // While there are still items to unpack
       while (unpack_queue.length > 0) {
+        // Dequeue the front item
         let item = unpack_queue.shift();
+
+        // If the item is a string, see if it matches our extension
         if (typeof item == "string") {
           if (item.endsWith(extension)) {
             download_list.push(item);
           }
         } else if (item instanceof Array) {
+          // If it's an array, push all values to the back of the unpack queue
           item.forEach(
             (element) => {
               unpack_queue.push(element);
             }
           );
         } else {
+          // If it's a dictionary, unpack all key/value pairs and only push the values
           Object.entries(item).forEach(
             ([ key, value ]) => {
               unpack_queue.push(value);
@@ -100,14 +105,16 @@ export class XwingJsonDataService {
     return download_list;
   }
 
+  download_urls(urls: string[]) {
+    return from(urls).pipe(
+      concatMap(url => this.http.get(url))
+    );
+  }
+
   download_data() {
     let download_queue = XwingJsonDataService.create_file_list(this.manifest, ".json");
-    let source = from(download_queue);
-    source.subscribe({
-      next(response) { console.log(response); },
-      error(err) { console.error('Error: ' + err); },
-      complete() { console.log('Completed'); }
-     });
-
+    for (var i in download_queue) {
+      download_queue[i] = XwingJsonDataService.manifest_url + download_queue[i];
+    }
   }
 }
