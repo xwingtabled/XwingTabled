@@ -5,31 +5,23 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, from, onErrorResumeNext } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
+import { XwingDataService } from './xwing-data.service';
 @Injectable({
   providedIn: 'root'
 })
-export class XwingJsonDataService {
+export class XwingJsonDataService extends XwingDataService {
   static topic: string = "XwingJsonDataService";
   static manifest_url = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
   manifest: any = null;
   storage: Storage;
   file: File;
-  http: HttpClient;
-  events: Events;
-  downloaded: any = [ ];
-  queued: any = [ ];
-  downloading: boolean = false;
-  download_error: boolean = false;
-  download_progress: number = 100;
-  last_message: string = "";
   // Data structure containing filename => json mapping
   data: any = { };
   
   constructor(file: File, storage: Storage, http: HttpClient, events: Events) { 
+    super(http, events);
     this.file = file;
     this.storage = storage;
-    this.http = http;
-    this.events = events;
     this.storage.ready().then(
       () => {
         this.status("service_ready", "X-Wing Data Service Ready");
@@ -58,14 +50,6 @@ export class XwingJsonDataService {
     );
   }
 
-  update_download_progress() {
-    let total = this.downloaded.length + this.queued.length;
-    if (total == 0) {
-      this.download_progress = 0;
-      return;
-    }
-    this.download_progress = (this.downloaded.length / total) * 100;
-  }
 
   download_manifest() {
     this.status("manifest_downloading", "Downloading current manifest...");
@@ -175,13 +159,6 @@ export class XwingJsonDataService {
     return download_list;
   }
 
-  download_urls(urls: string[]) {
-    // Returns an observable of HTTP responses from urls
-    return from(urls).pipe(
-      concatMap(url => onErrorResumeNext(this.http.get(url, { observe: 'response'} )))
-    );
-  }
-
   download_data() {
     this.downloading = true;
     this.downloaded = [ ];
@@ -216,16 +193,6 @@ export class XwingJsonDataService {
       }
     );
   }
-
-  mark_download_complete(url: string) {
-    // Move url from queued to downloaded
-    this.downloaded.push(url);
-    let index = this.queued.indexOf(url);
-    if (index !== -1) {
-      this.queued.splice(index, 1);
-    }
-  }
-
   static mangle_name(name: string) : string {
     return name.replace(/\s/g, '').replace(/\-/g, '').toLowerCase();
   }
