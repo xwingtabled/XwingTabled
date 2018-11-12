@@ -15,5 +15,14 @@
   <div>
     <span>{{ this.dataService.last_message }}</span>
   </div>
-  <progress-bar [progress]="100" [color]="'#488aff'"></progress-bar>
+  <ion-button full 
+    *ngIf="download_data"
+    (click)="dataService.download_data()">
+    Download Data
+  </ion-button>
+  <progress-bar 
+    *ngIf="dataService.downloading" 
+    [progress]="dataService.download_progress" 
+    [color]="'#488aff'">
+  </progress-bar>
 </ion-content>

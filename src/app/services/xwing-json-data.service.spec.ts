@@ -109,4 +109,15 @@ describe('XwingJsonDataService', () => {
     expect(service.downloaded.length).toEqual(1);
     expect(service.queued.length).toEqual(2);
   });
+
+  it ('should calculate download progress', () => {
+    service.queued = [ ];
+    service.downloaded = [ ];
+    service.update_download_progress();
+    expect(service.download_progress).toEqual(0);
+    service.queued = [ 'file1' ];
+    service.downloaded = [ 'file2' ];
+    service.update_download_progress();
+    expect(service.download_progress).toEqual(50);
+  })
 });

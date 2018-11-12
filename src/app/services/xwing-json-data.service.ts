@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from  } from 'rxjs';
+import { Observable, from, onErrorResumeNext } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
 @Injectable({
@@ -18,7 +18,9 @@ export class XwingJsonDataService {
   events: Events;
   downloaded: any = [ ];
   queued: any = [ ];
+  downloading: boolean = false;
   download_error: boolean = false;
+  download_progress: number = 100;
   last_message: string = "";
   // Data structure containing filename => json mapping
   data: any = { };
@@ -56,6 +58,15 @@ export class XwingJsonDataService {
     );
   }
 
+  update_download_progress() {
+    let total = this.downloaded.length + this.queued.length;
+    if (total == 0) {
+      this.download_progress = 0;
+      return;
+    }
+    this.download_progress = (this.downloaded.length / total) * 100;
+  }
+
   download_manifest() {
     this.status("manifest_downloading", "Downloading current manifest...");
     this.http.get(XwingJsonDataService.manifest_url + "data/manifest.json").subscribe(
@@ -84,7 +95,10 @@ export class XwingJsonDataService {
     let keys = [];
     XwingJsonDataService.create_file_list(this.manifest, ".json").forEach(
       (filename) => {
-        keys.push(XwingJsonDataService.url_to_key_name(filename));
+        // This filename exists in the manifest but no data exists
+        if (filename != "data/ships/ships.json") {
+          keys.push(XwingJsonDataService.url_to_key_name(filename))
+        }
       }
     );
     let data_missing = false;
@@ -101,12 +115,16 @@ export class XwingJsonDataService {
         // Save retrieved data from storage
         if (data == null) {
           data_missing = true;
+          console.log("data missing for", last_key);
         } else {
           this.data[last_key] = data;
         }
+        console.log(last_key, data);
       },
       (error) => {
         data_missing = true;
+        console.log("data missing for ", last_key);
+        console.log(last_key, error);
       },
       () => {
         if (data_missing) {
@@ -160,30 +178,36 @@ export class XwingJsonDataService {
   download_urls(urls: string[]) {
     // Returns an observable of HTTP responses from urls
     return from(urls).pipe(
-      concatMap(url => this.http.get(url, { observe: 'response'} ))
+      concatMap(url => onErrorResumeNext(this.http.get(url, { observe: 'response'} )))
     );
   }
 
   download_data() {
+    this.downloading = true;
     this.downloaded = [ ];
     this.download_error = false;
     this.queued = XwingJsonDataService.create_file_list(this.manifest, ".json");
     for (var i in this.queued) {
       this.queued[i] = XwingJsonDataService.manifest_url + this.queued[i];
     }
-    this.download_urls(this.queued).subscribe(
+    onErrorResumeNext(this.download_urls(this.queued)).subscribe(
       (response) => {
         if (response.status == 200) {
           this.status("downloading_data", "Saving " + XwingJsonDataService.url_to_key_name(response.url));
           this.store_json_response(response);
+          this.mark_download_complete(response.url);
         } else {
           this.download_error = true;
+          console.log("download_data bad response", response);
         }
+        this.update_download_progress();
       },
       (error) => {
         this.download_error = true;
+        console.log("download_data error", error);
       },
       () => {
+        this.downloading = false;
         if (this.download_error) {
           this.status("download_errors", "Download complete with errors");
         } else {
@@ -215,7 +239,7 @@ export class XwingJsonDataService {
 
   store_json_response(response: any) {
     let key = XwingJsonDataService.url_to_key_name(response.url);
-    let value = JSON.parse(response.body);
+    let value = response.body;
     this.data[key] = value;
     this.storage.set(key, value);
   }
