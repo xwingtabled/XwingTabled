@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { XwingJsonDataService } from './services/xwing-json-data.service';
+import { DownloadService } from './services/download.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { XwingJsonDataService } from './services/xwing-json-data.service';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     File,
     IonicStorageModule,
+    DownloadService,
     XwingJsonDataService
   ],
   bootstrap: [AppComponent]

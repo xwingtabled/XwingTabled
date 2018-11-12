@@ -1,5 +1,4 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
-import { File } from '@ionic-native/file/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { XwingJsonDataService } from './xwing-json-data.service';
@@ -13,7 +12,6 @@ describe('XwingJsonDataService', () => {
   beforeEach(() => { 
     TestBed.configureTestingModule({
       providers: [ 
-        File,
         Events
       ],
       imports: [ IonicStorageModule.forRoot(), HttpClientTestingModule ]  
@@ -66,32 +64,7 @@ describe('XwingJsonDataService', () => {
     expect(generated_queue.length).toEqual(9);
   });
 
-  it ('should sequentially download a list of files', () => {
-    let mock_urls = ['file1', 'file2', 'file3'];
-    let downloaded_data = [ ];
-    service.download_urls(['file1', 'file2', 'file3']).subscribe(
-      (response) => {
-        downloaded_data.push(response.body);
-      }
-    );
 
-    // Flush each of the mocked URLs
-    mock_urls.forEach(
-      (url) => {
-        let req = httpMock.expectOne(url);
-        expect(req.request.method).toBe("GET");
-        // Return the mock url as downloaded content
-        req.flush(url);
-      }
-    )
-
-    // Downloaded data should be [ 'file1', 'file2', 'file3' ]
-    let equivalence = true;
-    for (var i in mock_urls) {
-      equivalence = equivalence && mock_urls[i] == downloaded_data[i];
-    }
-    expect(equivalence).toEqual(true);
-  });
 
   it ('should mangle names', () => {
     expect(XwingJsonDataService.mangle_name('t-65-x-wing')).toEqual('t65xwing');
@@ -100,14 +73,6 @@ describe('XwingJsonDataService', () => {
 
   it ('should mangle JSON urls to friendly key names', () => {
     expect(XwingJsonDataService.url_to_key_name('https://github.com/data/t-65-xwing.json')).toEqual('t65xwing');
-  });
-
-  it ('should transfer queued download items that are completed to downloaded list', () => {
-    service.queued = [ 'file1', 'file2', 'file3' ];
-    service.downloaded = [ ];
-    service.mark_download_complete('file2');
-    expect(service.downloaded.length).toEqual(1);
-    expect(service.queued.length).toEqual(2);
   });
 
 });

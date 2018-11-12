@@ -22,7 +22,7 @@
   </ion-button>
   <progress-bar 
     *ngIf="dataService.downloading" 
-    [progress]="dataService.download_progress" 
+    [progress]="dataService.downloader.progress" 
     [color]="'#488aff'">
   </progress-bar>
 </ion-content>

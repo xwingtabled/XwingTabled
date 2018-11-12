@@ -1,26 +1,30 @@
 import { Injectable } from '@angular/core';
-import { File } from '@ionic-native/file/ngx';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from, onErrorResumeNext } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
-import { XwingDataService } from './xwing-data.service';
+import { DownloadService } from './download.service';
 @Injectable({
   providedIn: 'root'
 })
-export class XwingJsonDataService extends XwingDataService {
+export class XwingJsonDataService {
   static topic: string = "XwingJsonDataService";
   static manifest_url = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
   manifest: any = null;
   storage: Storage;
-  file: File;
+  events: Events;
+  last_message: string = "";
+  downloader: DownloadService;
+  downloading: boolean = false;
   // Data structure containing filename => json mapping
   data: any = { };
+  http: HttpClient;
   
-  constructor(file: File, storage: Storage, http: HttpClient, events: Events) { 
-    super(http, events);
-    this.file = file;
+  constructor(storage: Storage, http: HttpClient, events: Events, downloader: DownloadService) { 
+    this.http = http;
+    this.downloader = downloader;
+    this.events = events;
     this.storage = storage;
     this.storage.ready().then(
       () => {
@@ -161,32 +165,27 @@ export class XwingJsonDataService extends XwingDataService {
 
   download_data() {
     this.downloading = true;
-    this.downloaded = [ ];
-    this.download_error = false;
-    this.queued = XwingJsonDataService.create_file_list(this.manifest, ".json");
-    for (var i in this.queued) {
-      this.queued[i] = XwingJsonDataService.manifest_url + this.queued[i];
+   let queue = XwingJsonDataService.create_file_list(this.manifest, ".json");
+    for (var i in queue) {
+      queue[i] = XwingJsonDataService.manifest_url + queue[i];
     }
-    onErrorResumeNext(this.download_urls(this.queued)).subscribe(
+    this.downloader.download_urls(queue).subscribe(
       (response) => {
         if (response.status == 200) {
           this.status("downloading_data", "Saving " + XwingJsonDataService.url_to_key_name(response.url));
           this.store_json_response(response);
-          this.mark_download_complete(response.url);
         } else {
-          this.download_error = true;
           console.log("download_data bad response", response);
         }
-        this.update_download_progress();
       },
       (error) => {
-        this.download_error = true;
         console.log("download_data error", error);
       },
       () => {
         this.downloading = false;
-        if (this.download_error) {
+        if (this.downloader.error_urls.length > 0) {
           this.status("download_errors", "Download complete with errors");
+          console.log("download failed for urls", this.downloader.error_urls);
         } else {
           this.status("download_complete", "Download complete!")
         }
