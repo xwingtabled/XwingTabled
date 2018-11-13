@@ -21,9 +21,19 @@
     Download Data
   </ion-button>
   <progress-bar 
-    *ngIf="dataService.downloading" 
-    [progress]="dataService.downloader.progress" 
+    *ngIf="dataService.progress != 0" 
+    [progress]="dataService.progress" 
     [color]="'#488aff'">
   </progress-bar>
   <img [src]="img_src" />
+  <ion-button full
+    *ngIf="download_images"
+    (click)="imageService.download_data()">
+    Download Artwork
+  </ion-button>
+  <progress-bar
+    *ngIf="imageService.progress != 0"
+    [progress]="imageService.progress"
+    [color]="'#488aff'">
+  </progress-bar>
 </ion-content>

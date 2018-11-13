@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { Events } from '@ionic/angular';
-import { DownloadService } from './download.service';
 import { XwingDataService } from './xwing-data.service';
 @Injectable({
   providedIn: 'root'
@@ -10,9 +9,10 @@ import { XwingDataService } from './xwing-data.service';
 export class XwingJsonDataService extends XwingDataService {
   static manifest_url = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
   manifest: any = null;
+  data: any = { };
   
-  constructor(storage: Storage, http: HttpProvider, events: Events, downloader: DownloadService) { 
-    super(storage, http, events, downloader);
+  constructor(storage: Storage, http: HttpProvider, events: Events) { 
+    super(storage, http, events);
     this.topic = "XwingJsonDataService";
     this.storage.ready().then(
       () => {
@@ -51,8 +51,8 @@ export class XwingJsonDataService extends XwingDataService {
             this.manifest = new_manifest;
           } else {
             this.status("manifest_current", "Manifest is current.");
-            this.load_data();
           }
+          this.load_data();
         }
       },
       (error) => {
@@ -72,10 +72,20 @@ export class XwingJsonDataService extends XwingDataService {
         }
       }
     );
-    super.load_from_storage(keys).then(
+    let missing = [ ];
+    super.load_from_storage(keys).subscribe(
       (result) => {
-        this.data = result.data;
-        if (result.missing.length > 0) {
+        if (result.value) {
+          this.status("data_loaded", "Loaded data " + result.key);
+          this.data[result.key] = result.value;
+        } else {
+          this.status("data_loaded", "Missing data " + result.key);
+          missing.push(result.key);
+        }
+      },
+      (error) => { },
+      () => {
+        if (missing.length) {
           this.status("data_missing", "Some X-Wing data is missing and needs to be downloaded");
         } else {
           this.status("data_complete", "X-Wing data loaded");
@@ -86,12 +96,31 @@ export class XwingJsonDataService extends XwingDataService {
   }
 
   download_data() {
-    this.downloading = true;
     let queue = this.create_file_list(this.manifest, ".json");
     for (var i in queue) {
       queue[i] = XwingJsonDataService.manifest_url + queue[i];
     }
-    super.download_data(queue);
+    let missing = [ ];
+    super.download(queue).subscribe(
+      (result) => {
+        if (result.response) {
+          this.data[this.url_to_key_name(result.url)] = result.response;
+          this.store_response(result.url, result.response);
+        } else {
+          missing.push(this.url_to_key_name(result.url));
+        }
+      },
+      (error) => {
+      },
+      () => {
+        if (missing.length) {
+          this.status("data_download_errors", "X-Wing Data download complete with errors");
+          console.log("download failed for urls", missing);
+        } else {
+          this.status("data_download_complete", "X-Wing Data download complete!")
+        }
+      }
+    );
   }
 
   url_to_key_name(url: string) : string {

@@ -1,25 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
-import { Observable, from, onErrorResumeNext, zip } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { Observable, from, onErrorResumeNext, of, zip } from 'rxjs';
+import { concatMap, tap, catchError } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
-import { DownloadService } from './download.service';
 
 export abstract class XwingDataService {
   topic: string = "XwingDataService";
   storage: Storage;
   events: Events;
   last_message: string = "";
-  downloader: DownloadService;
   downloading: boolean = false;
   // Data structure containing filename => json mapping
-  data: any = { };
   http: HttpProvider;
+  progress: number = 0;
   
-  constructor(storage: Storage, http: HttpProvider, events: Events, downloader: DownloadService) { 
+  constructor(storage: Storage, http: HttpProvider, events: Events) { 
     this.http = http;
-    this.downloader = downloader;
     this.events = events;
     this.storage = storage;
     this.storage.ready().then(
@@ -32,10 +29,12 @@ export abstract class XwingDataService {
   status(status: string, message: string = "") {
     this.events.publish(this.topic, { 'status' : status, 'message' : message });
     this.last_message = message;
+    console.log(status, message);
   }
 
 
-  load_from_storage(keys: string[]) : Promise<{ data: any, missing: string[] }> {
+  load_from_storage(keys: string[]) : Observable<{ key: string, value: any }> {
+    let done: number = 0;
     // Stream keys one at a time
     let keys_obs = from(keys);
     let value_obs = from(keys).pipe(
@@ -45,26 +44,15 @@ export abstract class XwingDataService {
       })
     );
     let zipped = zip(keys_obs, value_obs, (key: string, value: any) => ({ key, value }));
-    let missing = [];
-    let data = { }
-    return new Promise((resolve, reject) =>{
-      zipped.subscribe(
-        (item) => {
-          if (item.value == null) {
-            missing.push(item.key);
-          } else {
-            data[item.key] = item.value;
-          }
-        },
-        (error) => {
-          reject(new Error("storage retrieval error"));
-        },
-        () => {
-          resolve({ data: data, missing: missing });
-        }
+    zipped.pipe( 
+      tap(
+        ((item) => {
+          done = done + 1;
+          this.progress = (done / keys.length) * 100;
+        })
       )
-    });
-
+    )
+    return zipped;
   }
 
   create_file_list(manifest: any, extension: string) {
@@ -105,29 +93,25 @@ export abstract class XwingDataService {
     return download_list;
   }
 
-  download_data(queue: string[]) {
-    this.downloader.download_urls(queue).subscribe(
-      (result) => {
-        if (result.response) {
-          this.status("downloading_data", "Saving " + this.url_to_key_name(result.url));
-          this.store_response(result.url, result.response);
-        } else {
-          console.log("download_data bad response", result.url);
-        }
-      },
-      (error) => {
-        console.log("download_data error", error);
-      },
-      () => {
-        this.downloading = false;
-        if (this.downloader.error_urls.length > 0) {
-          this.status("download_errors", "Download complete with errors");
-          console.log("download failed for urls", this.downloader.error_urls);
-        } else {
-          this.status("download_complete", "Download complete!")
-        }
-      }
+  download(urls: string[], options: any = {}) {
+    this.progress =  0;
+    this.downloading = true;
+    let done: number = 0;
+    let url_obs = from(urls);
+    let download_obs = from(urls).pipe(
+      concatMap(
+        url => this.http.get(url, options).pipe(
+          catchError(error => of(undefined))
+        )
+      ),
     );
+    let zipped = zip(url_obs, download_obs, (url, response) => ({ url, response}));
+    return zipped.pipe(
+      tap( result => {
+        done = done + 1;
+        this.progress = (done / urls.length) * 100;
+      })
+    )
   }
 
   mangle_name(name: string) : string {
@@ -139,7 +123,6 @@ export abstract class XwingDataService {
   store_response(url: string, response: any) {
     let key = this.url_to_key_name(url);
     let value = response;
-    this.data[key] = value;
     this.storage.set(key, value);
   }
 }

@@ -11,6 +11,7 @@ import { Events } from '@ionic/angular';
 export class HomePage {
   events: Events;
   download_data: boolean = false;
+  download_images: boolean = false;
   dataService: XwingJsonDataService;
   imageService: XwingImageService;
   img_src: string = "";
@@ -36,13 +37,18 @@ export class HomePage {
     }
     if (event.status == "data_complete") {
       this.download_data = false;
+      console.log("manifest data downloaded, triggering image load");
       this.imageService.load_images(this.dataService.data);
     }
   }
 
   image_event_handler(event: any) {
+    if (event.status == "images_missing") {
+      this.download_images = true;
+    }
     if (event.status == "images_complete") {
-      this.img_src = this.imageService.data["card_pilot_1"];
+      this.download_images = false;
+      this.img_src = this.imageService.image_urls["card_pilot_1"];
     }
   }
 }

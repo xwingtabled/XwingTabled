@@ -85,4 +85,5 @@
     <plugin name="cordova-plugin-file" spec="6.0.1" />
     <plugin name="cordova-sqlite-storage" spec="2.5.1" />
     <plugin name="cordova-plugin-advanced-http" spec="2.0.1" />
+    <engine name="android" spec="7.1.2" />
 </widget>
