@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { HttpClient } from '@angular/common/http';
+import { HttpProvider } from '../providers/http.provider';
 import { Observable, from, onErrorResumeNext } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
 import { DownloadService } from './download.service';
+import { resource } from 'selenium-webdriver/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,9 +20,9 @@ export class XwingJsonDataService {
   downloading: boolean = false;
   // Data structure containing filename => json mapping
   data: any = { };
-  http: HttpClient;
+  http: HttpProvider;
   
-  constructor(storage: Storage, http: HttpClient, events: Events, downloader: DownloadService) { 
+  constructor(storage: Storage, http: HttpProvider, events: Events, downloader: DownloadService) { 
     this.http = http;
     this.downloader = downloader;
     this.events = events;
@@ -165,17 +166,17 @@ export class XwingJsonDataService {
 
   download_data() {
     this.downloading = true;
-   let queue = XwingJsonDataService.create_file_list(this.manifest, ".json");
+    let queue = XwingJsonDataService.create_file_list(this.manifest, ".json");
     for (var i in queue) {
       queue[i] = XwingJsonDataService.manifest_url + queue[i];
     }
     this.downloader.download_urls(queue).subscribe(
-      (response) => {
-        if (response.status == 200) {
-          this.status("downloading_data", "Saving " + XwingJsonDataService.url_to_key_name(response.url));
-          this.store_json_response(response);
+      (result) => {
+        if (result.response) {
+          this.status("downloading_data", "Saving " + XwingJsonDataService.url_to_key_name(result.url));
+          this.store_json_response(result.url, result.response);
         } else {
-          console.log("download_data bad response", response);
+          console.log("download_data bad response", result.url);
         }
       },
       (error) => {
@@ -203,9 +204,9 @@ export class XwingJsonDataService {
     return XwingJsonDataService.mangle_name(name).replace(/.json$/, '');
   }
 
-  store_json_response(response: any) {
-    let key = XwingJsonDataService.url_to_key_name(response.url);
-    let value = response.body;
+  store_json_response(url: string, response: any) {
+    let key = XwingJsonDataService.url_to_key_name(url);
+    let value = response;
     this.data[key] = value;
     this.storage.set(key, value);
   }

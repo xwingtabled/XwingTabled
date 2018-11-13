@@ -7,7 +7,7 @@ export class HttpAngularProvider {
 
     public get(url: string, params?: any, options: any = {}) {
         options.params = params;
-        options.withCredentials = true;
+        //options.withCredentials = true;
 
         return this.http.get(url, options);
     }

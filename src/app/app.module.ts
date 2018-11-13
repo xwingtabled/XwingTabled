@@ -9,12 +9,14 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
-
-
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { XwingJsonDataService } from './services/xwing-json-data.service';
 import { DownloadService } from './services/download.service';
+import { HttpProvider } from './providers/http.provider';
+import { HttpAngularProvider } from './providers/http-angular.provider';
+import { HttpNativeProvider } from './providers/http-native.provider';
+import { HTTP } from '@ionic-native/http/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +35,11 @@ import { DownloadService } from './services/download.service';
     File,
     IonicStorageModule,
     DownloadService,
-    XwingJsonDataService
+    XwingJsonDataService,
+    HttpProvider,
+    HttpAngularProvider,
+    HttpNativeProvider,
+    HTTP
   ],
   bootstrap: [AppComponent]
 })

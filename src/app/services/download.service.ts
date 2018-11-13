@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpProvider } from '../providers/http.provider';
 import { Events } from '@ionic/angular';
-import { from, of } from 'rxjs';
-import { concatMap, catchError, filter, map } from 'rxjs/operators';
+import { from, of, zip } from 'rxjs';
+import { concatMap, catchError, filter, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,31 +14,33 @@ export class DownloadService {
   queued: any = [ ];
   downloading: boolean = false;
   progress: number = 100;
-  http: HttpClient;
+  http: HttpProvider;
 
-  constructor(http: HttpClient, events: Events) {
+  constructor(http: HttpProvider, events: Events) {
     this.http = http;
     this.events = events;
   }
 
-  download_urls(urls: string[]) {
+  download_urls(urls: string[], options: any = { responseType: 'json' }) {
     this.queued = urls;
     this.downloaded = [ ];
     this.error_urls = [ ];
-    // Returns an observable of HTTP responses from urls
-    return from(urls).pipe(
+
+    let url_obs = from(urls);
+    let download_obs = from(urls).pipe(
       concatMap(
-        url => this.http.get(url, { observe: 'response'} ).pipe(
-          catchError((error) => { 
-            this.mark_download_error(error.url);
-            return of(undefined); 
-          })
-        ) 
-      ),
-      filter((response) => response != undefined),
-      map((response) => { 
-        this.mark_download_complete(response.url);
-        return response; 
+        url => this.http.get(url, options).pipe(
+          catchError(error => of(undefined))
+        )
+      )
+    );
+    return zip(url_obs, download_obs, (url: string, response: any) => ({ url, response })).pipe(
+      tap((item) => {
+        if (item.response == undefined || item.response == null) {
+          this.mark_download_error(item.url);
+        } else {
+          this.mark_download_complete(item.url);
+        }
       })
     );
   }

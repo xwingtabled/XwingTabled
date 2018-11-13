@@ -60,39 +60,4 @@ describe('DownloadService', () => {
     expect(service.queued.length).toEqual(2);
     expect(service.error_urls.length).toEqual(1);
   })
-
-  it ('should zip downloads', () => {
-
-    let mock_urls = [ 'file1', 'file2', 'file3' ];
-    service.zip_download(mock_urls).subscribe(
-      (result) => {
-        console.log(result);
-      }
-    );
-  });
-  /*
-  it ('should sequentially download a list of files', () => {
-    let mock_urls = ['file1', 'file2', 'file3'];
-    let downloaded_data = [ ];
-    service.download_urls(['file1', 'file2', 'file3']).subscribe(
-      (response) => {
-        downloaded_data.push(response.body);
-      }
-    );
-
-    let req = httpMock.expectOne('file1');
-    req.flush('file1');
-    req = httpMock.expectOne('file2');
-    req.error(new ErrorEvent("Error on file2"));
-    req = httpMock.expectOne('file3');
-    req.flush('file3');
-
-
-    expect(downloaded_data.indexOf('file1')).toEqual(0);
-    expect(downloaded_data.indexOf('file3')).toEqual(1);
-    expect(service.error_urls.indexOf('file2')).toEqual(0);
-    expect(service.progress).toEqual(100);
-
-  });
-  */
 });
