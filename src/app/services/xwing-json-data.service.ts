@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
-import { Observable, from, onErrorResumeNext } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
 import { DownloadService } from './download.service';
 import { XwingDataService } from './xwing-data.service';
@@ -16,10 +14,6 @@ export class XwingJsonDataService extends XwingDataService {
   constructor(storage: Storage, http: HttpProvider, events: Events, downloader: DownloadService) { 
     super(storage, http, events, downloader);
     this.topic = "XwingJsonDataService";
-    this.http = http;
-    this.downloader = downloader;
-    this.events = events;
-    this.storage = storage;
     this.storage.ready().then(
       () => {
         this.status("service_ready", "X-Wing Data Service Ready");
@@ -57,7 +51,7 @@ export class XwingJsonDataService extends XwingDataService {
             this.manifest = new_manifest;
           } else {
             this.status("manifest_current", "Manifest is current.");
-            this.load_from_storage();
+            this.load_data();
           }
         }
       },
@@ -67,7 +61,7 @@ export class XwingJsonDataService extends XwingDataService {
     );
   }
 
-  load_from_storage() {
+  load_data() {
     // See if any json files are missing from storage
     let keys = [];
     this.create_file_list(this.manifest, ".json").forEach(
@@ -76,6 +70,17 @@ export class XwingJsonDataService extends XwingDataService {
         if (filename != "data/ships/ships.json") {
           keys.push(this.url_to_key_name(filename))
         }
+      }
+    );
+    super.load_from_storage(keys).then(
+      (result) => {
+        this.data = result.data;
+        if (result.missing.length > 0) {
+          this.status("data_missing", "Some X-Wing data is missing and needs to be downloaded");
+        } else {
+          this.status("data_complete", "X-Wing data loaded");
+        }
+        console.log("X-Wing Json Data", this.data);
       }
     );
   }

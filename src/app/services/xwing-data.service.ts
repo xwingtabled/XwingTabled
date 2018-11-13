@@ -35,9 +35,7 @@ export abstract class XwingDataService {
   }
 
 
-  load_from_storage(keys: string[]) {
-    let data_missing = false;
-    let last_key = "";
+  load_from_storage(keys: string[]) : Promise<{ data: any, missing: string[] }> {
     // Stream keys one at a time
     let keys_obs = from(keys);
     let value_obs = from(keys).pipe(
@@ -47,29 +45,26 @@ export abstract class XwingDataService {
       })
     );
     let zipped = zip(keys_obs, value_obs, (key: string, value: any) => ({ key, value }));
-    zipped.subscribe(
-      (item) => {
-        if (item.value == null) {
-          data_missing = true;
-          console.log("data missing for", item.key);
-        } else {
-          this.data[item.key] = item.value;
+    let missing = [];
+    let data = { }
+    return new Promise((resolve, reject) =>{
+      zipped.subscribe(
+        (item) => {
+          if (item.value == null) {
+            missing.push(item.key);
+          } else {
+            data[item.key] = item.value;
+          }
+        },
+        (error) => {
+          reject(new Error("storage retrieval error"));
+        },
+        () => {
+          resolve({ data: data, missing: missing });
         }
-      },
-      (error) => {
-        data_missing = true;
-        console.log("data missing for ", last_key);
-        console.log(last_key, error);
-      },
-      () => {
-        if (data_missing) {
-          this.status("data_missing", "Some X-Wing data is missing and needs to be downloaded");
-        } else {
-          this.status("data_complete", "X-Wing data loaded");
-          console.log("X-Wing Data", this.data);
-        }
-      }
-    )
+      )
+    });
+
   }
 
   create_file_list(manifest: any, extension: string) {
