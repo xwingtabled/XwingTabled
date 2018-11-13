@@ -5,21 +5,21 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HomePage } from './home.page';
 import { Events } from '@ionic/angular';
+import { HttpProvider } from '../providers/http.provider';
+import { Platform } from '@ionic/angular';
+import { configureTestbed } from '../app.test-config';
 
 describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
+    configureTestbed({
       declarations: [ HomePage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [File, Events],
-      imports: [ IonicStorageModule.forRoot(), HttpClientTestingModule ]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
   }));
-
+  
   beforeEach(() => {
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;

@@ -2,26 +2,18 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Events } from '@ionic/angular';
 import { DownloadService } from './download.service';
+import { configureTestbed } from '../app.test-config';
 
-describe('XwingDataService', () => {
+describe('DownloadService', () => {
   let injector: TestBed;
   let service: DownloadService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => { 
-    TestBed.configureTestingModule({
-      providers: [ 
-        Events
-      ],
-      imports: [ HttpClientTestingModule ]  
-    });
+    configureTestbed();
     injector = getTestBed();
     service = injector.get(DownloadService);
     httpMock = injector.get(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 
   it('should be created', () => {
@@ -69,6 +61,16 @@ describe('XwingDataService', () => {
     expect(service.error_urls.length).toEqual(1);
   })
 
+  it ('should zip downloads', () => {
+
+    let mock_urls = [ 'file1', 'file2', 'file3' ];
+    service.zip_download(mock_urls).subscribe(
+      (result) => {
+        console.log(result);
+      }
+    );
+  });
+  /*
   it ('should sequentially download a list of files', () => {
     let mock_urls = ['file1', 'file2', 'file3'];
     let downloaded_data = [ ];
@@ -92,4 +94,5 @@ describe('XwingDataService', () => {
     expect(service.progress).toEqual(100);
 
   });
+  */
 });

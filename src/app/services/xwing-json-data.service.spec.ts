@@ -1,8 +1,11 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { IonicStorageModule } from '@ionic/storage';
+import { HttpProvider } from '../providers/http.provider';
+import { HttpAngularProvider } from '../providers/http-angular.provider';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { XwingJsonDataService } from './xwing-json-data.service';
-import { Events } from '@ionic/angular';
+import { Events, Platform } from '@ionic/angular';
+import { configureTestbed } from '../app.test-config';
 
 describe('XwingJsonDataService', () => {
   let injector: TestBed;
@@ -10,12 +13,7 @@ describe('XwingJsonDataService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => { 
-    TestBed.configureTestingModule({
-      providers: [ 
-        Events
-      ],
-      imports: [ IonicStorageModule.forRoot(), HttpClientTestingModule ]  
-    });
+    configureTestbed();
     injector = getTestBed();
     service = injector.get(XwingJsonDataService);
     httpMock = injector.get(HttpTestingController);
