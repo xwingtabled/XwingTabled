@@ -1,10 +1,6 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
-import { IonicStorageModule } from '@ionic/storage';
-import { HttpProvider } from '../providers/http.provider';
-import { HttpAngularProvider } from '../providers/http-angular.provider';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
 import { XwingJsonDataService } from './xwing-json-data.service';
-import { Events, Platform } from '@ionic/angular';
 import { configureTestbed } from '../app.test-config';
 
 describe('XwingJsonDataService', () => {
@@ -19,15 +15,11 @@ describe('XwingJsonDataService', () => {
     httpMock = injector.get(HttpTestingController);
   });
 
-  afterEach(() => {
-    httpMock.verify();
-  });
-
   it('should create', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should unpack a manifest into json downloads', () => {
+  it('should find all files of a given extension in a json', () => {
     var test_manifest = {
       "version": "1.1.0",
       "damagedecks": [
@@ -58,19 +50,17 @@ describe('XwingJsonDataService', () => {
       ],
       "conditions": "data/conditions/conditions.json"
     };
-    let generated_queue = XwingJsonDataService.create_file_list(test_manifest, ".json");
+    let generated_queue = service.create_file_list(test_manifest, ".json");
     expect(generated_queue.length).toEqual(9);
   });
 
-
-
   it ('should mangle names', () => {
-    expect(XwingJsonDataService.mangle_name('t-65-x-wing')).toEqual('t65xwing');
-    expect(XwingJsonDataService.mangle_name('modified yt-1300')).toEqual('modifiedyt1300');
+    expect(service.mangle_name('t-65-x-wing')).toEqual('t65xwing');
+    expect(service.mangle_name('modified yt-1300')).toEqual('modifiedyt1300');
   });
-
+  
   it ('should mangle JSON urls to friendly key names', () => {
-    expect(XwingJsonDataService.url_to_key_name('https://github.com/data/t-65-xwing.json')).toEqual('t65xwing');
+    expect(service.url_to_key_name('https://github.com/data/t-65-xwing.json')).toEqual('t65xwing');
   });
 
 });

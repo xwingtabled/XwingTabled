@@ -18,7 +18,7 @@ export class HomePage {
   }
 
   ngOnInit() {
-    this.events.subscribe(XwingJsonDataService.topic, (event) => {
+    this.events.subscribe(this.dataService.topic, (event) => {
       this.data_event_handler(event);
     });
   }

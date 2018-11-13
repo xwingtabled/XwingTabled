@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { XwingJsonDataService } from './services/xwing-json-data.service';
+import { XwingImageService } from './services/xwing-image.service';
 import { DownloadService } from './services/download.service';
 import { HttpProvider } from './providers/http.provider';
 import { HttpAngularProvider } from './providers/http-angular.provider';
