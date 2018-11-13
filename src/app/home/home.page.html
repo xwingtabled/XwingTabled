@@ -12,28 +12,35 @@
 <ion-content padding>
   <xwing-text text="Render [Critical Hit] and alphaclassstarwing"></xwing-text>
   <xwing-icon name="Hit"></xwing-icon>
-  <div>
-    <span>{{ this.dataService.last_message }}</span>
+
+  <div *ngIf="data_interface">
+    <p>{{ data_message }}</p>
+    <progress-bar 
+      [progress]="data_progress" 
+      [color]="'#488aff'">
+    </progress-bar>
+    <ion-button full
+      *ngIf="data_button"
+      (click)="download_data()"
+      [disabled]="data_button_disabled">
+      Download Data
+    </ion-button>
   </div>
-  <ion-button full
-    *ngIf="download_data"
-    (click)="dataService.download_data()">
-    Download Data
-  </ion-button>
-  <progress-bar 
-    *ngIf="dataService.progress != 0" 
-    [progress]="dataService.progress" 
-    [color]="'#488aff'">
-  </progress-bar>
+
+  <div *ngIf="images_interface">
+    <p>{{ images_message }}</p>
+    <progress-bar
+      [progress]="images_progress"
+      [color]="'#488aff'">
+    </progress-bar>
+    <ion-button full
+      *ngIf="images_button"
+      (click)="download_images()"
+      [disabled]="images_button_disabled">
+      Download Artwork
+    </ion-button>
+  </div>
+
   <img [src]="img_src" />
-  <ion-button full
-    *ngIf="download_images"
-    (click)="imageService.download_data()">
-    Download Artwork
-  </ion-button>
-  <progress-bar
-    *ngIf="imageService.progress != 0"
-    [progress]="imageService.progress"
-    [color]="'#488aff'">
-  </progress-bar>
+
 </ion-content>

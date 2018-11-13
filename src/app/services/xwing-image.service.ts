@@ -93,7 +93,7 @@ export class XwingImageService extends XwingDataService {
 
   download_missing_images(manifest: any) {
     let missing = [ ];
-    super.download(this.missing_file_list(manifest)).subscribe(
+    super.download(this.missing_file_list(manifest), { responseType: 'blob'} ).subscribe(
       (result) => {
         let key = this.url_to_key_name(result.url);
         if (result.response) {

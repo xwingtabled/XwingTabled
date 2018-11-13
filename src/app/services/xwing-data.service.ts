@@ -26,8 +26,8 @@ export abstract class XwingDataService {
     )
   }
 
-  status(status: string, message: string = "") {
-    this.events.publish(this.topic, { 'status' : status, 'message' : message });
+  status(status: string, message: string = "", progress: number = this.progress) {
+    this.events.publish(this.topic, { 'status' : status, 'message' : message, 'progress' : progress });
     this.last_message = message;
     console.log(status, message);
   }
@@ -44,7 +44,7 @@ export abstract class XwingDataService {
       })
     );
     let zipped = zip(keys_obs, value_obs, (key: string, value: any) => ({ key, value }));
-    zipped.pipe( 
+    return zipped.pipe( 
       tap(
         ((item) => {
           done = done + 1;
@@ -52,7 +52,6 @@ export abstract class XwingDataService {
         })
       )
     )
-    return zipped;
   }
 
   create_file_list(manifest: any, extension: string) {
@@ -101,7 +100,10 @@ export abstract class XwingDataService {
     let download_obs = from(urls).pipe(
       concatMap(
         url => this.http.get(url, options).pipe(
-          catchError(error => of(undefined))
+          catchError(error => { 
+            console.log("download error", error);
+            return of(undefined)
+          })
         )
       ),
     );
