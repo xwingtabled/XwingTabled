@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { XwingJsonDataService } from '../services/xwing-json-data.service';
 import { XwingImageService } from '../services/xwing-image.service';
 import { Events } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  templateUrl: 'loading.page.html',
+  styleUrls: ['loading.page.scss'],
 })
-export class HomePage {
+export class LoadingPage {
   events: Events;
 
   data_button: boolean = false;
@@ -23,14 +24,18 @@ export class HomePage {
   images_progress: number = 0;
   images_message: string = "";
 
+  continue_button: boolean = false;
+
   dataService: XwingJsonDataService;
   imageService: XwingImageService;
   img_src: string = "";
+  router: Router;
 
-  constructor(dataService: XwingJsonDataService, imageService: XwingImageService, events: Events) {
+  constructor(dataService: XwingJsonDataService, imageService: XwingImageService, events: Events, router: Router) {
     this.dataService = dataService;
     this.imageService = imageService;
     this.events = events;
+    this.router = router;
   }
 
   ngOnInit() {
@@ -52,7 +57,6 @@ export class HomePage {
     if (event.status == "data_complete" || event.status == "data_download_complete") {
       this.data_interface = false;
       this.images_interface = true;
-      console.log("manifest data downloaded, triggering image load");
       this.imageService.load_images(this.dataService.data);
     }
   }
@@ -66,22 +70,19 @@ export class HomePage {
     }
     if (event.status == "images_complete") {
       this.images_button = false;
-      this.display_image();
+      this.continue();
     }
     if (event.status == "image_download_incomplete") {
       this.images_button = true;
       this.images_button_disabled = false;
     }
     if (event.status == "image_download_complete") {
-      this.display_image();
+      this.continue();
     }
   }
   
-  display_image() {
-    this.images_interface = false;
-    this.imageService.get_image_url("card_pilot_1").then(
-      (url) => { this.img_src = url }
-    )
+  continue() {
+    this.router.navigateByUrl('/main');
   }
 
   download_data() {
@@ -90,7 +91,6 @@ export class HomePage {
   }
 
   download_images() {
-    console.log("image download started");
     this.images_button_disabled = true;
     this.imageService.download_missing_images(this.dataService.data);
   }

@@ -1,0 +1,39 @@
+
+
+<ion-content padding text-center>
+  <div class="container">
+    <div text-center class="title-container">
+      <h1>X-Wing Tabled</h1>
+    </div>
+  
+    <div *ngIf="data_interface">
+      <p>{{ data_message }}</p>
+      <progress-bar 
+        [progress]="data_progress" 
+        [color]="'#488aff'">
+      </progress-bar>
+      <ion-button full
+        *ngIf="data_button"
+        (click)="download_data()"
+        [disabled]="data_button_disabled">
+        Download Data
+      </ion-button>
+    </div>
+  
+    <div *ngIf="images_interface">
+      <p>{{ images_message }}</p>
+      <progress-bar
+        [progress]="images_progress"
+        [color]="'#488aff'">
+      </progress-bar>
+      <ion-button full
+        *ngIf="images_button"
+        (click)="download_images()"
+        [disabled]="images_button_disabled">
+        Download Artwork
+      </ion-button>
+    </div>
+  </div>
+
+
+</ion-content>

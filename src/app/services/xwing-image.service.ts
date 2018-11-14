@@ -64,7 +64,7 @@ export class XwingImageService extends XwingDataService {
     )
   }
 
-  get_image_url(key: string) : Promise<string> {
+  get_image_by_key(key: string) : Promise<string> {
     return new Promise(
       (resolve, reject) => {
         if (this.image_urls[key]) {
@@ -81,6 +81,10 @@ export class XwingImageService extends XwingDataService {
         }
       }
     )
+  }
+
+  get_image_by_url(url: string) : Promise<string> {
+    return this.get_image_by_key(this.url_to_key_name(url));
   }
 
   load_files_from_directory(directory: any, filenames: string[]) {

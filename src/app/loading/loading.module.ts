@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
-import { HomePage } from './home.page';
+import { LoadingPage } from './loading.page';
 import { XwingModule } from '../components/xwing.module';
 import { ProgressBarModule } from 'angular-progress-bar';
 @NgModule({
@@ -15,12 +15,12 @@ import { ProgressBarModule } from 'angular-progress-bar';
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
+        component: LoadingPage
       }
     ]),
     XwingModule,
     ProgressBarModule
   ],
-  declarations: [HomePage],
+  declarations: [LoadingPage],
 })
-export class HomePageModule {}
+export class LoadingPageModule {}
