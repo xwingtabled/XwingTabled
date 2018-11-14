@@ -51,7 +51,7 @@ describe('XwingJsonDataService', () => {
       "conditions": "data/conditions/conditions.json"
     };
     let generated_queue = service.create_file_list(test_manifest, ".json");
-    expect(generated_queue.length).toEqual(9);
+    expect(generated_queue.length).toEqual(8);
   });
 
   it ('should mangle names', () => {

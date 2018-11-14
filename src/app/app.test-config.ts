@@ -6,9 +6,13 @@ import { HttpNativeProvider } from './providers/http-native.provider';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HTTP } from '@ionic-native/http/ngx';
 import { Events, Platform } from '@ionic/angular';
+import { File } from '@ionic-native/file/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 
 let default_metadata: TestModuleMetadata = {
-  providers: [ Events, HttpProvider, HttpAngularProvider, HttpNativeProvider, Platform, HTTP ],
+  providers: [ 
+    Events, HttpProvider, HttpAngularProvider, 
+    HttpNativeProvider, Platform, HTTP, File, FileTransfer ],
   imports: [ IonicStorageModule.forRoot(), HttpClientTestingModule ],
   schemas: [],
   declarations: [],

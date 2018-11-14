@@ -16,7 +16,10 @@ describe('XwingImageService', () => {
   });
   
   it('should be created', () => {
-    const service: XwingImageService = TestBed.get(XwingImageService);
     expect(service).toBeTruthy();
   });
+
+  it('should strip file://', () => {
+    expect(service.strip_url_file('file://filename')).toEqual('filename');
+  })
 });

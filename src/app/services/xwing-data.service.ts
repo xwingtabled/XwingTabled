@@ -99,9 +99,9 @@ export abstract class XwingDataService {
     let url_obs = from(urls);
     let download_obs = from(urls).pipe(
       concatMap(
-        url => this.http.get(url, options).pipe(
+        url => this.http.get(url, { }, options).pipe(
           catchError(error => { 
-            console.log("download error", error);
+            console.log("HTTP get error", error);
             return of(undefined)
           })
         )

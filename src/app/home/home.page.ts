@@ -66,8 +66,20 @@ export class HomePage {
     }
     if (event.status == "images_complete") {
       this.images_button = false;
-      this.img_src = this.imageService.image_urls["card_pilot_1"];
+      this.display_image();
     }
+    if (event.status == "image_download_incomplete") {
+      this.images_button = true;
+      this.images_button_disabled = false;
+    }
+    if (event.status == "image_download_complete") {
+      this.display_image();
+    }
+  }
+  
+  display_image() {
+    this.images_interface = false;
+    this.img_src = this.imageService.image_urls["card_pilot_1"];
   }
 
   download_data() {
@@ -76,6 +88,7 @@ export class HomePage {
   }
 
   download_images() {
+    console.log("image download started");
     this.images_button_disabled = true;
     this.imageService.download_missing_images(this.dataService.data);
   }

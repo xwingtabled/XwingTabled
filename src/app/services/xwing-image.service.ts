@@ -3,9 +3,12 @@ import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { Events } from '@ionic/angular';
 import { XwingDataService } from './xwing-data.service';
-import { from, zip } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
 import { Platform } from '@ionic/angular';
+import { File } from '@ionic-native/file/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { Observable, from, onErrorResumeNext, of, zip } from 'rxjs';
+import { concatMap, tap, catchError } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,9 +16,13 @@ export class XwingImageService extends XwingDataService {
   hotlink: boolean = true;
   image_data: any = { };
   image_urls: any = { };
+  file: File;
+  transfer: FileTransferObject;
 
-  constructor(storage: Storage, http: HttpProvider, events: Events, platform: Platform) {
+  constructor(storage: Storage, http: HttpProvider, events: Events, platform: Platform, file: File, fileTransfer: FileTransfer) {
     super(storage, http, events);
+    this.file = file;
+    this.transfer = fileTransfer.create();
     // Due to CORS policy, non-mobile platforms will use image hotlinks
     this.hotlink = !(platform.is('ios') || platform.is('android'));
     this.topic = "XwingImageService";
@@ -29,14 +36,86 @@ export class XwingImageService extends XwingDataService {
     }
   }
 
+  url_to_filename(url: string) {
+    let tokens = url.split('/');
+    return tokens[tokens.length - 1];
+  }
+
+  strip_url_file(url: string) {
+    let protocol = "file://"
+    if (url.indexOf(protocol) == 0) {
+      url = url.substring(protocol.length);
+    }
+    return url;
+  }
+
   load_images_from_storage(manifest: any) {
-    let keys = [ ];
-    let missing = [ ];
+    let filenames = [ ];
+
     this.create_file_list(manifest, ".png").forEach(
-      (filename) => {
-        keys.push(this.url_to_key_name(filename));
+      (url) => {
+        filenames.push(this.url_to_filename(url));
       }
     );
+    this.file.resolveDirectoryUrl(this.file.cacheDirectory).then(
+      (value) => {
+        this.load_files_from_directory(value, filenames);
+      },
+      (error) => {
+        console.log("can't resolve directory url", error);
+      }
+    )
+  }
+
+  load_files_from_directory(directory: any, filenames: string[]) {
+    let filenames_obs = from(filenames);
+    let filereader_obs = from(filenames).pipe(
+      concatMap(
+        filename => from(
+          this.file.getFile(directory, filename, {})
+        )
+      ),
+      catchError(
+        error => {
+          return of(undefined)
+        }
+      )
+    );
+    let zipped = zip(
+      filenames_obs, filereader_obs,
+      ((filename, fileEntry) => ({ filename, fileEntry }))
+    );
+
+    let done = 0;
+    let missing = [ ];
+
+    zipped.subscribe(
+      (item) => {
+        done = done + 1;
+        this.progress = (done / filenames.length) * 100;
+        let key = this.url_to_key_name(item.filename);
+        if (item.fileEntry) {
+          this.status("image_loaded", "Loaded image " + item.filename);
+          this.image_urls[key] = this.strip_url_file(item.fileEntry.toURL());
+        } else {
+          this.status("image_loaded", "Missing image " + item.filename);
+          missing.push(item.filename);
+        }
+      },
+      (error) => { 
+        console.log("image loader error", error);
+      },
+      () => {
+        if (missing.length) {
+          this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded");
+        } else {
+          this.status("images_complete", "All X-Wing artwork loaded");
+        }
+        console.log("X-Wing Image Data", this.image_urls);
+      }
+    )
+
+    /*
     this.load_from_storage(keys).subscribe(
       (result) => {
         if (result.value) {
@@ -59,7 +138,7 @@ export class XwingImageService extends XwingDataService {
           this.status("images_complete", "All X-Wing artwork loaded");
         }
       }
-    )
+    )*/
   }
 
   missing_file_list(manifest: any) : string[ ] {
@@ -92,8 +171,48 @@ export class XwingImageService extends XwingDataService {
   }
 
   download_missing_images(manifest: any) {
-    let missing = [ ];
-    super.download(this.missing_file_list(manifest), { responseType: 'blob'} ).subscribe(
+    let missing = [ ]
+    let urls = this.missing_file_list(manifest);
+    let url_obs = from(urls);
+    let file_obs = from(urls).pipe(
+      concatMap(
+        url => this.transfer.download(url, this.file.cacheDirectory + this.url_to_filename(url))
+      ),
+      catchError(
+        error => {
+          console.log("download error", error);
+          return of(undefined)
+        }
+        
+      )
+    );
+    let zipped = zip(url_obs, file_obs, (url, fileEntry) => ({ url, fileEntry}));
+    let done = 0;
+    zipped.subscribe(
+      (result) => {
+        let key = this.url_to_key_name(result.url);
+        done = done + 1;
+        this.progress = (done / urls.length) * 100;
+        if (result.fileEntry) {
+          this.status("image_download", "Downloaded " + key);
+          this.image_urls[key] = this.strip_url_file(result.fileEntry.toURL());
+        } else {
+          this.status("image_download", "Unaable to download " + key);
+          missing.push(key);
+        }
+      },
+      (error) => { },
+      () => {
+        if (missing.length) {
+          this.status("image_download_incomplete", "Unable to download one or more images");
+        } else {
+          this.status("image_download_complete", "X-Wing artwork has been downloaded");
+        }
+        console.log("X-Wing Image Data", this.image_urls);
+      }
+    );
+    /*
+    super.download(queue, { responseType: 'blob'} ).subscribe(
       (result) => {
         let key = this.url_to_key_name(result.url);
         if (result.response) {
@@ -119,5 +238,6 @@ export class XwingImageService extends XwingDataService {
         console.log("X-Wing Image Data", this.image_urls);
       }
     );
+    */
   }
 }

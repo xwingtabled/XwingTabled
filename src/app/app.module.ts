@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { XwingJsonDataService } from './services/xwing-json-data.service';
+import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { XwingImageService } from './services/xwing-image.service';
 import { HttpProvider } from './providers/http.provider';
 import { HttpAngularProvider } from './providers/http-angular.provider';
@@ -35,10 +36,12 @@ import { HTTP } from '@ionic-native/http/ngx';
     File,
     IonicStorageModule,
     XwingJsonDataService,
+    XwingImageService,
     HttpProvider,
     HttpAngularProvider,
     HttpNativeProvider,
-    HTTP
+    HTTP,
+    FileTransfer
   ],
   bootstrap: [AppComponent]
 })
