@@ -8,19 +8,24 @@ import { File } from '@ionic-native/file/ngx';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { Observable, from, onErrorResumeNext, of, zip } from 'rxjs';
 import { concatMap, tap, catchError } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
 })
 export class XwingImageService extends XwingDataService {
   hotlink: boolean = true;
-  image_data: any = { };
+  image_status: any = { };
   image_urls: any = { };
   file: File;
   transfer: FileTransferObject;
+  sanitizer: DomSanitizer;
 
-  constructor(storage: Storage, http: HttpProvider, events: Events, platform: Platform, file: File, fileTransfer: FileTransfer) {
+  constructor(storage: Storage, http: HttpProvider, events: Events, 
+              platform: Platform, file: File, fileTransfer: FileTransfer,
+              sanitizer: DomSanitizer) {
     super(storage, http, events);
+    this.sanitizer = sanitizer;
     this.file = file;
     this.transfer = fileTransfer.create();
     // Due to CORS policy, non-mobile platforms will use image hotlinks
@@ -42,6 +47,7 @@ export class XwingImageService extends XwingDataService {
   }
 
   strip_url_file(url: string) {
+    return url;
     let protocol = "file://"
     if (url.indexOf(protocol) == 0) {
       url = url.substring(protocol.length);
@@ -72,7 +78,7 @@ export class XwingImageService extends XwingDataService {
     let filereader_obs = from(filenames).pipe(
       concatMap(
         filename => from(
-          this.file.getFile(directory, filename, {})
+          this.file.readAsDataURL(this.file.cacheDirectory, filename)
         )
       ),
       catchError(
@@ -83,7 +89,7 @@ export class XwingImageService extends XwingDataService {
     );
     let zipped = zip(
       filenames_obs, filereader_obs,
-      ((filename, fileEntry) => ({ filename, fileEntry }))
+      ((filename, base64url) => ({ filename, base64url }))
     );
 
     let done = 0;
@@ -94,9 +100,10 @@ export class XwingImageService extends XwingDataService {
         done = done + 1;
         this.progress = (done / filenames.length) * 100;
         let key = this.url_to_key_name(item.filename);
-        if (item.fileEntry) {
+        if (item.base64url) {
           this.status("image_loaded", "Loaded image " + item.filename);
-          this.image_urls[key] = this.strip_url_file(item.fileEntry.toURL());
+          this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(item.base64url);
+          //this.image_urls[key] = this.strip_url_file(item.fileEntry.toURL());
         } else {
           this.status("image_loaded", "Missing image " + item.filename);
           missing.push(item.filename);
@@ -183,7 +190,6 @@ export class XwingImageService extends XwingDataService {
           console.log("download error", error);
           return of(undefined)
         }
-        
       )
     );
     let zipped = zip(url_obs, file_obs, (url, fileEntry) => ({ url, fileEntry}));
@@ -195,7 +201,11 @@ export class XwingImageService extends XwingDataService {
         this.progress = (done / urls.length) * 100;
         if (result.fileEntry) {
           this.status("image_download", "Downloaded " + key);
-          this.image_urls[key] = this.strip_url_file(result.fileEntry.toURL());
+          this.file.readAsDataURL(this.file.cacheDirectory, this.url_to_filename(result.url)).then(
+            (base64url) => {
+              this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(base64url);
+            }
+          );
         } else {
           this.status("image_download", "Unaable to download " + key);
           missing.push(key);
