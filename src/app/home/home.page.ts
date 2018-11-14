@@ -79,7 +79,9 @@ export class HomePage {
   
   display_image() {
     this.images_interface = false;
-    this.img_src = this.imageService.image_urls["card_pilot_1"];
+    this.imageService.get_image_url("card_pilot_1").then(
+      (url) => { this.img_src = url }
+    )
   }
 
   download_data() {

@@ -18,8 +18,4 @@ describe('XwingImageService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-
-  it('should strip file://', () => {
-    expect(service.strip_url_file('file://filename')).toEqual('filename');
-  })
 });

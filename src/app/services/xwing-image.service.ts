@@ -15,7 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class XwingImageService extends XwingDataService {
   hotlink: boolean = true;
-  image_status: any = { };
+  image_map: any = { };
   image_urls: any = { };
   file: File;
   transfer: FileTransferObject;
@@ -46,15 +46,6 @@ export class XwingImageService extends XwingDataService {
     return tokens[tokens.length - 1];
   }
 
-  strip_url_file(url: string) {
-    return url;
-    let protocol = "file://"
-    if (url.indexOf(protocol) == 0) {
-      url = url.substring(protocol.length);
-    }
-    return url;
-  }
-
   load_images_from_storage(manifest: any) {
     let filenames = [ ];
 
@@ -73,12 +64,31 @@ export class XwingImageService extends XwingDataService {
     )
   }
 
+  get_image_url(key: string) : Promise<string> {
+    return new Promise(
+      (resolve, reject) => {
+        if (this.image_urls[key]) {
+          resolve(this.image_urls[key]);
+        }  else if (this.image_map[key]) {
+          this.file.readAsDataURL(this.file.cacheDirectory, this.image_map[key]).then(
+            url => {
+              this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(url);
+              resolve(this.image_urls[key]);
+            }
+          )
+        } else {
+          reject("key not found");
+        }
+      }
+    )
+  }
+
   load_files_from_directory(directory: any, filenames: string[]) {
     let filenames_obs = from(filenames);
     let filereader_obs = from(filenames).pipe(
       concatMap(
         filename => from(
-          this.file.readAsDataURL(this.file.cacheDirectory, filename)
+          this.file.checkFile(this.file.cacheDirectory, filename)
         )
       ),
       catchError(
@@ -89,7 +99,7 @@ export class XwingImageService extends XwingDataService {
     );
     let zipped = zip(
       filenames_obs, filereader_obs,
-      ((filename, base64url) => ({ filename, base64url }))
+      ((filename, status) => ({ filename, status }))
     );
 
     let done = 0;
@@ -100,10 +110,10 @@ export class XwingImageService extends XwingDataService {
         done = done + 1;
         this.progress = (done / filenames.length) * 100;
         let key = this.url_to_key_name(item.filename);
-        if (item.base64url) {
-          this.status("image_loaded", "Loaded image " + item.filename);
-          this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(item.base64url);
-          //this.image_urls[key] = this.strip_url_file(item.fileEntry.toURL());
+
+        if (item.status) {
+          this.image_map[key] = item.filename;
+          this.status("image_loaded", "Found image " + item.filename);
         } else {
           this.status("image_loaded", "Missing image " + item.filename);
           missing.push(item.filename);
@@ -118,41 +128,16 @@ export class XwingImageService extends XwingDataService {
         } else {
           this.status("images_complete", "All X-Wing artwork loaded");
         }
-        console.log("X-Wing Image Data", this.image_urls);
+        console.log("X-Wing Image Data", this.image_map);
       }
     )
-
-    /*
-    this.load_from_storage(keys).subscribe(
-      (result) => {
-        if (result.value) {
-          this.status("image_loaded", "Loaded image " + result.key);
-          this.image_data[result.key] = result.value;
-          this.image_urls[result.key] = URL.createObjectURL(result.value);
-        } else {
-          this.status("image_loaded", "Missing image " + result.key);
-          missing.push(result.key);
-        }
-
-      },
-      (error) => {
-        console.log("error loading keys", error);
-      },
-      () => {
-        if (missing.length) {
-          this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded");
-        } else {
-          this.status("images_complete", "All X-Wing artwork loaded");
-        }
-      }
-    )*/
   }
 
   missing_file_list(manifest: any) : string[ ] {
     let missing_files = [ ];
     this.create_file_list(manifest, ".png").forEach(
       (url) => {
-        if (!this.image_urls[this.url_to_key_name(url)]) {
+        if (!this.image_map[this.url_to_key_name(url)]) {
           missing_files.push(url);
         }
       }
@@ -171,7 +156,6 @@ export class XwingImageService extends XwingDataService {
   }
 
   url_to_key_name(url: string) : string {
-    // Extract file.json from end of URL and strip to friendly keyname
     let url_elements = url.split('/');
     let name = url_elements[url_elements.length - 1];
     return this.mangle_name(name).replace(/.png$/, '');
@@ -201,11 +185,7 @@ export class XwingImageService extends XwingDataService {
         this.progress = (done / urls.length) * 100;
         if (result.fileEntry) {
           this.status("image_download", "Downloaded " + key);
-          this.file.readAsDataURL(this.file.cacheDirectory, this.url_to_filename(result.url)).then(
-            (base64url) => {
-              this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(base64url);
-            }
-          );
+          this.image_map[key] = this.url_to_filename(result.url);
         } else {
           this.status("image_download", "Unaable to download " + key);
           missing.push(key);
@@ -218,36 +198,8 @@ export class XwingImageService extends XwingDataService {
         } else {
           this.status("image_download_complete", "X-Wing artwork has been downloaded");
         }
-        console.log("X-Wing Image Data", this.image_urls);
+        console.log("X-Wing Image Data", this.image_map);
       }
     );
-    /*
-    super.download(queue, { responseType: 'blob'} ).subscribe(
-      (result) => {
-        let key = this.url_to_key_name(result.url);
-        if (result.response) {
-          this.status("image_download", "Downloaded " + key);
-          this.store_response(result.url, result.response);
-          this.image_data[key] = result.response;
-          this.image_urls[key] = URL.createObjectURL(result.response);
-        } else {
-          this.status("image_download", "Unable to download " + key);
-          missing.push(key);
-        }
-      },
-      (error) => {
-
-      },
-      () => {
-        if (missing.length) {
-          this.status("image_download_incomplete", "Unable to download one or more images");
-          console.log("unable to download", missing);
-        } else {
-          this.status("image_download_complete", "X-Wing artwork has been downloaded");
-        }
-        console.log("X-Wing Image Data", this.image_urls);
-      }
-    );
-    */
   }
 }
