@@ -1,0 +1,13 @@
+<ion-content padding>
+  <div class="container">
+    <h3>Import XWS Squadron</h3>
+    <ion-label position="stacked">Paste your XWS squadron data here</ion-label>
+    <ion-textarea (ionChange)="textChange($event)"
+      placeholder='{"description":"","faction":"rebelalliance","name":"ABXY","pilots":[{"id":"jakefarrell","name":"jakefarrell","points":45,"ship":"rz1awing","upgrades":{"missile":["clustermissiles"]}}],"points":45,"vendor":{"yasb":{"builder":"Yet Another Squad Builder 2.0","builder_url":"https://raithos.github.io/","link":"https://raithos.github.io/?f=Rebel%20Alliance&d=v5!s!50:-1,98:&sn=MySquad&obs="}},"version":"2.0.0"}'>
+    </ion-textarea>
+    <div class="button-container">
+      <ion-button color="light" (click)="cancel()">Cancel</ion-button>
+      <ion-button (click)="ok()" [disabled]="okDisabled">OK</ion-button>
+    </div>
+  </div>
+</ion-content>

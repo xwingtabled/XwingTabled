@@ -14,6 +14,11 @@ export class AppComponent {
       url: '/main',
       icon: 'home'
     },
+    {
+      title: 'Other main',
+      url: '/loading',
+      icon: 'home'
+    }
   ];
 
   constructor(

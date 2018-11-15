@@ -1,11 +1,21 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>X-Wing Tabled</ion-title>
-  </ion-toolbar>
-</ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        Home
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
 
 <ion-content padding>
-<div>
-  Main View
-</div>
+  <div>
+    Main View
+  </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="xwsAddButton()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

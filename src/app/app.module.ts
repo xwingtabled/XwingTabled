@@ -18,10 +18,11 @@ import { HttpProvider } from './providers/http.provider';
 import { HttpAngularProvider } from './providers/http-angular.provider';
 import { HttpNativeProvider } from './providers/http-native.provider';
 import { HTTP } from '@ionic-native/http/ngx';
+import { XwsModalPage } from './xws-modal/xws-modal.page';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [AppComponent, XwsModalPage ],
+  entryComponents: [ XwsModalPage ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
