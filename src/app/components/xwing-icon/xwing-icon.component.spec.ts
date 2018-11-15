@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { XwingIconComponent } from './xwing-icon.component';
 
 describe('XwingIconComponent', () => {
-  console.log("BLAHHH");
   let component: XwingIconComponent;
   let fixture: ComponentFixture<XwingIconComponent>;
 

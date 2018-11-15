@@ -10,8 +10,8 @@
   </ion-header>
 
 <ion-content padding>
-  <div>
-    Main View
+  <div class="squadron-container">
+    <xws-squadron *ngFor="let squadron of squadrons" [squadron]="squadron" class="squadron-item"></xws-squadron>
   </div>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="xwsAddButton()">

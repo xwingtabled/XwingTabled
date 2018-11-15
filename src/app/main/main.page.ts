@@ -9,6 +9,7 @@ import { XwsModalPage } from '../xws-modal/xws-modal.page';
 })
 export class MainPage implements OnInit {
 
+  squadrons: any = [ ];
   constructor(public modalController: ModalController) { }
 
   ngOnInit() {
@@ -25,6 +26,6 @@ export class MainPage implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    console.log(data);
+    this.squadrons.push(data);
   }
 }

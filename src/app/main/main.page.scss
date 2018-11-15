@@ -1,0 +1,10 @@
+.squadron-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+}
+
+.squadron-item {
+    flex: 1 1 0;
+}

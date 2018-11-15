@@ -21,7 +21,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { XwsModalPage } from './xws-modal/xws-modal.page';
 
 @NgModule({
-  declarations: [AppComponent, XwsModalPage ],
+  declarations: [AppComponent, XwsModalPage],
   entryComponents: [ XwsModalPage ],
   imports: [
     BrowserModule,
