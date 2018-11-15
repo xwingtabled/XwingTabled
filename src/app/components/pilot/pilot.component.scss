@@ -1,3 +1,16 @@
+.pilot-header {
+    display: flex;
+    flex-direction: column;
+}
+.stat-block-container {
+    display: flex;
+    flex-direction: row;
+}
+.stat-block{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+}
 .ship-fw {
     display: inline-block;
     text-align: center;

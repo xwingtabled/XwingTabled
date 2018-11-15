@@ -50,11 +50,11 @@ export class LoadingPage {
   data_event_handler(event: any) {
     this.data_message = event.message;
     this.data_progress = event.progress;
-    if (event.status == "data_missing") {
+    if (event.status == "manifest_outofdate") {
       this.data_button = true;
       this.data_button_disabled = false;
     }
-    if (event.status == "data_complete" || event.status == "data_download_complete") {
+    if (event.status == "manifest_current" || event.status == "data_download_complete") {
       this.data_interface = false;
       this.images_interface = true;
       this.imageService.load_images(this.dataService.data);

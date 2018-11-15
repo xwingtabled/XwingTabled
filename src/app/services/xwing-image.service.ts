@@ -41,10 +41,7 @@ export class XwingImageService extends XwingDataService {
     }
   }
 
-  url_to_filename(url: string) {
-    let tokens = url.split('/');
-    return tokens[tokens.length - 1];
-  }
+
 
   load_images_from_storage(manifest: any) {
     let filenames = [ ];

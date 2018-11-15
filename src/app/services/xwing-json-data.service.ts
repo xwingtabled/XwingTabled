@@ -8,7 +8,6 @@ import { XwingDataService } from './xwing-data.service';
 })
 export class XwingJsonDataService extends XwingDataService {
   static manifest_url = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
-  manifest: any = null;
   data: any = { };
   
   constructor(storage: Storage, http: HttpProvider, events: Events) { 
@@ -27,7 +26,7 @@ export class XwingJsonDataService extends XwingDataService {
     this.storage.get('manifest').then(
       (data) => {
         this.status("manifest_loading", "Loading cached manifest... found!");
-        this.manifest = data;
+        this.data = data;
         this.download_manifest();
       },
       (error) => {
@@ -45,15 +44,13 @@ export class XwingJsonDataService extends XwingDataService {
         if (data instanceof Object) {
           this.status("manifest_downloading", "Downloading current manifest... received!");
           var new_manifest = data;
-          if (!this.manifest || this.manifest["version"] != new_manifest["version"]) {
+          if (!this.data || this.data["version"] != new_manifest["version"]) {
             this.status("manifest_outofdate", "Current manifest out of date");
             this.storage.set('manifest', new_manifest);
-            this.manifest = new_manifest;
+            this.data = new_manifest;
           } else {
             this.status("manifest_current", "Manifest is current.");
           }
-          console.log("manifest", this.manifest);
-          this.load_data();
         }
       },
       (error) => {
@@ -62,41 +59,8 @@ export class XwingJsonDataService extends XwingDataService {
     );
   }
 
-  load_data() {
-    // See if any json files are missing from storage
-    let keys = [];
-    this.create_file_list(this.manifest, ".json").forEach(
-      (filename) => {
-        keys.push(this.url_to_key_name(filename));
-      }
-    );
-    console.log("retrieving keys", keys);
-    let missing = [ ];
-    let done = 0;
-    super.load_from_storage(keys).subscribe(
-      (result) => {
-        if (result.value) {
-          this.status("data_loaded", "Loaded data " + result.key);
-          this.data[result.key] = result.value;
-        } else {
-          this.status("data_loaded", "Missing data " + result.key);
-          missing.push(result.key);
-        }
-      },
-      (error) => { },
-      () => {
-        if (missing.length) {
-          this.status("data_missing", "Some X-Wing data is missing and needs to be downloaded");
-        } else {
-          this.status("data_complete", "X-Wing data loaded", 100);
-        }
-        console.log("X-Wing Json Data", this.data);
-      }
-    );
-  }
-
   download_data() {
-    let queue = this.create_file_list(this.manifest, ".json");
+    let queue = this.create_file_list(this.data, ".json");
     for (var i in queue) {
       queue[i] = XwingJsonDataService.manifest_url + queue[i];
     }
@@ -105,8 +69,7 @@ export class XwingJsonDataService extends XwingDataService {
       (result) => {
         let key = this.url_to_key_name(result.url);
         if (result.response) {
-          this.data[key] = result.response;
-          this.store_response(result.url, result.response);
+          this.insert_json_data(result.url.replace(XwingJsonDataService.manifest_url, ''), result.response);
           this.status("data_download_item", "Downloaded data for " + key);
         } else {
           this.status("data_download_item", "Data unavailable for " + key);
@@ -121,9 +84,16 @@ export class XwingJsonDataService extends XwingDataService {
         } else {
           this.status("data_download_complete", "X-Wing Data download complete!")
         }
+        this.storage.set('manifest', this.data);
         console.log("X-Wing Json Data", this.data);
       }
     );
+  }
+
+  insert_json_data(filename: string, json: any) {
+    let jsonString = JSON.stringify(this.data);
+    jsonString = jsonString.replace('"' + filename + '"', JSON.stringify(json));
+    this.data = JSON.parse(jsonString);
   }
 
   create_file_list(manifest: any, extension: string) {
@@ -144,6 +114,29 @@ export class XwingJsonDataService extends XwingDataService {
     let url_elements = url.split('/');
     let name = url_elements[url_elements.length - 1];
     return this.mangle_name(name).replace(/.json$/, '');
+  }
+
+  getPilotData(pilot: any) {
+    // Given a pilot object with "ship" and "name" fields, retrieve object data
+    // or return null if it can't be retrieved
+    if (!pilot.ship) return null;
+    if (!pilot.name) return null;
+    let ship = this.getShipData(pilot.ship);
+    if (!ship) return null;
+    let pilotData = null;
+    ship.pilots.forEach(
+      (pilot) => {
+        if (pilot.xws == pilot.name) {
+          pilotData = pilot;
+        }
+      }
+    )
+    return pilotData;
+  }
+  
+  getShipData(ship: string) {
+    if (!(this.data[ship])) return null;
+    return this.data[ship];
   }
 
 }

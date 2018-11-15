@@ -92,6 +92,11 @@ export abstract class XwingDataService {
     return download_list;
   }
 
+  url_to_filename(url: string) {
+    let tokens = url.split('/');
+    return tokens[tokens.length - 1];
+  }
+
   download(urls: string[], options: any = {}) {
     this.progress =  0;
     this.downloading = true;
