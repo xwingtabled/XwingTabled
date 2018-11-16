@@ -50,6 +50,7 @@ export class XwingJsonDataService extends XwingDataService {
             this.data = new_manifest;
           } else {
             this.status("manifest_current", "Manifest is current.");
+            console.log("X-Wing Json Data", this.data);
           }
         }
       },
@@ -116,27 +117,43 @@ export class XwingJsonDataService extends XwingDataService {
     return this.mangle_name(name).replace(/.json$/, '');
   }
 
-  getPilotData(pilot: any) {
-    // Given a pilot object with "ship" and "name" fields, retrieve object data
+  getPilotData(faction: string, xwsShip: string, xwsPilot: string) {
+    // Given a faction string and pilot object retrieve object data
     // or return null if it can't be retrieved
-    if (!pilot.ship) return null;
-    if (!pilot.name) return null;
-    let ship = this.getShipData(pilot.ship);
-    if (!ship) return null;
-    let pilotData = null;
+    let ship = this.getShipData(faction, xwsShip);
+    let pilot = null;
     ship.pilots.forEach(
-      (pilot) => {
-        if (pilot.xws == pilot.name) {
-          pilotData = pilot;
+      (pilotData) => {
+        if (pilotData.xws == xwsPilot) {
+          pilot = pilotData;
         }
       }
-    )
-    return pilotData;
+    );
+    return pilot;
   }
   
-  getShipData(ship: string) {
-    if (!(this.data[ship])) return null;
-    return this.data[ship];
+  getShipData(faction: string, xwsShip: string) {
+    try {
+      let ships = [ ];
+      this.data.pilots.forEach(
+        (factionData) => {
+          if (factionData.faction == faction) {
+            ships = factionData.ships; 
+          }
+        }
+      );
+      let ship = null;
+      ships.forEach(
+        (shipData) => {
+          if (shipData.xws == xwsShip) {
+            ship = shipData;
+          }
+        }
+      );
+      return ship;
+    } catch (Error) {
+      return null;
+    }
   }
 
 }

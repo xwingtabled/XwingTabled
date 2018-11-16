@@ -198,4 +198,17 @@ describe('XwingJsonDataService', () => {
     expect(service.data.pilots[0].ships[0].pilots[0].xws).toBeTruthy();
   });
 
+  it ('should retrieve ship data by xws ship name', () => {
+    service.data = test_manifest;
+    service.insert_json_data("data/pilots/rebel-alliance/a-sf-01-b-wing.json", test_bwing_data);
+    expect(service.getShipData("rebelalliance", "asf01bwing")).toBeTruthy();
+    expect(service.getShipData("resistance", "asf01bwing")).toBeFalsy();
+  });
+
+  it ('should retrieve a pilot by xws pilot name', () => {
+    service.data = test_manifest;
+    service.insert_json_data("data/pilots/rebel-alliance/a-sf-01-b-wing.json", test_bwing_data);
+    expect(service.getPilotData("rebelalliance", "asf01bwing", "braylenstramm")).toBeTruthy();
+  });
+
 });
