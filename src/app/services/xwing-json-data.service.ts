@@ -174,14 +174,15 @@ export class XwingJsonDataService extends XwingDataService {
 
   getUpgrade(upgradeType: string, xwsUpgrade: string) {
     try {
+      let foundUpgrade = null;
       this.data.upgrades[upgradeType].forEach(
         (upgrade) => {
           if (upgrade.xws == xwsUpgrade) {
-            return upgrade;
+            foundUpgrade = upgrade;
           }
         }
       )
-      return null;
+      return foundUpgrade;
     } catch (Error) {
       return null;
     }

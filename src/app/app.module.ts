@@ -20,6 +20,7 @@ import { HttpNativeProvider } from './providers/http-native.provider';
 import { HTTP } from '@ionic-native/http/ngx';
 import { XwsModalPage } from './xws-modal/xws-modal.page';
 import { LoadingPageModule } from './loading/loading.module';
+
 @NgModule({
   declarations: [AppComponent, XwsModalPage ],
   entryComponents: [ XwsModalPage ],

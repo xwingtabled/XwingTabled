@@ -7,6 +7,8 @@ import { XwingShipComponent } from './xwing-ship/xwing-ship.component';
 import { XwingTextComponent } from './xwing-text/xwing-text.component';
 import { SquadronComponent } from './squadron/squadron.component';
 import { PilotComponent } from './pilot/pilot.component';
+import { UpgradeComponent } from './upgrade/upgrade.component';
+import { UpgradeCollectionComponent } from './upgrade-collection/upgrade-collection.component';
 
 @NgModule({
   imports: [
@@ -18,11 +20,16 @@ import { PilotComponent } from './pilot/pilot.component';
     XwingShipComponent,
     XwingTextComponent, 
     SquadronComponent, 
-    PilotComponent ],
+    PilotComponent,
+    UpgradeComponent,
+    UpgradeCollectionComponent ],
   exports: [
-    XwingIconComponent, XwingShipComponent, 
+    XwingIconComponent, 
+    XwingShipComponent, 
     XwingTextComponent, 
     SquadronComponent, 
-    PilotComponent]
+    PilotComponent, 
+    UpgradeComponent,
+    UpgradeCollectionComponent ]
 })
 export class XwingModule {}
