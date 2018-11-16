@@ -36,6 +36,28 @@ export class XwingJsonDataService extends XwingDataService {
     );
   }
 
+  reshape_manifest(manifest: any) {
+    let new_manifest = JSON.parse(JSON.stringify(manifest));
+    new_manifest.pilots.forEach(
+      (faction) => {
+        let shipDictionary = { };
+        faction.ships.forEach(
+          (shipUrl) => {
+            shipDictionary[this.url_to_key_name(shipUrl)] = shipUrl;
+          }
+        )
+        faction.ships = shipDictionary;
+      }
+    )
+    let upgradeDictionary = { };
+    new_manifest.upgrades.forEach(
+      (upgradeUrl) => {
+        upgradeDictionary[this.url_to_key_name(upgradeUrl)] = upgradeUrl;
+      }
+    )
+    new_manifest.upgrades = upgradeDictionary;
+    return new_manifest;
+  }
 
   download_manifest() {
     this.status("manifest_downloading", "Downloading current manifest...");
@@ -47,7 +69,7 @@ export class XwingJsonDataService extends XwingDataService {
           if (!this.data || this.data["version"] != new_manifest["version"]) {
             this.status("manifest_outofdate", "Current manifest out of date");
             this.storage.set('manifest', new_manifest);
-            this.data = new_manifest;
+            this.data = this.reshape_manifest(new_manifest);
           } else {
             this.initialized = true;
             this.status("manifest_current", "Manifest is current.");
@@ -119,10 +141,10 @@ export class XwingJsonDataService extends XwingDataService {
     return this.mangle_name(name).replace(/.json$/, '');
   }
 
-  getPilotData(faction: string, xwsShip: string, xwsPilot: string) {
+  getPilot(faction: string, xwsShip: string, xwsPilot: string) {
     // Given a faction string and pilot object retrieve object data
     // or return null if it can't be retrieved
-    let ship = this.getShipData(faction, xwsShip);
+    let ship = this.getShip(faction, xwsShip);
     let pilot = null;
     ship.pilots.forEach(
       (pilotData) => {
@@ -134,9 +156,9 @@ export class XwingJsonDataService extends XwingDataService {
     return pilot;
   }
   
-  getShipData(faction: string, xwsShip: string) {
+  getShip(faction: string, xwsShip: string) {
     try {
-      let ships = [ ];
+      let ships = { };
       this.data.pilots.forEach(
         (factionData) => {
           if (factionData.faction == faction) {
@@ -144,18 +166,24 @@ export class XwingJsonDataService extends XwingDataService {
           }
         }
       );
-      let ship = null;
-      ships.forEach(
-        (shipData) => {
-          if (shipData.xws == xwsShip) {
-            ship = shipData;
-          }
-        }
-      );
-      return ship;
+      return ships[xwsShip];
     } catch (Error) {
       return null;
     }
   }
 
+  getUpgrade(upgradeType: string, xwsUpgrade: string) {
+    try {
+      this.data.upgrades[upgradeType].forEach(
+        (upgrade) => {
+          if (upgrade.xws == xwsUpgrade) {
+            return upgrade;
+          }
+        }
+      )
+      return null;
+    } catch (Error) {
+      return null;
+    }
+  }
 }

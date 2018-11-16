@@ -187,28 +187,34 @@ describe('XwingJsonDataService', () => {
     expect(service.mangle_name('t-65-x-wing')).toEqual('t65xwing');
     expect(service.mangle_name('modified yt-1300')).toEqual('modifiedyt1300');
   });
+
+  it ('should reshape manifests', () => {
+    let manifest = service.reshape_manifest(test_manifest);
+    expect(manifest.pilots[0].ships.asf01bwing).toEqual("data/pilots/rebel-alliance/a-sf-01-b-wing.json");
+    expect(manifest.upgrades.astromech).toEqual("data/upgrades/astromech.json");
+  });
   
   it ('should mangle JSON urls to friendly key names', () => {
     expect(service.url_to_key_name('https://github.com/data/t-65-xwing.json')).toEqual('t65xwing');
   });
 
   it ('should insert JSON data given a filename', () => {
-    service.data = test_manifest;
+    service.data = service.reshape_manifest(test_manifest);
     service.insert_json_data("data/pilots/rebel-alliance/a-sf-01-b-wing.json", test_bwing_data);
-    expect(service.data.pilots[0].ships[0].pilots[0].xws).toBeTruthy();
+    expect(service.data.pilots[0].ships.asf01bwing).toBeTruthy();
   });
 
   it ('should retrieve ship data by xws ship name', () => {
-    service.data = test_manifest;
+    service.data = service.reshape_manifest(test_manifest);
     service.insert_json_data("data/pilots/rebel-alliance/a-sf-01-b-wing.json", test_bwing_data);
-    expect(service.getShipData("rebelalliance", "asf01bwing")).toBeTruthy();
-    expect(service.getShipData("resistance", "asf01bwing")).toBeFalsy();
+    expect(service.getShip("rebelalliance", "asf01bwing")).toBeTruthy();
+    expect(service.getShip("resistance", "asf01bwing")).toBeFalsy();
   });
 
   it ('should retrieve a pilot by xws pilot name', () => {
-    service.data = test_manifest;
+    service.data = service.reshape_manifest(test_manifest);
     service.insert_json_data("data/pilots/rebel-alliance/a-sf-01-b-wing.json", test_bwing_data);
-    expect(service.getPilotData("rebelalliance", "asf01bwing", "braylenstramm")).toBeTruthy();
+    expect(service.getPilot("rebelalliance", "asf01bwing", "braylenstramm")).toBeTruthy();
   });
 
 });

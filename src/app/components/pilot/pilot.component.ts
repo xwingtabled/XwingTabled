@@ -17,8 +17,8 @@ export class PilotComponent implements OnInit {
   constructor(public data: XwingJsonDataService, public images: XwingImageService) { }
 
   ngOnInit() {
-    this.shipData = this.data.getShipData(this.faction, this.pilot.ship);
-    this.pilotData = this.data.getPilotData(this.faction, this.pilot.ship, this.pilot.name);
+    this.shipData = this.data.getShip(this.faction, this.pilot.ship);
+    this.pilotData = this.data.getPilot(this.faction, this.pilot.ship, this.pilot.name);
     this.images.get_image_by_url(this.pilotData.image).then(
       base64url => {
         this.img_url = base64url;
