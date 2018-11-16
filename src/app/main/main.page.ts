@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { XwsModalPage } from '../xws-modal/xws-modal.page';
+import { LoadingPage } from '../loading/loading.page';
 import { Router } from '@angular/router';
 import { XwingJsonDataService } from '../services/xwing-json-data.service';
 import { XwingImageService } from '../services/xwing-image.service';
@@ -19,21 +20,30 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     if (!this.dataService.initialized || !this.imageService.initialized) {
-      this.router.navigateByUrl('/loading');
+      this.presentLoadingModal();
     }
   }
 
   xwsAddButton() {
-    this.presentModal();
+    this.presentXwsModal();
   }
 
-  async presentModal() {
+  async presentXwsModal() {
     const modal = await this.modalController.create({
-      component: XwsModalPage,
-      componentProps: { value: 123 }
+      component: XwsModalPage
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    this.squadrons.push(data);
+    if (data) {
+      this.squadrons.push(data);
+    }
+  }
+
+  async presentLoadingModal() {
+    const modal = await this.modalController.create({
+      component: LoadingPage
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
   }
 }

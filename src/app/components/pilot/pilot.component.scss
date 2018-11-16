@@ -2,6 +2,9 @@
     display: flex;
     flex-direction: column;
 }
+.pilot-card {
+    max-width: 50%;
+}
 .stat-block-container {
     display: flex;
     flex-direction: row;

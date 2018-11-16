@@ -3,6 +3,7 @@ import { XwingJsonDataService } from '../services/xwing-json-data.service';
 import { XwingImageService } from '../services/xwing-image.service';
 import { Events } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -31,11 +32,13 @@ export class LoadingPage {
   img_src: string = "";
   router: Router;
 
-  constructor(dataService: XwingJsonDataService, imageService: XwingImageService, events: Events, router: Router) {
+  constructor(dataService: XwingJsonDataService, 
+              imageService: XwingImageService, 
+              events: Events, 
+              public modalController: ModalController) {
     this.dataService = dataService;
     this.imageService = imageService;
     this.events = events;
-    this.router = router;
   }
 
   ngOnInit() {
@@ -55,6 +58,7 @@ export class LoadingPage {
       this.data_button_disabled = false;
     }
     if (event.status == "manifest_current" || event.status == "data_download_complete") {
+      console.log("proceeding to load_images");
       this.data_interface = false;
       this.images_interface = true;
       this.imageService.load_images(this.dataService.data);
@@ -82,7 +86,8 @@ export class LoadingPage {
   }
   
   continue() {
-    this.router.navigateByUrl('/main');
+    console.log("all data loaded, dismissing modal");
+    this.modalController.dismiss();
   }
 
   download_data() {
