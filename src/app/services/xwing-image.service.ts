@@ -127,6 +127,7 @@ export class XwingImageService extends XwingDataService {
         if (missing.length) {
           this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded");
         } else {
+          this.initialized = true;
           this.status("images_complete", "All X-Wing artwork loaded");
         }
         console.log("X-Wing Image Data", this.image_map);
@@ -153,6 +154,7 @@ export class XwingImageService extends XwingDataService {
       }
     )
     this.status("images_complete", "X-Wing artwork hotlinked");
+    this.initialized = true;
     console.log("X-Wing Images hotlinked URLS", this.image_urls);
   }
 
@@ -199,6 +201,7 @@ export class XwingImageService extends XwingDataService {
         } else {
           this.status("image_download_complete", "X-Wing artwork has been downloaded");
         }
+        this.initialized = true;
         console.log("X-Wing Image Data", this.image_map);
       }
     );

@@ -14,6 +14,7 @@ export abstract class XwingDataService {
   // Data structure containing filename => json mapping
   http: HttpProvider;
   progress: number = 0;
+  initialized: boolean = false;
   
   constructor(storage: Storage, http: HttpProvider, events: Events) { 
     this.http = http;

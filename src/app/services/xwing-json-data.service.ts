@@ -48,6 +48,7 @@ export class XwingJsonDataService extends XwingDataService {
             this.status("manifest_outofdate", "Current manifest out of date");
             this.storage.set('manifest', new_manifest);
             this.data = new_manifest;
+            this.initialized = true;
           } else {
             this.status("manifest_current", "Manifest is current.");
             console.log("X-Wing Json Data", this.data);
@@ -87,6 +88,7 @@ export class XwingJsonDataService extends XwingDataService {
         }
         this.storage.set('manifest', this.data);
         console.log("X-Wing Json Data", this.data);
+        this.initialized = true;
       }
     );
   }
