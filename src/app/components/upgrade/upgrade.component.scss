@@ -1,15 +1,13 @@
 .upgrade {
-    width: 25%;
-}
-
-.upgrade-img-container {
-    width: 393px;
-    height: 241px;
     overflow: hidden;
+}
+.upgrade-img-container {
+    overflow: hidden;
+    margin-right: -78%;
+    margin-bottom: -68%;
 }
 
 .upgrade-img-container img {
-    margin-left: -281px;
-    min-width: 700px;
-    min-height: 503px;
+    position: relative;
+    left: -40%;
 }

@@ -1,11 +1,11 @@
 <div>
   <xwing-ship [name]="pilot.ship" class="ship-fw"></xwing-ship> {{ pilot.id }}
 </div>
-<div>
-  <div>
+<div class="art-container">
+  <div class="art-item">
     <img [src]="img_url" class="pilot-card"/>
   </div>
-  <div>
+  <div class="art-item">
     <xws-upgrade-collection *ngIf="pilot.upgrades" [upgrades]="pilot.upgrades"></xws-upgrade-collection>
   </div>
 </div>
