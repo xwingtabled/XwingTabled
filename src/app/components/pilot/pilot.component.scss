@@ -1,0 +1,18 @@
+.ship-fw {
+    display: inline-block;
+    text-align: center;
+    width: 2em;
+}
+.art-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.item-statblock {
+    flex-shrink: 1;
+    width: 33%;
+}
+.item-upgrades {
+    flex-shrink: 1;
+    width: 66%;
+}

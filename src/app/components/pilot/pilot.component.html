@@ -2,10 +2,10 @@
   <xwing-ship [name]="pilot.ship" class="ship-fw"></xwing-ship> {{ pilot.id }}
 </div>
 <div class="art-container">
-  <div class="art-item">
-    <img [src]="img_url" class="pilot-card"/>
+  <div class="item-statblock">
+    <img [src]="img_url"/>
   </div>
-  <div class="art-item">
+  <div class="item-upgrades">
     <xws-upgrade-collection *ngIf="pilot.upgrades" [upgrades]="pilot.upgrades"></xws-upgrade-collection>
   </div>
 </div>

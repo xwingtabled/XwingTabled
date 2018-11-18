@@ -74,7 +74,7 @@ export class XwingImageService extends XwingDataService {
             }
           )
         } else {
-          reject("key not found");
+          reject("key not found: " + key);
         }
       }
     )
