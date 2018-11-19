@@ -1,4 +1,7 @@
+@import '../component.scss';
+
 .upgrade-collection {
+    background: $xws-background;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;

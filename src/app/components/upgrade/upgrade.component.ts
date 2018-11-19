@@ -11,8 +11,9 @@ export class UpgradeComponent implements OnInit {
   @Input() upgradeType: string;
   @Input() upgradeName: string;
   upgrade: any = { };
-  img_url: string = "";
-  side_urls: string[] = [];
+  current_side: any = { };
+  img_class: string = "img-box";
+  side_num: number = 0;
 
   constructor(public dataService: XwingJsonDataService, public imageService: XwingImageService) { }
 
@@ -22,11 +23,20 @@ export class UpgradeComponent implements OnInit {
       (side) => {
         this.imageService.get_image_by_url(side.image).then(
           (base64url) => {
-            this.side_urls.push(base64url);
-            this.img_url = this.side_urls[0];
+            side.img_url = base64url;
           }
-        )
+        );
+        if (side.charges) {
+          if (side.charges.reamining == undefined) {
+            side.charges.remaining = side.charges.value;
+            side.charges.numbers = Array(side.charges.recovers);
+          }
+        }
       }
-    )
+    );
+    this.current_side = this.upgrade.sides[0];
+    if (this.upgradeType == "configuration") {
+      this.img_class = "img-config-box";
+    }
   }
 }

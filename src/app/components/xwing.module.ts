@@ -9,7 +9,11 @@ import { SquadronComponent } from './squadron/squadron.component';
 import { PilotComponent } from './pilot/pilot.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
 import { UpgradeCollectionComponent } from './upgrade-collection/upgrade-collection.component';
-
+import { ChargeSummaryComponent } from './charge-summary/charge-summary.component';
+import { AttackStatsComponent} from './attack-stats/attack-stats.component';
+import { ActionComponent } from './action/action.component';
+import { ForceSummaryComponent } from './force-summary/force-summary.component';
+import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -22,7 +26,13 @@ import { UpgradeCollectionComponent } from './upgrade-collection/upgrade-collect
     SquadronComponent, 
     PilotComponent,
     UpgradeComponent,
-    UpgradeCollectionComponent ],
+    UpgradeCollectionComponent,
+    ChargeSummaryComponent,
+    AttackStatsComponent,
+    ActionComponent,
+    ForceSummaryComponent,
+    BonusStatsComponent
+  ],
   exports: [
     XwingIconComponent, 
     XwingShipComponent, 
@@ -30,6 +40,12 @@ import { UpgradeCollectionComponent } from './upgrade-collection/upgrade-collect
     SquadronComponent, 
     PilotComponent, 
     UpgradeComponent,
-    UpgradeCollectionComponent ]
+    UpgradeCollectionComponent,
+    ChargeSummaryComponent,
+    AttackStatsComponent,
+    ActionComponent,
+    ForceSummaryComponent,
+    BonusStatsComponent
+  ]
 })
 export class XwingModule {}

@@ -1,0 +1,11 @@
+@import '../component';
+
+.force-summary {
+    color: blueviolet;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+.force-text {
+    font-size: $text-size;
+    padding-left: 0.2em;
+}

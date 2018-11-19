@@ -1,13 +1,54 @@
+@import '../component.scss';
+
 .upgrade {
     overflow: hidden;
+    width: 100%;
+    font-weight: 900;
+    font-size: 75%;
 }
 .upgrade-img-container {
     overflow: hidden;
     margin-right: -78%;
-    margin-bottom: -68%;
+    margin-bottom: -69%;
+    z-index: -1;
 }
 
-.upgrade-img-container img {
+.img-box {
     position: relative;
     left: -40%;
+}
+
+.img-config-box { 
+    position: relative;
+    left: -3.3%;
+}
+
+.upgrade-info-block {
+    position: relative;
+    bottom: 0%;
+    color: white;
+    background: $xws-background;
+    padding: 0.5em 0.5em 0.2em 0.5em;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.upgrade-info-block-left {
+    display: inline-block;
+}
+
+.upgrade-info-block-right {
+    display: inline-block;
+}
+
+.upgrade-filler {
+    font-size: 1.5em;
+}
+
+.action-box {
+    border-left: 1px solid lightgray;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
 }

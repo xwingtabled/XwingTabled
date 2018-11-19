@@ -22,7 +22,7 @@ import { XwsModalPage } from './xws-modal/xws-modal.page';
 import { LoadingPageModule } from './loading/loading.module';
 
 @NgModule({
-  declarations: [AppComponent, XwsModalPage ],
+  declarations: [AppComponent, XwsModalPage],
   entryComponents: [ XwsModalPage ],
   imports: [
     BrowserModule,
