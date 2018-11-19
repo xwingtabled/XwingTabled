@@ -1,4 +1,4 @@
-<span>
+<span class="action">
   <xwing-icon [name]="action.type" [class]="css_class"></xwing-icon>
-  <span *ngIf="action.linked"><xwing-icon [name]="'linked'"></xwing-icon><xws-action [action]="action.linked"></xws-action></span>
+  <span *ngIf="action.linked">&nbsp;<xwing-icon [name]="'linked'"></xwing-icon>&nbsp;<xws-action [action]="action.linked"></xws-action></span>
 </span>
