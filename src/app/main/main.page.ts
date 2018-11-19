@@ -3,8 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { XwsModalPage } from '../xws-modal/xws-modal.page';
 import { LoadingPage } from '../loading/loading.page';
 import { Router } from '@angular/router';
-import { XwingJsonDataService } from '../services/xwing-json-data.service';
-import { XwingImageService } from '../services/xwing-image.service';
+import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 @Component({
   selector: 'app-main',
@@ -15,13 +14,12 @@ export class MainPage implements OnInit {
 
   squadrons: any = [ ];
   constructor(public modalController: ModalController, 
-              public dataService: XwingJsonDataService,
-              public imageService: XwingImageService,
+              public dataService: XwingDataService,
               public router: Router,
               public platform: Platform) { }
 
   ngOnInit() {
-    if (!this.dataService.initialized || !this.imageService.initialized) {
+    if (!this.dataService.initialized) {
       this.presentLoadingModal();
     }
   }

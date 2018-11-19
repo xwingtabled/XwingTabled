@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { XwingJsonDataService } from '../../services/xwing-json-data.service';
-import { XwingImageService } from '../../services/xwing-image.service';
+import { XwingDataService } from '../../services/xwing-data.service';
 
 @Component({
   selector: 'xws-pilot',
@@ -14,12 +13,12 @@ export class PilotComponent implements OnInit {
   shipData: any;
   pilotData: any;
 
-  constructor(public data: XwingJsonDataService, public images: XwingImageService) { }
+  constructor(public dataService: XwingDataService) { }
 
   ngOnInit() {
-    this.shipData = this.data.getShip(this.faction, this.pilot.ship);
-    this.pilotData = this.data.getPilot(this.faction, this.pilot.ship, this.pilot.name);
-    this.images.get_image_by_url(this.pilotData.image).then(
+    this.shipData = this.dataService.getShip(this.faction, this.pilot.ship);
+    this.pilotData = this.dataService.getPilot(this.faction, this.pilot.ship, this.pilot.name);
+    this.dataService.get_image_by_url(this.pilotData.image).then(
       base64url => {
         this.img_url = base64url;
       }

@@ -1,11 +1,11 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
-import { XwingJsonDataService } from './xwing-json-data.service';
+import { XwingDataService } from './xwing-data.service';
 import { configureTestbed } from '../app.test-config';
 
-describe('XwingJsonDataService', () => {
+describe('XwingDataService', () => {
   let injector: TestBed;
-  let service: XwingJsonDataService;
+  let service: XwingDataService;
   let httpMock: HttpTestingController;
   let test_manifest = {
     "version": "1.1.0",
@@ -169,7 +169,7 @@ describe('XwingJsonDataService', () => {
   beforeEach(() => { 
     configureTestbed();
     injector = getTestBed();
-    service = injector.get(XwingJsonDataService);
+    service = injector.get(XwingDataService);
     httpMock = injector.get(HttpTestingController);
   });
 
@@ -178,7 +178,6 @@ describe('XwingJsonDataService', () => {
   });
 
   it('should find all files of a given extension in a json', () => {
-    
     let generated_queue = service.create_file_list(test_manifest, ".json");
     expect(generated_queue.length).toEqual(10);
   });

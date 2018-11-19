@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { XwingJsonDataService } from '../../services/xwing-json-data.service';
-import { XwingImageService } from '../../services/xwing-image.service';
+import { XwingDataService } from '../../services/xwing-data.service';
 
 @Component({
   selector: 'xws-upgrade',
@@ -15,13 +14,13 @@ export class UpgradeComponent implements OnInit {
   img_class: string = "img-box";
   side_num: number = 0;
 
-  constructor(public dataService: XwingJsonDataService, public imageService: XwingImageService) { }
+  constructor(public dataService: XwingDataService) { }
 
   ngOnInit() {
     this.upgrade = this.dataService.getUpgrade(this.upgradeType, this.upgradeName);
     this.upgrade.sides.forEach(
       (side) => {
-        this.imageService.get_image_by_url(side.image).then(
+        this.dataService.get_image_by_url(side.image).then(
           (base64url) => {
             side.img_url = base64url;
           }

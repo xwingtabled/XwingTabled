@@ -11,9 +11,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { XwingJsonDataService } from './services/xwing-json-data.service';
+import { XwingDataService } from './services/xwing-data.service';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
-import { XwingImageService } from './services/xwing-image.service';
 import { HttpProvider } from './providers/http.provider';
 import { HttpAngularProvider } from './providers/http-angular.provider';
 import { HttpNativeProvider } from './providers/http-native.provider';
@@ -38,8 +37,7 @@ import { LoadingPageModule } from './loading/loading.module';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     File,
     IonicStorageModule,
-    XwingJsonDataService,
-    XwingImageService,
+    XwingDataService,
     HttpProvider,
     HttpAngularProvider,
     HttpNativeProvider,

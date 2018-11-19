@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { XwingJsonDataService } from '../services/xwing-json-data.service';
-import { XwingImageService } from '../services/xwing-image.service';
+import { XwingDataService } from '../services/xwing-data.service';
 import { Events } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
@@ -27,26 +26,18 @@ export class LoadingPage {
 
   continue_button: boolean = false;
 
-  dataService: XwingJsonDataService;
-  imageService: XwingImageService;
   img_src: string = "";
   router: Router;
 
-  constructor(dataService: XwingJsonDataService, 
-              imageService: XwingImageService, 
+  constructor(private dataService: XwingDataService, 
               events: Events, 
               public modalController: ModalController) {
-    this.dataService = dataService;
-    this.imageService = imageService;
     this.events = events;
   }
 
   ngOnInit() {
     this.events.subscribe(this.dataService.topic, (event) => {
       this.data_event_handler(event);
-    });
-    this.events.subscribe(this.imageService.topic, (event) => {
-      this.image_event_handler(event);
     });
   }
 
@@ -61,13 +52,7 @@ export class LoadingPage {
       console.log("proceeding to load_images");
       this.data_interface = false;
       this.images_interface = true;
-      this.imageService.load_images(this.dataService.data);
     }
-  }
-
-  image_event_handler(event: any) {
-    this.images_message = event.message;
-    this.images_progress = event.progress;
     if (event.status == "images_missing") {
       this.images_button = true;
       this.images_button_disabled = false;
@@ -97,6 +82,6 @@ export class LoadingPage {
 
   download_images() {
     this.images_button_disabled = true;
-    this.imageService.download_missing_images(this.dataService.data);
+    this.dataService.download_missing_images(this.dataService.data);
   }
 }
