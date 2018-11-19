@@ -1,8 +1,0 @@
-<div class="container">
-  <div class="header">
-    <xwing-icon [name]="squadron.faction"></xwing-icon> {{ squadron.name }}
-  </div>
-  <div class="pilotlist">
-    <xws-pilot *ngFor="let pilot of squadron.pilots" [pilot]="pilot" [faction]="squadron.faction"></xws-pilot>
-  </div>
-</div>

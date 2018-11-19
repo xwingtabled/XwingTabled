@@ -9,9 +9,9 @@
 i.xwing-miniatures-font {
   font-family: XWing;
   font-style: normal;
-  font-size: 1.5em;
-  padding-left: 0.2em;
-  padding-right: 0.2em;
+  font-size: 1em;
+  padding-left: 0.1em;
+  padding-right: 0.1em;
 }
 
 i.xwing-miniatures-font-agility:before {

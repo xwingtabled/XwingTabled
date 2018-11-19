@@ -5,6 +5,7 @@ import { LoadingPage } from '../loading/loading.page';
 import { Router } from '@angular/router';
 import { XwingJsonDataService } from '../services/xwing-json-data.service';
 import { XwingImageService } from '../services/xwing-image.service';
+import { Platform } from '@ionic/angular';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -16,11 +17,38 @@ export class MainPage implements OnInit {
   constructor(public modalController: ModalController, 
               public dataService: XwingJsonDataService,
               public imageService: XwingImageService,
-              public router: Router) { }
+              public router: Router,
+              public platform: Platform) { }
 
   ngOnInit() {
     if (!this.dataService.initialized || !this.imageService.initialized) {
       this.presentLoadingModal();
+    }
+  }
+
+  portrait() {
+    return this.platform.is('mobile') || this.platform.width() < this.platform.height();
+  }
+
+  squadronCss() {
+    if (this.portrait()) {
+      return 'squadron-fullwidth';
+    }
+    if (this.squadrons.length > 1) { 
+      return 'squadron-halfwidth';
+    } else {
+      return 'squadron-fullwidth';
+    }
+  }
+
+  pilotCss() {
+    if (this.portrait()) {
+      return 'squadron-fullwidth';
+    }
+    if (this.squadrons.length > 1) {
+      return 'squadron-fullwidth';
+    } else {
+      return 'squadron-halfwidth';
     }
   }
 

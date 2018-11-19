@@ -1,10 +1,31 @@
 .squadron-container {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
+    display: block;
+}
+.squadron-item {
+    display: inline-block;
+}
+.squadron-halfwidth {
+    display: inline-block;
+    width: 50%;
+}
+.squadron-fullwidth {
     width: 100%;
 }
-
-.squadron-item {
-    flex: 1 1 0;
+.squadron-header {
+    display: block;
+}
+.pilotlist {
+    display: block;
+}
+.pilot {
+    display: inline-block;
+    width: 50%;
+}
+.pilot-fullwidth {
+    display: block;
+    width: 100%;
+}
+.pilot-halfwidth {
+    display: inline-block;
+    width: 50%;
 }

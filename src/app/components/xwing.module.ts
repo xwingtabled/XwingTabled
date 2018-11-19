@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { XwingIconComponent } from './xwing-icon/xwing-icon.component';
 import { XwingShipComponent } from './xwing-ship/xwing-ship.component';
 import { XwingTextComponent } from './xwing-text/xwing-text.component';
-import { SquadronComponent } from './squadron/squadron.component';
 import { PilotComponent } from './pilot/pilot.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
 import { UpgradeCollectionComponent } from './upgrade-collection/upgrade-collection.component';
@@ -23,7 +22,6 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
     XwingIconComponent, 
     XwingShipComponent,
     XwingTextComponent, 
-    SquadronComponent, 
     PilotComponent,
     UpgradeComponent,
     UpgradeCollectionComponent,
@@ -37,7 +35,6 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
     XwingIconComponent, 
     XwingShipComponent, 
     XwingTextComponent, 
-    SquadronComponent, 
     PilotComponent, 
     UpgradeComponent,
     UpgradeCollectionComponent,
