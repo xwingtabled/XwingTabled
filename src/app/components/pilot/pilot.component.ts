@@ -26,4 +26,10 @@ export class PilotComponent implements OnInit {
     )
   }
 
+  showPilot() {
+    console.log(this.pilot);
+    console.log(this.pilotData);
+    console.log(this.shipData);
+  }
+
 }

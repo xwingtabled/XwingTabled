@@ -2,7 +2,7 @@
   <xwing-ship [name]="pilot.ship" class="ship-fw"></xwing-ship> {{ pilot.id }}
 </div>
 <div class="art-container">
-  <div class="item-statblock">
+  <div class="item-statblock" (click)="showPilot()">
     <img [src]="img_url"/>
   </div>
   <div class="item-upgrades">

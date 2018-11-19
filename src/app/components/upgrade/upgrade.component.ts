@@ -39,4 +39,8 @@ export class UpgradeComponent implements OnInit {
       this.img_class = "img-config-box";
     }
   }
+
+  showUpgrade() {
+    console.log(this.upgrade);
+  }
 }
