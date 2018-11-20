@@ -1,0 +1,30 @@
+.token-display{
+    width: 100%;
+}
+
+.tokens {
+    display: inline-block;
+    font-size: 5vh;
+}
+
+.force {
+    color: blueviolet;
+}
+
+.charge {
+    color: yellow;
+}
+
+.shield { 
+    color: lightblue;
+}
+
+.spent {
+    color: red;
+}
+
+.recover-container {
+    float: right;
+    padding-top: 0.5vh;
+    padding-right: 0.5vh;
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 
+
 @Component({
   selector: 'xws-pilot',
   templateUrl: './pilot.component.html',

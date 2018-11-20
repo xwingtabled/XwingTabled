@@ -14,6 +14,7 @@ import { ForceSummaryComponent } from './force-summary/force-summary.component';
 import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
 import { HullSummaryComponent} from './hull-summary/hull-summary.component';
 import { ShieldSummaryComponent } from './shield-summary/shield-summary.component';
+import { TokenDisplayComponent } from './token-display/token-display.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -31,7 +32,8 @@ import { ShieldSummaryComponent } from './shield-summary/shield-summary.componen
     ForceSummaryComponent,
     BonusStatsComponent,
     HullSummaryComponent,
-    ShieldSummaryComponent
+    ShieldSummaryComponent,
+    TokenDisplayComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -45,7 +47,8 @@ import { ShieldSummaryComponent } from './shield-summary/shield-summary.componen
     ForceSummaryComponent,
     BonusStatsComponent,
     HullSummaryComponent,
-    ShieldSummaryComponent
+    ShieldSummaryComponent,
+    TokenDisplayComponent
   ]
 })
 export class XwingModule {}

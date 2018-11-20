@@ -19,17 +19,20 @@ import { HttpNativeProvider } from './providers/http-native.provider';
 import { HTTP } from '@ionic-native/http/ngx';
 import { XwsModalPage } from './xws-modal/xws-modal.page';
 import { LoadingPageModule } from './loading/loading.module';
+import { UpgradeModalPage } from './upgrade-modal/upgrade-modal.page';
+import { XwingModule } from './components/xwing.module';
 
 @NgModule({
-  declarations: [AppComponent, XwsModalPage],
-  entryComponents: [ XwsModalPage ],
+  declarations: [AppComponent, XwsModalPage, UpgradeModalPage],
+  entryComponents: [ XwsModalPage, UpgradeModalPage ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
     HttpClientModule,
-    LoadingPageModule
+    LoadingPageModule,
+    XwingModule
   ],
   providers: [
     StatusBar,

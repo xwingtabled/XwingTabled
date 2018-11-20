@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button color="primary" *ngIf="upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>
+    </ion-buttons> 
+    <ion-title>{{ upgrade.name }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <div class="upgrade-content">
+    <div>
+      <img [src]="upgrade.sides[upgrade.side].image" />
+    </div>
+    <div *ngIf="upgrade.sides[upgrade.side].charges">
+      <xws-token-display [name]="'charge'" [data]="upgrade.sides[upgrade.side].charges"></xws-token-display>
+    </div>
+  </div>
+</ion-content>
