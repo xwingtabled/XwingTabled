@@ -1,7 +1,6 @@
 @import '../component.scss';
 
 .upgrade-collection {
-    background: $xws-background;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -21,6 +20,7 @@
     font-size: 2vw;
 }
 .art-container {
+    background: $xws-background;
     width: 100%;
     box-sizing: border-box;
 }

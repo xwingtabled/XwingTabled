@@ -3,12 +3,15 @@
 </div>
 <div class="art-container">
   <div class="item-statblock" (click)="showPilot()">
-    <img [src]="pilot.pilot.image"/>
+    <img [src]="pilot.image"/>
   </div>
   <div class="item-upgrades">
     <div class="upgrade-collection">
       <xws-upgrade *ngFor="let upgrade of pilot.upgrades" 
         [upgrade]="upgrade" class="upgrade"></xws-upgrade>
+    </div>
+    <div class="ship-status">
+
     </div>
   </div>
 </div>
