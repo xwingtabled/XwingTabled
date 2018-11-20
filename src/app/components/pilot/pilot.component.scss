@@ -1,3 +1,19 @@
+@import '../component.scss';
+
+.upgrade-collection {
+    background: $xws-background;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.upgrade {
+    flex: 1 1 0;
+    max-width: 33%;
+    min-width: 33%;
+}
+
 .ship-fw {
     display: inline-block;
     text-align: center;
@@ -18,3 +34,4 @@
     vertical-align: top;
     width: 66%;
 }
+

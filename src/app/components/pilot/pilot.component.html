@@ -1,11 +1,14 @@
 <div>
-  <xwing-ship [name]="pilot.ship" class="ship-fw"></xwing-ship> {{ pilot.id }}
+  <xwing-ship [name]="pilot.ship.xws" class="ship-fw"></xwing-ship> {{ pilot.id }}
 </div>
 <div class="art-container">
   <div class="item-statblock" (click)="showPilot()">
-    <img [src]="img_url"/>
+    <img [src]="pilot.pilot.image"/>
   </div>
   <div class="item-upgrades">
-    <xws-upgrade-collection *ngIf="pilot.upgrades" [upgrades]="pilot.upgrades"></xws-upgrade-collection>
+    <div class="upgrade-collection">
+      <xws-upgrade *ngFor="let upgrade of pilot.upgrades" 
+        [upgrade]="upgrade" class="upgrade"></xws-upgrade>
+    </div>
   </div>
 </div>

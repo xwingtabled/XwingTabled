@@ -1,17 +1,17 @@
 <div class="upgrade" (click)="showUpgrade()">
   <div class="upgrade-img-container">
-    <img [src]="current_side.img_url" [class]="img_class"/>
+    <img [src]="upgrade.sides[upgrade.side].image" [class]="img_class"/>
   </div>
   <div class="upgrade-info-block">
     <div class="upgrade-info-block-left">
-      <xws-attack-stats *ngIf="current_side.attack" [attack]="current_side.attack"></xws-attack-stats>
-      <xws-action *ngFor="let action of current_side.actions" [action]="action" class="action-box"></xws-action>
+      <xws-attack-stats *ngIf="upgrade.sides[upgrade.side].attack" [attack]="upgrade.sides[upgrade.side].attack"></xws-attack-stats>
+      <xws-action *ngFor="let action of upgrade.sides[upgrade.side].actions" [action]="action" class="action-box"></xws-action>
     </div>
     <div class="upgrade-info-block-right">
-      <xws-charge-summary *ngIf="current_side.charges" [charges]="current_side.charges"></xws-charge-summary>
-      <xws-force-summary *ngIf="current_side.force" [force]="current_side.force"></xws-force-summary>
-      <xwing-icon *ngIf="upgradeType == 'configuration'" [name]="'config'"></xwing-icon>
-      <xws-bonus-stats *ngFor="let grant of current_side.grants" [grant]="grant"></xws-bonus-stats>
+      <xws-charge-summary *ngIf="upgrade.sides[upgrade.side].charges" [charges]="upgrade.sides[upgrade.side].charges"></xws-charge-summary>
+      <xws-force-summary *ngIf="upgrade.sides[upgrade.side].force" [force]="upgrade.sides[upgrade.side].force"></xws-force-summary>
+      <xwing-icon *ngIf="upgrade['type'] == 'configuration'" [name]="'config'"></xwing-icon>
+      <xws-bonus-stats *ngFor="let grant of upgrade.sides[upgrade.side].grants" [grant]="grant"></xws-bonus-stats>
     </div>
   </div>
 </div>

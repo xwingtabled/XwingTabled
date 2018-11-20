@@ -11,7 +11,7 @@ export class ForceSummaryComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.force.numbers = Array(this.force.recovers);
+    
   }
 
 }

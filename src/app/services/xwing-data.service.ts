@@ -285,7 +285,7 @@ export class XwingDataService {
         }
       }
     );
-    return pilot;
+    return JSON.parse(JSON.stringify(pilot));
   }
   
   getShip(faction: string, xwsShip: string) {
@@ -298,7 +298,7 @@ export class XwingDataService {
           }
         }
       );
-      return ships[xwsShip];
+      return JSON.parse(JSON.stringify(ships[xwsShip]));
     } catch (Error) {
       return null;
     }
@@ -314,7 +314,7 @@ export class XwingDataService {
           }
         }
       )
-      return foundUpgrade;
+      return JSON.parse(JSON.stringify(foundUpgrade));
     } catch (Error) {
       return null;
     }
