@@ -63,6 +63,9 @@ export class PilotComponent implements OnInit {
         if (Array.isArray(upgradeArray)) {
           upgradeArray.forEach(
             (upgradeName) => {
+              if (upgradeType == "force") {
+                upgradeType = "forcepower";
+              }
               let upgradeData = this.dataService.getUpgrade(upgradeType, upgradeName);
               upgradeData['type'] = upgradeType;
               mangledUpgrades.push(upgradeData);
