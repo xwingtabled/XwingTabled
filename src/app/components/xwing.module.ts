@@ -12,6 +12,8 @@ import { AttackStatsComponent} from './attack-stats/attack-stats.component';
 import { ActionComponent } from './action/action.component';
 import { ForceSummaryComponent } from './force-summary/force-summary.component';
 import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
+import { HullSummaryComponent} from './hull-summary/hull-summary.component';
+import { ShieldSummaryComponent } from './shield-summary/shield-summary.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -27,7 +29,9 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
     AttackStatsComponent,
     ActionComponent,
     ForceSummaryComponent,
-    BonusStatsComponent
+    BonusStatsComponent,
+    HullSummaryComponent,
+    ShieldSummaryComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -39,7 +43,9 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
     AttackStatsComponent,
     ActionComponent,
     ForceSummaryComponent,
-    BonusStatsComponent
+    BonusStatsComponent,
+    HullSummaryComponent,
+    ShieldSummaryComponent
   ]
 })
 export class XwingModule {}

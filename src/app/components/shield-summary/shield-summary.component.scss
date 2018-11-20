@@ -1,0 +1,9 @@
+@import '../component.scss';
+
+.shield-summary {
+    color: lightblue;
+}
+.shield-text{
+    padding-left: $icon-pad;
+    font-weight: $stat-weight;
+}

@@ -11,7 +11,7 @@ export class ChargeSummaryComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    if (this.charges.reamining == undefined) {
+    if (this.charges.remaining == undefined) {
       this.charges.remaining = this.charges.value;
       this.charges.numbers = Array(this.charges.recovers);
     }

@@ -19,19 +19,27 @@
     width: 3vw;
     font-size: 2vw;
 }
+.ship-status {
+    background: $xws-background;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    font-size: 3vh;
+}
 .art-container {
     background: $xws-background;
     width: 100%;
     box-sizing: border-box;
 }
-.item-statblock {
+.item-pilotart {
     display: inline-block;
     vertical-align: top;
     width: 33%;
 }
-.item-upgrades {
+.item-status {
     display: inline-block;
     vertical-align: top;
     width: 66%;
+    min-height: 100%;
 }
 

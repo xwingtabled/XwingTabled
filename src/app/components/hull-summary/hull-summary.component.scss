@@ -1,9 +1,9 @@
-@import '../component';
+@import '../component.scss';
 
-.charge-summary {
+.hull-summary {
     color: yellow;
 }
-.charge-text {
+.hull-text {
     padding-left: $icon-pad;
     font-weight: $stat-weight;
 }

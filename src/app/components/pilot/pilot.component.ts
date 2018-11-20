@@ -20,7 +20,12 @@ export class PilotComponent implements OnInit {
 
     this.pilot.ship.stats.forEach(
       (stat) => {
-        stat.remaining = stat.value;
+        if (stat['type'] == 'hull') {
+          this.pilot['hull'] = { value: stat.value, remaining: stat.value };
+        }
+        if (stat['type'] == 'shields') {
+          this.pilot['shields'] = { value: stat.value, remaining: stat.value }; 
+        }
       }
     )
   }
@@ -104,15 +109,9 @@ export class PilotComponent implements OnInit {
         if (side.grants) {
           side.grants.forEach(
             (grant) => {
-              if (grant['type'] == 'stat') {
-                this.pilot.ship.stats.forEach(
-                  (stat) => {
-                    if (stat['type'] == grant.value) {
-                      stat.value += grant.amount;
-                      stat.remaining = stat.value;
-                    }
-                  }
-                )
+              if (grant.value == "shields" || grant.value == "hull") {
+                this.pilot[grant.value].value += grant.amount;
+                this.pilot[grant.value].remaining = this.pilot[grant.value].value;
               }
             }
           )
@@ -135,6 +134,21 @@ export class PilotComponent implements OnInit {
         }
       }
     )
+  }
+
+  getStatString(statname: string) : string {
+    this.pilot.ship.stats.forEach(
+      (stat) => {
+        if (stat['type'] == statname) {
+          if (stat.value != stat.remaining) {
+            return "(" + stat.remaining + ")";
+          } else {
+            return stat.value;
+          }
+        }
+      }
+    );
+    return "";
   }
 
   ngOnInit() {
