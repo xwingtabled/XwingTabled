@@ -310,7 +310,11 @@ export class XwingDataService {
           }
         }
       );
-      return JSON.parse(JSON.stringify(ships[xwsShip]));
+      let ship = ships[xwsShip];
+      // For some reason, xws data in guidokessels data uses different names for 
+      // TIE Fighters. For exåmple, tieininterceptor instead of tieinterceptor
+      ship.keyname = xwsShip;
+      return JSON.parse(JSON.stringify(ship));
     } catch (Error) {
       return null;
     }

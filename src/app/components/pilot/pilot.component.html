@@ -1,5 +1,5 @@
 <div>
-  <xwing-ship [name]="pilot.ship.xws" class="ship-fw"></xwing-ship> {{ pilot.id }}
+  <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.id }}
 </div>
 <div class="art-container">
   <div class="item-pilotart" (click)="showPilot()">
@@ -15,7 +15,7 @@
 <div class="ship-status">
   &nbsp;
   <xws-hull-summary [hull]="pilot.hull"></xws-hull-summary>&nbsp;
-  <xws-shield-summary [shields]="pilot.shields"></xws-shield-summary>&nbsp;
+  <xws-shield-summary *ngIf="pilot.shields" [shields]="pilot.shields"></xws-shield-summary>&nbsp;
   <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges"></xws-charge-summary>&nbsp;
   <xws-force-summary *ngIf="pilot.force" [force]="pilot.force"></xws-force-summary>&nbsp;
 </div>

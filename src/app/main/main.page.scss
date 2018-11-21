@@ -7,9 +7,11 @@
 .squadron-halfwidth {
     display: inline-block;
     width: 50%;
+    vertical-align: top;
 }
 .squadron-fullwidth {
     width: 100%;
+    vertical-align: top;
 }
 .squadron-header {
     display: block;
@@ -24,6 +26,11 @@
 .damage-deck-summary {
     padding-left: 0.5vw;
     padding-right: 0.5vw;
+}
+.damage-deck-summary-text {
+    line-height: 1.5vh;
+    display: inline-block;
+    vertical-align: middle;
 }
 .damage-deck-icon {
     display: inline-block;

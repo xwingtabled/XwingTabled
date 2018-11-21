@@ -5,6 +5,8 @@ import { LoadingPage } from '../loading/loading.page';
 import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -16,7 +18,8 @@ export class MainPage implements OnInit {
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
               public router: Router,
-              public platform: Platform) { }
+              public platform: Platform,
+              public popoverController: PopoverController) { }
 
   ngOnInit() {
     if (!this.dataService.initialized) {
@@ -66,7 +69,7 @@ export class MainPage implements OnInit {
   }
 
   async injectPilotData(pilot: any, faction: string) {
-    pilot.pilot = this.dataService.getPilot(faction, pilot.ship.xws, pilot.name);
+    pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.name);
     let img_url = pilot.pilot.image;
     pilot.image = await this.dataService.get_image_by_url(img_url);
     if (pilot.pilot.charges) {
@@ -87,22 +90,24 @@ export class MainPage implements OnInit {
 
   mangleUpgradeArray(pilot: any) {
     let mangledUpgrades = [ ];
-    Object.entries(pilot.upgrades).forEach(
-      ( [upgradeType, upgradeArray ] ) => {
-        if (Array.isArray(upgradeArray)) {
-          upgradeArray.forEach(
-            (upgradeName) => {
-              if (upgradeType == "force") {
-                upgradeType = "forcepower";
+    if (pilot.upgrades) {
+      Object.entries(pilot.upgrades).forEach(
+        ( [upgradeType, upgradeArray ] ) => {
+          if (Array.isArray(upgradeArray)) {
+            upgradeArray.forEach(
+              (upgradeName) => {
+                if (upgradeType == "force") {
+                  upgradeType = "forcepower";
+                }
+                let upgradeData = this.dataService.getUpgrade(upgradeType, upgradeName);
+                upgradeData['type'] = upgradeType;
+                mangledUpgrades.push(upgradeData);
               }
-              let upgradeData = this.dataService.getUpgrade(upgradeType, upgradeName);
-              upgradeData['type'] = upgradeType;
-              mangledUpgrades.push(upgradeData);
-            }
-          )
+            )
+          }
         }
-      }
-    );
+      );
+    }
     pilot.upgrades = mangledUpgrades;
   }
 
@@ -159,8 +164,10 @@ export class MainPage implements OnInit {
         }
       }
     )
-    pilot.force.numbers = Array(pilot.force.recovers);
-    pilot.force.remaining = pilot.force.value;
+    if (pilot.force) {
+      pilot.force.numbers = Array(pilot.force.recovers);
+      pilot.force.remaining = pilot.force.value;
+    }
   }
 
   xwsAddButton() {
@@ -173,6 +180,7 @@ export class MainPage implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
+    data.damagediscard = [ ];
     data.damagedeck = this.dataService.getDamageDeck();
     data.pilots.forEach(
       (pilot) => {
