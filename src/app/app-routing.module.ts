@@ -11,7 +11,7 @@ const routes: Routes = [
     path: 'loading',
     loadChildren: './loading/loading.module#LoadingPageModule'
   },
-  { path: 'main', loadChildren: './main/main.module#MainPageModule' },
+  { path: 'main', loadChildren: './main/main.module#MainPageModule' }
 ];
 
 @NgModule({

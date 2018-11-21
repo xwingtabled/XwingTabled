@@ -1,5 +1,8 @@
-<div class="damage-card">
-  <span class="damage-deck-icon"><xwing-icon [name]="card.exposed ? 'crit' : 'hit'"></xwing-icon></span>
-  <span *ngIf="!card.exposed">Damage Card</span>
+<ion-button expand="full" color="danger" *ngIf="card.exposed" (click)="presentDamagePopover($event)">
   <span *ngIf="card.exposed">{{ card.title }}</span>
-</div>
+  <xwing-icon [name]="'crit'"></xwing-icon>
+</ion-button>
+<ion-button expand="full" color="danger" fill="outline" *ngIf="!card.exposed" (click)="presentDamagePopover($event)">
+  <span>(?) Damage Card</span>
+  <xwing-icon [name]="'hit'"></xwing-icon>
+</ion-button>

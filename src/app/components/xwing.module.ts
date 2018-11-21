@@ -17,10 +17,15 @@ import { ShieldSummaryComponent } from './shield-summary/shield-summary.componen
 import { TokenDisplayComponent } from './token-display/token-display.component';
 import { ForceBonusComponent } from './force-bonus/force-bonus.component';
 import { DamageCardComponent } from './damage-card/damage-card.component';
+import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
+
 @NgModule({
+  entryComponents: [
+    DamagePopoverComponent
+  ],
   imports: [
     CommonModule,
-    IonicModule,
+    IonicModule
   ],
   declarations: [
     XwingIconComponent, 
@@ -37,7 +42,8 @@ import { DamageCardComponent } from './damage-card/damage-card.component';
     ShieldSummaryComponent,
     TokenDisplayComponent,
     ForceBonusComponent,
-    DamageCardComponent
+    DamageCardComponent,
+    DamagePopoverComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -54,7 +60,8 @@ import { DamageCardComponent } from './damage-card/damage-card.component';
     ShieldSummaryComponent,
     TokenDisplayComponent,
     ForceBonusComponent,
-    DamageCardComponent
+    DamageCardComponent,
+    DamagePopoverComponent
   ]
 })
 export class XwingModule {}

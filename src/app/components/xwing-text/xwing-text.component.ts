@@ -34,6 +34,8 @@ export class XwingTextComponent implements OnInit {
       )
     }
 
+    text = text.replace("Action:", "<br /><br /><b>Action:</b>");
+
     return text;
   }
 
