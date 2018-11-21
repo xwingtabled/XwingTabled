@@ -278,7 +278,13 @@ export class XwingDataService {
     this.data.damagedecks[0].cards.forEach(
       (card) => {
         for (let i = 0; i < card.amount; i++) {
-          deck.push({ title: card.title, type: card.type, text: card.text});
+          let initials = "";
+          card.title.split(' ').forEach(
+            (word) => {
+              initials = initials + word[0];
+            }
+          )
+          deck.push({ title: card.title, type: card.type, text: card.text, initials: initials });
         }
       }
     )

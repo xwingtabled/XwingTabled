@@ -18,7 +18,7 @@ import { TokenDisplayComponent } from './token-display/token-display.component';
 import { ForceBonusComponent } from './force-bonus/force-bonus.component';
 import { DamageCardComponent } from './damage-card/damage-card.component';
 import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
-
+import { DamageSummaryComponent} from './damage-summary/damage-summary.component';
 @NgModule({
   entryComponents: [
     DamagePopoverComponent
@@ -43,7 +43,8 @@ import { DamagePopoverComponent } from './damage-popover/damage-popover.componen
     TokenDisplayComponent,
     ForceBonusComponent,
     DamageCardComponent,
-    DamagePopoverComponent
+    DamagePopoverComponent,
+    DamageSummaryComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -61,7 +62,8 @@ import { DamagePopoverComponent } from './damage-popover/damage-popover.componen
     TokenDisplayComponent,
     ForceBonusComponent,
     DamageCardComponent,
-    DamagePopoverComponent
+    DamagePopoverComponent,
+    DamageSummaryComponent
   ]
 })
 export class XwingModule {}

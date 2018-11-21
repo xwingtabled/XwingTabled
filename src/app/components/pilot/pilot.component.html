@@ -19,3 +19,7 @@
   <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges"></xws-charge-summary>&nbsp;
   <xws-force-summary *ngIf="pilot.force" [force]="pilot.force"></xws-force-summary>&nbsp;
 </div>
+<div class="ship-status">
+  &nbsp;
+  <xws-damage-summary [damagecards]="pilot.damagecards" [squadron]="squadron"></xws-damage-summary>
+</div>

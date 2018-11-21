@@ -1,0 +1,7 @@
+<div class="damage-summary">
+  <div class="damage-icon" *ngFor="let card of damagecards">
+    <div>
+      <xwing-icon [name]="card.exposed ? 'crit' : 'hit'"></xwing-icon>
+    </div>
+  </div>
+</div>
