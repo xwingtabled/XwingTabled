@@ -1,24 +1,19 @@
-<ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>
-        Home
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-
 <ion-content padding>
   <div class="squadron-container">
     <div [class]="squadronCss()" *ngFor="let squadron of squadrons">
       <div class="squadron-header">
-        <xwing-icon [name]="squadron.faction"></xwing-icon> {{ squadron.name }}
+        <ion-toolbar>
+          <span class="squadron-name"><xwing-icon [name]="squadron.faction"></xwing-icon> {{ squadron.name }}</span>
+          <ion-buttons slot="end">
+            <span class="damage-deck-summary"><xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>{{ squadron.damagedeck.length}}</span>
+          </ion-buttons>
+        </ion-toolbar>
       </div>
       <xws-pilot 
         *ngFor="let pilot of squadron.pilots" 
         [pilot]="pilot" 
-        [faction]="squadron.faction" 
+        [faction]="squadron.faction"
+        [squadron]="squadron"
         [class]="pilotCss()"></xws-pilot>
     </div>
   </div>

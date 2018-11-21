@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ pilot.pilot.name }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <div class="modal-content">
+    <div class="pilot-art">
+      <img [src]="pilot.image" /><br />
+      <div class="token-box">
+        <xws-token-display [name]="'shield'" [data]="pilot.shields"></xws-token-display>
+        <xws-token-display *ngIf="pilot.charges" [name]="'charge'" [data]="pilot.charges"></xws-token-display>
+        <xws-token-display *ngIf="pilot.force" [name]="'force'" [data]="pilot.force"></xws-token-display>
+      </div>
+    </div>
+    <div class="damage-cards">
+        <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
+        <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+        <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card"></xws-damage-card>
+    </div>
+  </div>
+</ion-content>

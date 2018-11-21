@@ -9,6 +9,7 @@
 i.xwing-miniatures-font {
   font-family: XWing;
   font-style: normal;
+  text-transform: none !important;
 }
 
 i.xwing-miniatures-font-agility:before {
@@ -501,6 +502,7 @@ i.xwing-miniatures-font-unique:before {
 i.xwing-miniatures-ship {
   font-family: XWingShip;
   font-style: normal;
+  text-transform: none !important;
 }
 
 i.xwing-miniatures-ship-aggressorassaultfighter:before {

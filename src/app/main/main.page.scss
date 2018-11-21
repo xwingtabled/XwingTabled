@@ -14,6 +14,26 @@
 .squadron-header {
     display: block;
 }
+.squadron-name {
+    display: inline-block;
+    padding-left: 0.5vw;
+}
+.squadron-info {
+    display: inline-block;
+}
+.damage-deck-summary {
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+}
+.damage-deck-icon {
+    display: inline-block;
+    text-align: center;
+    width: 3vw;
+    font-size: 2vw;
+    color: red;
+    background-color: black;
+    margin-right: 0.5vw;
+}
 .pilotlist {
     display: block;
 }

@@ -1,0 +1,5 @@
+<div class="damage-card">
+  <span class="damage-deck-icon"><xwing-icon [name]="card.exposed ? 'crit' : 'hit'"></xwing-icon></span>
+  <span *ngIf="!card.exposed">Damage Card</span>
+  <span *ngIf="card.exposed">{{ card.title }}</span>
+</div>

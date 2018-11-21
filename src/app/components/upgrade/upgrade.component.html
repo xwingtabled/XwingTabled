@@ -9,7 +9,7 @@
     </div>
     <div class="upgrade-info-block-right">
       <xws-charge-summary *ngIf="upgrade.sides[upgrade.side].charges" [charges]="upgrade.sides[upgrade.side].charges"></xws-charge-summary>
-      <xws-force-summary *ngIf="upgrade.sides[upgrade.side].force" [force]="upgrade.sides[upgrade.side].force"></xws-force-summary>
+      <xws-force-bonus *ngIf="upgrade.sides[upgrade.side].force" [force]="upgrade.sides[upgrade.side].force"></xws-force-bonus>
       <xwing-icon *ngIf="upgrade['type'] == 'configuration'" [name]="'config'"></xwing-icon>
       <xws-bonus-stats *ngFor="let grant of upgrade.sides[upgrade.side].grants" [grant]="grant"></xws-bonus-stats>
     </div>

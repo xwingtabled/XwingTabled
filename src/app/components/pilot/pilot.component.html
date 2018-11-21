@@ -10,13 +10,12 @@
       <xws-upgrade *ngFor="let upgrade of pilot.upgrades" 
         [upgrade]="upgrade" class="upgrade"></xws-upgrade>
     </div>
-
   </div>
 </div>
 <div class="ship-status">
   &nbsp;
   <xws-hull-summary [hull]="pilot.hull"></xws-hull-summary>&nbsp;
   <xws-shield-summary [shields]="pilot.shields"></xws-shield-summary>&nbsp;
-  <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges">&nbsp;</xws-charge-summary>
-  <xws-force-summary *ngIf="pilot.force" [force]="pilot.force">&nbsp;</xws-force-summary>
+  <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges"></xws-charge-summary>&nbsp;
+  <xws-force-summary *ngIf="pilot.force" [force]="pilot.force"></xws-force-summary>&nbsp;
 </div>

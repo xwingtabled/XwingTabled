@@ -273,6 +273,18 @@ export class XwingDataService {
     return this.mangle_name(name).replace(/.json$/, '').replace(/.png$/, '');
   }
 
+  getDamageDeck() {
+    let deck = [];
+    this.data.damagedecks[0].cards.forEach(
+      (card) => {
+        for (let i = 0; i < card.amount; i++) {
+          deck.push({ title: card.title, type: card.type, text: card.text});
+        }
+      }
+    )
+    return deck;
+  }
+
   getPilot(faction: string, xwsShip: string, xwsPilot: string) {
     // Given a faction string and pilot object retrieve object data
     // or return null if it can't be retrieved

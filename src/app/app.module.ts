@@ -21,10 +21,11 @@ import { XwsModalPage } from './xws-modal/xws-modal.page';
 import { LoadingPageModule } from './loading/loading.module';
 import { UpgradeModalPage } from './upgrade-modal/upgrade-modal.page';
 import { XwingModule } from './components/xwing.module';
-
+import { PilotModalPage } from './pilot-modal/pilot-modal.page';
+import { ToastController } from '@ionic/angular';
 @NgModule({
-  declarations: [AppComponent, XwsModalPage, UpgradeModalPage],
-  entryComponents: [ XwsModalPage, UpgradeModalPage ],
+  declarations: [AppComponent, XwsModalPage, UpgradeModalPage, PilotModalPage],
+  entryComponents: [ XwsModalPage, UpgradeModalPage, PilotModalPage ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -45,7 +46,8 @@ import { XwingModule } from './components/xwing.module';
     HttpAngularProvider,
     HttpNativeProvider,
     HTTP,
-    FileTransfer
+    FileTransfer,
+    ToastController
   ],
   bootstrap: [AppComponent]
 })

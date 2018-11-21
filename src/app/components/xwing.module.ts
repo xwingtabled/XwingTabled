@@ -15,6 +15,8 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
 import { HullSummaryComponent} from './hull-summary/hull-summary.component';
 import { ShieldSummaryComponent } from './shield-summary/shield-summary.component';
 import { TokenDisplayComponent } from './token-display/token-display.component';
+import { ForceBonusComponent } from './force-bonus/force-bonus.component';
+import { DamageCardComponent } from './damage-card/damage-card.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -33,7 +35,9 @@ import { TokenDisplayComponent } from './token-display/token-display.component';
     BonusStatsComponent,
     HullSummaryComponent,
     ShieldSummaryComponent,
-    TokenDisplayComponent
+    TokenDisplayComponent,
+    ForceBonusComponent,
+    DamageCardComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -48,7 +52,9 @@ import { TokenDisplayComponent } from './token-display/token-display.component';
     BonusStatsComponent,
     HullSummaryComponent,
     ShieldSummaryComponent,
-    TokenDisplayComponent
+    TokenDisplayComponent,
+    ForceBonusComponent,
+    DamageCardComponent
   ]
 })
 export class XwingModule {}

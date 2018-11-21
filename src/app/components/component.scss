@@ -1,3 +1,9 @@
 $xws-background: #212020;
 $icon-pad: 0.2vh;
 $stat-weight: 900;
+
+.modal-content {
+    background-color: $xws-background;
+    min-height: 100%;
+    padding: 1vw 1vw 1vw 1vw;
+}

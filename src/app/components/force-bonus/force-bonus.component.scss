@@ -1,0 +1,9 @@
+@import '../component';
+
+.force-bonus {
+    color: blueviolet;
+}
+.force-text {
+    padding-left: $icon-pad;
+    font-weight: $stat-weight;
+}
