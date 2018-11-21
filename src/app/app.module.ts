@@ -23,9 +23,10 @@ import { UpgradeModalPage } from './upgrade-modal/upgrade-modal.page';
 import { XwingModule } from './components/xwing.module';
 import { PilotModalPage } from './pilot-modal/pilot-modal.page';
 import { ToastController } from '@ionic/angular';
+import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-actions.component';
 @NgModule({
-  declarations: [AppComponent, XwsModalPage, UpgradeModalPage, PilotModalPage],
-  entryComponents: [ XwsModalPage, UpgradeModalPage, PilotModalPage ],
+  declarations: [AppComponent, XwsModalPage, UpgradeModalPage, PilotModalPage, DamageDeckActionsComponent],
+  entryComponents: [ XwsModalPage, UpgradeModalPage, PilotModalPage, DamageDeckActionsComponent ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),

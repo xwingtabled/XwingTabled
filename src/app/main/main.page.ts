@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
-
+import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -26,6 +26,18 @@ export class MainPage implements OnInit {
       this.presentLoadingModal();
     }
   }
+
+  async presentDamageDeckActionsPopover(ev: any, squadron: any) {
+    const popover = await this.popoverController.create({
+      component: DamageDeckActionsComponent,
+      componentProps: {
+        squadron: squadron
+      },
+      event: ev
+    });
+    return await popover.present();
+  }
+
 
   portrait() {
     return this.platform.is('mobile') || this.platform.width() < this.platform.height();

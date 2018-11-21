@@ -5,7 +5,7 @@
         <ion-toolbar>
           <span class="squadron-name"><xwing-icon [name]="squadron.faction"></xwing-icon> {{ squadron.name }}</span>
           <ion-buttons slot="end">
-            <ion-button>
+            <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)">
               <span class="damage-deck-summary"><xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
                 <span class="damage-deck-summary-text">{{ squadron.damagedeck.length}}</span></span>
             </ion-button>

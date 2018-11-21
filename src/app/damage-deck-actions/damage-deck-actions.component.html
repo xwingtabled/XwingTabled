@@ -1,0 +1,12 @@
+<div class="damage-deck-actions">
+  <xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
+  <strong>
+    Damage Deck
+  </strong>
+  <p>
+    {{ squadron.damagedeck.length }} cards left, {{ squadron.damagediscard.length}} discarded
+  </p>
+  <ion-button expand="full" (click)="shuffleDeck()">Shuffle Deck</ion-button>
+  <ion-button expand="full" [disabled]="squadron.damagediscard.length <= 0" (click)="shuffleDiscarded()">Shuffle discarded</ion-button>
+  <ion-button expand="full" [disabled]="!destroyedAvailable()" (click)="discardDestroyed()">Discard destroyed</ion-button>
+</div>
