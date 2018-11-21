@@ -1,0 +1,43 @@
+.damage-popover {
+    background-color: white;
+    padding: 0.5vw 0.5vw 0.5vw 0.5vw;
+}
+.damage-card-back-art {
+    background-color: black;
+    color: red;
+    display: inline-block;
+    text-align: center;
+    font-size: 8em;
+    width: 100%;
+}
+.damage-card {
+    padding: 1vw 1vw 1vw 1vw;
+    background-color: black;
+}
+.damage-card-content {
+    border: 0.25vw solid red;
+    border-radius: 1vw;
+    padding: 1vw;
+    min-height: 16em;
+}
+.damage-card-front {
+    @extend .damage-card-content;
+    background-color: white;
+}
+.damage-card-back {
+    @extend .damage-card-content;
+    background-color: black;
+}
+.damage-title {
+    text-align: center;
+    font-weight: 900;
+}
+.damage-type {
+    text-align: center;
+    font-style: italic;
+    padding-bottom: 1em;
+}
+.damage-text {
+    text-align: center;
+    padding-bottom: 1em;
+}

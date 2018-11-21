@@ -1,5 +1,20 @@
-<div>
-  {{ card.title }}<br />
-  {{ card.type }}<br/>
-  <xwing-text [text]="card.text"></xwing-text>
+<div class="damage-popover">
+  <div class="damage-card">
+    <div *ngIf="card.exposed" class="damage-card-front">
+      <div class="damage-title">
+        {{ card.title }}
+      </div>
+      <div class="damage-type">
+        {{ card.type }}
+      </div>
+      <div class="damage-text">
+          <xwing-text [text]="card.text"></xwing-text>
+      </div>
+    </div>
+    <div *ngIf="!card.exposed" class="damage-card-back">
+      <span class="damage-card-back-art"><xwing-icon [name]="'hit'"></xwing-icon></span>
+    </div>
+  </div>
+  <ion-button expand="full" (click)="repair()">Repair</ion-button>
+  <ion-button expand="full" *ngIf="!card.exposed" (click)="expose()">Expose</ion-button>
 </div>
