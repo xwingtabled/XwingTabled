@@ -3,7 +3,10 @@
     <div [class]="squadronCss()" *ngFor="let squadron of squadrons">
       <div class="squadron-header">
         <ion-toolbar>
-          <span class="squadron-name"><xwing-icon [name]="squadron.faction"></xwing-icon> {{ squadron.name }}</span>
+          <span class="squadron-name">
+            <xwing-icon [name]="squadron.faction"></xwing-icon>&nbsp;
+            {{ squadron.name }} ( {{ squadron.pointsDestroyed }} / {{ squadron.points}} )
+          </span>
           <ion-buttons slot="end">
             <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)">
               <span class="damage-deck-summary"><xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>

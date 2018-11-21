@@ -1,5 +1,5 @@
 <div>
-  <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.id }}
+  <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.id }} ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
 </div>
 <div class="art-container">
   <div class="item-pilotart" (click)="showPilot()">

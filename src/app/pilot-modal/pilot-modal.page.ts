@@ -15,6 +15,28 @@ export class PilotModalPage implements OnInit {
 
   postDamage() {
     this.pilot.hull.remaining = this.pilot.hull.value - this.pilot.damagecards.length;
+    if (this.pilot.hull.remaining <= 0) {
+      this.pilot.pointsDestroyed = this.pilot.points;
+    } else {
+      let totalPoints = this.pilot.hull.value;
+      let remainingPoints = this.pilot.hull.remaining;
+      if (this.pilot.shields) {
+        totalPoints += this.pilot.shields.value;
+        remainingPoints += this.pilot.shields.remaining;
+      }
+      if (remainingPoints <= totalPoints / 2) {
+        this.pilot.pointsDestroyed = Math.ceil(this.pilot.points / 2);
+      }
+    }
+    this.squadron.pointsDestroyed = 0;
+    this.squadron.pilots.forEach(
+      (pilot) => {
+        this.squadron.pointsDestroyed += pilot.pointsDestroyed;
+      }
+    )
+    if (this.squadron.pointsDestroyed == this.squadron.points) {
+      this.squadron.pointsDestroyed = 200;
+    }
   }
 
   drawHit() {

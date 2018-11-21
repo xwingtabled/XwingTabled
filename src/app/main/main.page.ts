@@ -97,7 +97,8 @@ export class MainPage implements OnInit {
       pilot.force.remaining = pilot.force.value;
       pilot.force.numbers = Array(pilot.force.recovers);
     }
-    pilot.damagecards = [];
+    pilot.damagecards = []; 
+    pilot.pointsDestroyed = 0;
   }
 
   mangleUpgradeArray(pilot: any) {
@@ -210,6 +211,7 @@ export class MainPage implements OnInit {
         this.injectForceBonuses(pilot);
       }
     )
+    data.pointsDestroyed = 0;
     console.log("xws loaded and data injected", data);
     if (data) {
       this.squadrons.push(data);

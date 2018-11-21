@@ -17,7 +17,7 @@ export class DamageDeckActionsComponent implements OnInit {
     let available = false;
     this.squadron.pilots.forEach(
       (pilot) => {
-        if (pilot.hull.remaining <= 0) {
+        if (pilot.hull.remaining <= 0 && pilot.damagecards.length > 0) {
           available = true;
         }
       }
