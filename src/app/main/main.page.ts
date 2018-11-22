@@ -40,7 +40,8 @@ export class MainPage implements OnInit {
 
 
   portrait() {
-    return this.platform.is('mobile');
+    let ratio = this.platform.width() / this.platform.height();
+    return this.platform.is('mobile') || ratio > 1.5 || ratio < 0.6;
   }
 
   squadronCss() {

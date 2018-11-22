@@ -3,20 +3,23 @@
       <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.id }} ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
     <div class="art-container">
-      <div class="item-pilotart" (click)="showPilot()">
+      <div [class]="portrait() ? 'item-pilotart-portrait' : 'item-pilotart'" (click)="showPilot()">
         <img [src]="pilot.image"/>
       </div>
       <div class="upgrade-column" *ngFor="let column of columns">
-        <xws-upgrade *ngFor="let upgrade of column" [upgrade]="upgrade" class="upgrade"></xws-upgrade>
+        <xws-upgrade 
+          *ngFor="let upgrade of column" 
+          [upgrade]="upgrade" 
+          [class]="portrait() ? 'upgrade-portrait' : 'upgrade'"></xws-upgrade>
       </div>
     </div>
-    <div class="ship-status" (click)="showPilot()">
+    <div [class]="portrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
       <xws-hull-summary [hull]="pilot.hull"></xws-hull-summary>&nbsp;
       <xws-shield-summary *ngIf="pilot.shields" [shields]="pilot.shields"></xws-shield-summary>&nbsp;
       <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges"></xws-charge-summary>&nbsp;
       <xws-force-summary *ngIf="pilot.force" [force]="pilot.force"></xws-force-summary>&nbsp;
     </div>
-    <div class="ship-status" (click)="showPilot()">
+    <div [class]="portrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
       <xws-damage-summary [damagecards]="pilot.damagecards" [squadron]="squadron"></xws-damage-summary>
     </div>
 </div>

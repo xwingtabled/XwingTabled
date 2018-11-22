@@ -14,6 +14,11 @@
     display: block;
 }
 
+.upgrade-portrait {
+    width: 20vw;
+    display: block
+}
+
 .ship-fw {
     display: inline-block;
     text-align: center;
@@ -27,6 +32,10 @@
     height: 2.25vw;
     padding-left: 0.5vw;
 }
+.ship-status-portrait {
+    @extend .ship-status;
+    font-size: 4vw; 
+}
 .art-container {
     background: $xws-background;
 }
@@ -34,6 +43,11 @@
     display: inline-block;
     vertical-align: top;
     width: 18vw;
+}
+.item-pilotart-portrait {
+    display: inline-block;
+    vertical-align: top;
+    width: 32vw; 
 }
 .item-status {
     display: inline-block;

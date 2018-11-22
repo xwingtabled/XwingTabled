@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { PilotModalPage } from '../../pilot-modal/pilot-modal.page';
 import { ModalController } from '@ionic/angular';
-
+import { Platform } from '@ionic/angular'
 @Component({
   selector: 'xws-pilot',
   templateUrl: './pilot.component.html',
@@ -17,7 +17,13 @@ export class PilotComponent implements OnInit {
   shipData: any;
   pilotData: any;
 
-  constructor(public dataService: XwingDataService, private modalController: ModalController) { }
+  constructor(public dataService: XwingDataService, private modalController: ModalController, private platform: Platform) { }
+
+  portrait() {
+    let ratio = this.platform.width() / this.platform.height();
+    return this.platform.is('mobile') || ratio > 1.5 || ratio < 0.66;
+  }
+
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
