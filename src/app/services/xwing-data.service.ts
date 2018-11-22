@@ -215,6 +215,57 @@ export class XwingDataService {
     );
   }
 
+  injectConditionArtwork(xwsCondition: string, artwork: string) {
+    this.data.conditions.forEach(
+      (condition) => {
+        if (condition.xws == xwsCondition) {
+          condition.artwork = artwork;
+        }
+      }
+    )
+  }
+
+  searchConditions() {
+    this.data.pilots.forEach(
+      (faction) => {
+        Object.entries(faction.ships).forEach(
+          ([keyname, ship]) => {
+            ship['pilots'].forEach(
+              (pilot) => {
+                if (pilot.conditions) {
+                  pilot.conditions.forEach(
+                    (condition) => {
+                      this.injectConditionArtwork(condition, pilot.artwork);
+                    }
+                  )
+                }
+              }
+            )
+          }
+        )
+      }
+    );
+    Object.entries(this.data.upgrades).forEach(
+      ([upgradeType, upgrades ]) => {
+        (<any>upgrades).forEach(
+          (upgrade) => {
+            upgrade.sides.forEach(
+              (side) => {
+                if (side.conditions) {
+                  side.conditions.forEach(
+                    (condition) => {
+                      this.injectConditionArtwork(condition, side.artwork);
+                    }
+                  )
+                }
+              }
+            )
+          }
+        )
+      }
+    );
+  }
+
   download_data() {
     let queue = this.create_data_file_list(this.data, ".json");
     for (var i in queue) {
@@ -235,6 +286,7 @@ export class XwingDataService {
       (error) => {
       },
       () => {
+        this.searchConditions();
         if (missing.length) {
           this.status("data_download_errors", "X-Wing Data download complete with errors");
         } else {
