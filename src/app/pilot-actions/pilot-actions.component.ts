@@ -16,6 +16,20 @@ export class PilotActionsComponent implements OnInit {
   ngOnInit() {
   }
 
+  fleeShip() {
+    this.popoverController.dismiss();
+    this.pilot.pointsDestroyed = this.pilot.points;
+    this.squadron.pointsDestroyed = 0;
+    this.squadron.pilots.forEach(
+      (pilot) => {
+        this.squadron.pointsDestroyed += pilot.pointsDestroyed;
+      }
+    )
+    if (this.squadron.pointsDestroyed == this.squadron.points) {
+      this.squadron.pointsDestroyed = 200;
+    }
+  }
+
   hitCardAvailable() : boolean {
     let result = false;
     this.pilot.damagecards.forEach(
@@ -29,16 +43,12 @@ export class PilotActionsComponent implements OnInit {
   }
 
   mutateCard(card: any) {
-    this.squadron.pilots.forEach(
-      (pilot) => {
-        let cardCopy = JSON.parse(JSON.stringify(card));
-        let index = pilot.damagecards.indexOf(card);
-        if (index > -1) {
-          pilot.damagecards.splice(index, 1);
-          pilot.damagecards.splice(index, 0, cardCopy);
-        }
-      }
-    ) 
+    let cardCopy = JSON.parse(JSON.stringify(card));
+    let index = this.pilot.damagecards.indexOf(card);
+    if (index > -1) {
+      this.pilot.damagecards.splice(index, 1);
+      this.pilot.damagecards.splice(index, 0, cardCopy);
+    }
   }
 
   exposeRandomHit() {
