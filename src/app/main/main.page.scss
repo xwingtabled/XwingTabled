@@ -46,13 +46,12 @@
 }
 .pilot {
     display: inline-block;
-    width: 50%;
 }
 .pilot-fullwidth {
     display: block;
     width: 100%;
 }
-.pilot-halfwidth {
+.pilot-minwidth {
     display: inline-block;
-    width: 50%;
+    vertical-align: top;
 }

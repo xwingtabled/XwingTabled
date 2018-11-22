@@ -40,7 +40,7 @@ export class MainPage implements OnInit {
 
 
   portrait() {
-    return this.platform.is('mobile') || this.platform.width() < this.platform.height();
+    return this.platform.is('mobile');
   }
 
   squadronCss() {
@@ -56,12 +56,9 @@ export class MainPage implements OnInit {
 
   pilotCss() {
     if (this.portrait()) {
-      return 'squadron-fullwidth';
-    }
-    if (this.squadrons.length > 1) {
-      return 'squadron-fullwidth';
+      return 'pilot-fullwidth';
     } else {
-      return 'squadron-halfwidth';
+      return 'pilot-minwidth';
     }
   }
 

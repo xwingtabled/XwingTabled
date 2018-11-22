@@ -1,16 +1,17 @@
 @import '../component.scss';
 
-.upgrade-collection {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+.pilot {
+    margin-right: 0.2vw;
+}
+
+.upgrade-column {
+    display: inline-block;
+    vertical-align: top;
 }
 
 .upgrade {
-    flex: 1 1 0;
-    max-width: 33%;
-    min-width: 33%;
+    width: 9.5vw;
+    display: block;
 }
 
 .ship-fw {
@@ -21,25 +22,20 @@
 }
 .ship-status {
     background: $xws-background;
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    font-size: 3vh;
+    font-size: 2vw;
+    min-height: 2.25vw;
+    height: 2.25vw;
 }
 .art-container {
     background: $xws-background;
-    width: 100%;
-    box-sizing: border-box;
 }
 .item-pilotart {
     display: inline-block;
     vertical-align: top;
-    width: 33%;
+    width: 18vw;
 }
 .item-status {
     display: inline-block;
     vertical-align: top;
-    width: 66%;
-    min-height: 100%;
 }
 

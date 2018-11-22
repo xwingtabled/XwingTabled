@@ -12,13 +12,12 @@ export class PilotComponent implements OnInit {
   @Input() squadron: any;
   @Input() pilot: any;
   @Input() faction: string;
+  columns: any[][] = [];
   img_url: string = "";
   shipData: any;
   pilotData: any;
 
   constructor(public dataService: XwingDataService, private modalController: ModalController) { }
-
-  
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
@@ -36,8 +35,21 @@ export class PilotComponent implements OnInit {
   }
 
   ngOnInit() {
+    let column: any[] = [];
+    this.pilot.upgrades.forEach(
+      (upgrade) => {
+        column.push(upgrade);
+        if (column.length == 3) {
+          this.columns.push(column);
+          column = [];
+        }
+      }
+    )
+    if (column.length > 0) {
+      this.columns.push(column);
+    }
+    console.log(this.columns);
 
-    console.log(this.pilot);
   }
 
   async presentPilotModal() {
