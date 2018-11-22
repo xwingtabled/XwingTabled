@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentPilotActionsPopover($event)"><ion-icon name="more"></ion-icon></ion-button>
+    </ion-buttons>
     <ion-title>{{ pilot.pilot.name }}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,7 +20,6 @@
         <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
         <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
         <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card>
-        <ion-button *ngIf="hitCardAvailable()" expand="full" (click)="exposeRandomHit()">Expose Random <xwing-icon [name]="'hit'"></xwing-icon></ion-button>
     </div>
   </div>
 </ion-content>

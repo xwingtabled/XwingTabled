@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'xws-damage-popover',
@@ -9,33 +10,55 @@ import { PopoverController } from '@ionic/angular';
 export class DamagePopoverComponent implements OnInit {
   card;
   squadron;
-  constructor(private popoverController: PopoverController) { }
+  constructor(private popoverController: PopoverController, private ngZone: NgZone) { }
 
   ngOnInit() {
   }
 
-  repair() {
-    if (this.card.exposed) {
-      this.card.exposed = false;
-    } else {
-      // Search for the damage card on each pilot and delete it
-      this.squadron.pilots.forEach(
-        (pilot) => {
-          let index = pilot.damagecards.indexOf(this.card);
-          if (index > -1) {
-            pilot.damagecards.splice(index, 1);
-            pilot.hull.remaining = pilot.hull.value - pilot.damagecards.length;
-          }
+  mutateCard() {
+    this.squadron.pilots.forEach(
+      (pilot) => {
+        let cardCopy = JSON.parse(JSON.stringify(this.card));
+        let index = pilot.damagecards.indexOf(this.card);
+        if (index > -1) {
+          pilot.damagecards.splice(index, 1);
+          pilot.damagecards.splice(index, 0, cardCopy);
         }
-      )
-      // Move discarded cards to damage discard pile
-      this.squadron.damagediscard.push(this.card);
-      this.popoverController.dismiss();
-    }
+      }
+    ) 
+  }
+
+  repair() {
+    this.ngZone.run(
+      () => {
+        if (this.card.exposed) {
+          this.card.exposed = false;
+          this.mutateCard();
+        } else {
+          // Search for the damage card on each pilot and delete it
+          this.squadron.pilots.forEach(
+            (pilot) => {
+              let index = pilot.damagecards.indexOf(this.card);
+              if (index > -1) {
+                pilot.damagecards.splice(index, 1);
+                pilot.hull.remaining = pilot.hull.value - pilot.damagecards.length;
+              }
+            }
+          )
+          // Move discarded cards to damage discard pile
+          this.squadron.damagediscard.push(this.card);
+        }
+      }
+    )
   }
 
   expose() {
-    this.card.exposed = true;
+    this.ngZone.run(
+      () => {
+        this.card.exposed = true;
+        this.mutateCard();
+      }
+    )
   }
 
 }

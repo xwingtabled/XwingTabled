@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
-import { DamagePopoverComponent } from '../components/damage-popover/damage-popover.component';
+import { PilotActionsComponent } from '../pilot-actions/pilot-actions.component';
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',
@@ -71,18 +71,6 @@ export class PilotModalPage implements OnInit {
     return card;
   }
 
-  hitCardAvailable() : boolean {
-    let result = false;
-    this.pilot.damagecards.forEach(
-      (card) => {
-        if (!card.exposed) {
-          result = true;
-        }
-      }
-    )
-    return result;
-  }
-
   async presentDamageDeckEmpty() {
     const toast = await this.toastController.create({
       message: 'Your Damage Deck is empty.',
@@ -92,27 +80,18 @@ export class PilotModalPage implements OnInit {
     toast.present();
   }
 
-  async exposeRandomHit() {
-    let hitIndexes: number[] = [];
-    for (let i = 0; i < this.pilot.damagecards.length; i++) {
-      if (!this.pilot.damagecards[i].exposed) {
-        hitIndexes.push(i);
-      }
-    }
-    let index = hitIndexes[Math.floor(Math.random() * Math.floor(hitIndexes.length))];
-    let card = this.pilot.damagecards[index];
-    this.pilot.damagecards.splice(index, 1);
-    card.exposed = true;
+  async presentPilotActionsPopover(ev: any) {
     const popover = await this.popoverController.create({
-      component: DamagePopoverComponent,
+      component: PilotActionsComponent,
       componentProps: {
-        card: card,
+        pilot: this.pilot,
         squadron: this.squadron
-      }
+      },
+      event: ev
     });
-    this.pilot.damagecards.push(card);
     return await popover.present();
   }
+
 
   ngOnInit() {
     console.log("pilot modal", this.pilot, this.squadron);
