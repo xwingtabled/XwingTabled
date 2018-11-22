@@ -25,6 +25,7 @@ import { PilotModalPage } from './pilot-modal/pilot-modal.page';
 import { ToastController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-actions.component';
 import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
+import { MovementChartComponent } from './movement-chart/movement-chart.component';
 @NgModule({
   declarations: [
     AppComponent, 
@@ -32,14 +33,16 @@ import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
     UpgradeModalPage, 
     PilotModalPage,
      DamageDeckActionsComponent, 
-     PilotActionsComponent
+     PilotActionsComponent, 
+     MovementChartComponent
   ],
   entryComponents: [ 
     XwsModalPage, 
     UpgradeModalPage, 
     PilotModalPage, 
     DamageDeckActionsComponent,
-    PilotActionsComponent
+    PilotActionsComponent,
+    MovementChartComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,22 @@
+<div class="movement-chart">
+  <div class="chart-name">
+    {{ name }}
+  </div>
+  <div class="chart">
+    <table>
+      <tr *ngFor="let row of chart">
+        <span *ngIf="hasManeuvers(row)">
+          <th class="white">{{ row.speed }}</th>
+          <td *ngFor="let maneuver of row.maneuvers">
+            <span *ngIf="!maneuver" class="white">
+              &nbsp;
+            </span>
+            <span *ngIf="maneuver" [class]="maneuver.difficulty">
+              <xwing-icon [name]="maneuver.name"></xwing-icon>
+            </span>
+          </td>
+        </span>
+      </tr>
+    </table>
+  </div>
+</div>

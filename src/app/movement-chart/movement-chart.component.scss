@@ -1,0 +1,39 @@
+@import '../components/component.scss';
+
+.movement-chart {
+    padding: 0.5vw 0.5vw 0.5vw 0.5vw;
+}
+
+.name {
+    color: black;
+    background-color: white;
+    margin-bottom: 0.5vw;
+}
+
+.chart {
+    width: 100%;
+    text-align: center;
+    background-color: $xws-background;
+}
+
+.maneuver-icon {
+    display: inline-block;
+    text-align: center;
+    width: 2vw;
+    font-size: 1.5vw;
+}
+
+.white {
+    @extend .maneuver-icon;
+    color: white;
+}
+
+.blue {
+    @extend .maneuver-icon;
+    color: #7777FF;
+}
+
+.red {
+    @extend .maneuver-icon;
+    color: red;
+}
