@@ -10,6 +10,7 @@ import { ModalController } from '@ionic/angular';
 export class UpgradeComponent implements OnInit {
   @Input() upgrade: any = { };
   img_class: string = "img-box";
+  img_urls: string[] = [ "", "" ];
 
   constructor(public dataService: XwingDataService, private modalController: ModalController ) { }
 
@@ -27,6 +28,13 @@ export class UpgradeComponent implements OnInit {
   ngOnInit() {
     if (this.upgrade['type'] == "configuration") {
       this.img_class = "img-config-box";
+    }
+    for (let i = 0; i < this.upgrade.sides.length; i++) {
+      this.dataService.get_image_by_url(this.upgrade.sides[i].image).then(
+        (url) => {
+          this.img_urls[i] = url;
+        }
+      )
     }
   }
 

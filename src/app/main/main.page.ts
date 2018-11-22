@@ -72,10 +72,8 @@ export class MainPage implements OnInit {
     )
   }
 
-  async injectPilotData(pilot: any, faction: string) {
+  injectPilotData(pilot: any, faction: string) {
     pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.name);
-    let img_url = pilot.pilot.image;
-    pilot.image = await this.dataService.get_image_by_url(img_url);
     if (pilot.pilot.charges) {
       pilot.charges = JSON.parse(JSON.stringify(pilot.pilot.charges));
       if (pilot.charges.remaining == undefined) {
@@ -116,15 +114,14 @@ export class MainPage implements OnInit {
     pilot.upgrades = mangledUpgrades;
   }
 
-  async injectUpgradeData(pilot: any, upgrade: any) {
+  injectUpgradeData(pilot: any, upgrade: any) {
     // Set default "side" of upgrade card to side 0
     upgrade.side = 0;
 
     // Process each side
     upgrade.sides.forEach(
-      async (side) => {
+      (side) => {
         let img_url = side.image;
-        side.image = await this.dataService.get_image_by_url(img_url);
         if (side.charges) {
           if (side.charges.remaining == undefined) {
             side.charges.remaining = side.charges.value;

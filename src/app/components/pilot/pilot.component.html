@@ -1,10 +1,10 @@
 <div class="pilot">
   <div>
-      <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.id }} ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
+      <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.pilot.name }} ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
     <div class="art-container">
       <div [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" (click)="showPilot()">
-        <img [src]="pilot.image"/>
+        <img [src]="img_url"/>
       </div>
       <div class="upgrade-column" *ngFor="let column of columns">
         <xws-upgrade 

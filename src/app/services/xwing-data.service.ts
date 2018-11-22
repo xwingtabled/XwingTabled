@@ -369,27 +369,17 @@ export class XwingDataService {
     )
   }
 
-  get_image_by_key(key: string) : Promise<string> {
-    return new Promise(
-      (resolve, reject) => {
-        if (this.image_urls[key]) {
-          resolve(this.image_urls[key]);
-        }  else if (this.image_map[key]) {
-          this.file.readAsDataURL(this.file.cacheDirectory, this.image_map[key]).then(
-            url => {
-              this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(url);
-              resolve(this.image_urls[key]);
-            }
-          )
-        } else {
-          reject("key not found: " + key);
-        }
-      }
-    )
+  async get_image_by_key(key: string) : Promise<string> {
+    if (this.image_urls[key]) {
+      return this.image_urls[key];
+    }
+    let base64url = await this.file.readAsDataURL(this.file.cacheDirectory, this.image_map[key]);
+    this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(base64url);
+    return this.image_urls[key];
   }
 
-  get_image_by_url(url: string) : Promise<string> {
-    return this.get_image_by_key(this.url_to_key_name(url));
+  async get_image_by_url(url: string) : Promise<string> {
+    return await this.get_image_by_key(this.url_to_key_name(url));
   }
 
   load_files_from_directory(directory: any, filenames: string[]) {
@@ -452,11 +442,23 @@ export class XwingDataService {
         }
       }
     );
+    this.create_file_list(manifest, ".jpg").forEach(
+      (url) => {
+        if (!this.image_map[this.url_to_key_name(url)]) {
+          missing_files.push(url);
+        }
+      }
+    );
     return missing_files;
   }
 
   hotlink_images(manifest: any) {
     this.create_file_list(manifest, ".png").forEach(
+      (url) => {
+        this.image_urls[this.url_to_key_name(url)] = url;
+      }
+    )
+    this.create_file_list(manifest, ".jpg").forEach(
       (url) => {
         this.image_urls[this.url_to_key_name(url)] = url;
       }
