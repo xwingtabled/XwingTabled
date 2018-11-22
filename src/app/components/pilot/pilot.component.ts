@@ -19,12 +19,6 @@ export class PilotComponent implements OnInit {
 
   constructor(public dataService: XwingDataService, private modalController: ModalController, private platform: Platform) { }
 
-  portrait() {
-    let ratio = this.platform.width() / this.platform.height();
-    return this.platform.is('mobile') || ratio > 1.5 || ratio < 0.66;
-  }
-
-
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
       (stat) => {

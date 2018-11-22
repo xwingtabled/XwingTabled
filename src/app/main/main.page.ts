@@ -38,14 +38,8 @@ export class MainPage implements OnInit {
     return await popover.present();
   }
 
-
-  portrait() {
-    let ratio = this.platform.width() / this.platform.height();
-    return this.platform.is('mobile') || ratio > 1.5 || ratio < 0.6;
-  }
-
   squadronCss() {
-    if (this.portrait()) {
+    if (this.platform.isPortrait()) {
       return 'squadron-fullwidth';
     }
     if (this.squadrons.length > 1) { 
@@ -56,7 +50,7 @@ export class MainPage implements OnInit {
   }
 
   pilotCss() {
-    if (this.portrait()) {
+    if (this.platform.isPortrait()) {
       return 'pilot-fullwidth';
     } else {
       return 'pilot-minwidth';
