@@ -12,6 +12,9 @@
           [upgrade]="upgrade" 
           [class]="platform.isPortrait() ? 'upgrade-portrait' : 'upgrade'"></xws-upgrade>
       </div>
+      <div class="condition-box">
+        <xws-condition-summary *ngFor="let condition of pilot.conditions" [condition]="condition"></xws-condition-summary>
+      </div>
     </div>
     <div [class]="platform.isPortrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
       <xws-hull-summary [hull]="pilot.hull"></xws-hull-summary>&nbsp;

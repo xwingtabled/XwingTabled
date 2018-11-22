@@ -88,6 +88,7 @@ export class MainPage implements OnInit {
       pilot.force.numbers = Array(pilot.force.recovers);
     }
     pilot.damagecards = []; 
+    pilot.conditions = [];
     pilot.pointsDestroyed = 0;
   }
 

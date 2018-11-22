@@ -9,7 +9,7 @@
 <ion-content padding>
   <div class="modal-content">
     <div class="pilot-art">
-      <img [src]="pilot.image" /><br />
+      <img [src]="img_url" /><br />
       <div class="token-box">
         <xws-token-display *ngIf="pilot.shields" [name]="'shield'" [data]="pilot.shields"></xws-token-display>
         <xws-token-display *ngIf="pilot.charges" [name]="'charge'" [data]="pilot.charges"></xws-token-display>

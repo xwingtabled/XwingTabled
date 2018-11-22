@@ -9,7 +9,7 @@
 <ion-content padding>
   <div class="modal-content">
     <div>
-      <img [src]="upgrade.sides[upgrade.side].image" />
+      <img [src]="img_urls[upgrade.side]" />
     </div>
     <div *ngIf="upgrade.sides[upgrade.side].charges">
       <xws-token-display [name]="'charge'" [data]="upgrade.sides[upgrade.side].charges"></xws-token-display>

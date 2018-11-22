@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { PilotActionsComponent } from '../pilot-actions/pilot-actions.component';
+import { XwingDataService } from '../services/xwing-data.service';
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',
@@ -10,8 +11,10 @@ import { PilotActionsComponent } from '../pilot-actions/pilot-actions.component'
 export class PilotModalPage implements OnInit {
   pilot;
   squadron;
-
-  constructor(public toastController: ToastController, private popoverController: PopoverController) { }
+  img_url: string = "";
+  constructor(public toastController: ToastController, 
+              private popoverController: PopoverController,
+              private dataService: XwingDataService) { }
 
   postDamage() {
     this.pilot.hull.remaining = this.pilot.hull.value - this.pilot.damagecards.length;
@@ -95,6 +98,11 @@ export class PilotModalPage implements OnInit {
 
   ngOnInit() {
     console.log("pilot modal", this.pilot, this.squadron);
+    this.dataService.get_image_by_url(this.pilot.pilot.image).then(
+      (url) => {
+        this.img_url = url;
+      }
+    )
   }
 
 }

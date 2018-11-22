@@ -34,7 +34,7 @@ import { MovementChartComponent } from './movement-chart/movement-chart.componen
     PilotModalPage,
      DamageDeckActionsComponent, 
      PilotActionsComponent, 
-     MovementChartComponent
+     MovementChartComponent 
   ],
   entryComponents: [ 
     XwsModalPage, 

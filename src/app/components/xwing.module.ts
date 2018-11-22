@@ -19,6 +19,7 @@ import { ForceBonusComponent } from './force-bonus/force-bonus.component';
 import { DamageCardComponent } from './damage-card/damage-card.component';
 import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
 import { DamageSummaryComponent} from './damage-summary/damage-summary.component';
+import { ConditionSummaryComponent } from './condition-summary/condition-summary.component';
 @NgModule({
   entryComponents: [
     DamagePopoverComponent
@@ -44,7 +45,8 @@ import { DamageSummaryComponent} from './damage-summary/damage-summary.component
     ForceBonusComponent,
     DamageCardComponent,
     DamagePopoverComponent,
-    DamageSummaryComponent
+    DamageSummaryComponent,
+    ConditionSummaryComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -63,7 +65,8 @@ import { DamageSummaryComponent} from './damage-summary/damage-summary.component
     ForceBonusComponent,
     DamageCardComponent,
     DamagePopoverComponent,
-    DamageSummaryComponent
+    DamageSummaryComponent,
+    ConditionSummaryComponent
   ]
 })
 export class XwingModule {}

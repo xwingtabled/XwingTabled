@@ -38,6 +38,7 @@
 }
 .art-container {
     background: $xws-background;
+    position: relative;
 }
 .item-pilotart {
     display: inline-block;
@@ -54,3 +55,8 @@
     vertical-align: top;
 }
 
+.condition-box {
+    position: absolute;
+    left: 0%;
+    top: 0%;
+}
