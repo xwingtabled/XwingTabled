@@ -10,6 +10,7 @@ import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
 import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -35,7 +36,8 @@ export class MainPage implements OnInit {
               private events: Events,
               private alertController: AlertController,
               private ngZone: NgZone,
-              private toastController: ToastController) { }
+              private toastController: ToastController,
+              private storage: Storage) { }
 
   ngOnInit() {
     this.events.subscribe(
@@ -48,10 +50,31 @@ export class MainPage implements OnInit {
     this.events.subscribe(
       "snapshot",
       (event) => {
-        this.snapshots.push({ time: new Date().toISOString(), squadrons: JSON.parse(JSON.stringify(this.squadrons)) } );
-        console.log("snapshot created", this.snapshots);
+        this.snapshot();
       }
     )
+
+  }
+
+  async restoreFromDisk() {
+    await this.storage.ready();
+    let snapshots = await this.storage.get("snapshots");
+    this.ngZone.run(
+      () => {
+        if (snapshots) {
+          this.snapshots = snapshots;
+          let lastSnapshot = JSON.parse(JSON.stringify(this.snapshots[this.snapshots.length - 1]));
+          this.squadrons = lastSnapshot.squadrons;
+          this.toastUndo(lastSnapshot.time);
+        }
+      }
+    )
+  }
+
+  snapshot() {
+    this.snapshots.push({ time: new Date().toISOString(), squadrons: JSON.parse(JSON.stringify(this.squadrons)) } );
+    this.storage.set("snapshots", this.snapshots);
+    console.log("snapshot created", this.snapshots);
   }
 
   data_event_handler(event: any) {
@@ -70,13 +93,13 @@ export class MainPage implements OnInit {
     }
     if (event.status == "images_complete") {
       this.image_button = false;
-      //this.continue();
+      this.restoreFromDisk();
     }
     if (event.status == "image_download_incomplete") {
       this.image_button = true;
     }
     if (event.status == "image_download_complete") {
-      //this.continue();
+      this.restoreFromDisk();
     }
   }
 
@@ -129,6 +152,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             let index = this.squadrons.indexOf(squadron);
             this.squadrons.splice(index, 1);
+            this.events.publish("snapshot", "create snapshot");
           }
         },
         { text: 'Cancel',
