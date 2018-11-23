@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
-import { DamagePopoverComponent } from '../components/damage-popover/damage-popover.component';
+import { DamagePopoverComponent } from '../damage-popover/damage-popover.component';
 import { MovementChartComponent } from '../movement-chart/movement-chart.component';
 import { ConditionMenuComponent } from '../condition-menu/condition-menu.component';
 import { NgZone } from '@angular/core';

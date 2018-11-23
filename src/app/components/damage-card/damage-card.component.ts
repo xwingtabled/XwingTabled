@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
-import { DamagePopoverComponent } from '../damage-popover/damage-popover.component';
+import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-popover.component';
 @Component({
   selector: 'xws-damage-card',
   templateUrl: './damage-card.component.html',

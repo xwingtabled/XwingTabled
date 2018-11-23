@@ -17,13 +17,11 @@ import { ShieldSummaryComponent } from './shield-summary/shield-summary.componen
 import { TokenDisplayComponent } from './token-display/token-display.component';
 import { ForceBonusComponent } from './force-bonus/force-bonus.component';
 import { DamageCardComponent } from './damage-card/damage-card.component';
-import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
 import { DamageSummaryComponent} from './damage-summary/damage-summary.component';
 import { ConditionSummaryComponent } from './condition-summary/condition-summary.component';
 import { ConditionComponent } from './condition/condition.component';
 @NgModule({
   entryComponents: [
-    DamagePopoverComponent
   ],
   imports: [
     CommonModule,
@@ -45,7 +43,6 @@ import { ConditionComponent } from './condition/condition.component';
     TokenDisplayComponent,
     ForceBonusComponent,
     DamageCardComponent,
-    DamagePopoverComponent,
     DamageSummaryComponent,
     ConditionSummaryComponent,
     ConditionComponent
@@ -66,7 +63,6 @@ import { ConditionComponent } from './condition/condition.component';
     TokenDisplayComponent,
     ForceBonusComponent,
     DamageCardComponent,
-    DamagePopoverComponent,
     DamageSummaryComponent,
     ConditionSummaryComponent,
     ConditionComponent

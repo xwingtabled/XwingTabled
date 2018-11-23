@@ -20,13 +20,9 @@ import { HTTP } from '@ionic-native/http/ngx';
 //import { XwsModalPage } from './xws-modal/xws-modal.page';
 //import { UpgradeModalPage } from './upgrade-modal/upgrade-modal.page';
 import { XwingModule } from './components/xwing.module';
+import { PopoverModule } from './popovers/popover.module';
 //import { PilotModalPage } from './pilot-modal/pilot-modal.page';
 import { ToastController } from '@ionic/angular';
-import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-actions.component';
-import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
-import { MovementChartComponent } from './movement-chart/movement-chart.component';
-import { ConditionMenuComponent } from './condition-menu/condition-menu.component';
-import { ConditionPopoverComponent } from './condition-popover/condition-popover.component';
 import { ModalModule } from './modals/modal.module';
 @NgModule({
   declarations: [
@@ -34,21 +30,13 @@ import { ModalModule } from './modals/modal.module';
     //XwsModalPage, 
     //UpgradeModalPage, 
     //PilotModalPage,
-     DamageDeckActionsComponent, 
-     PilotActionsComponent, 
-     MovementChartComponent, 
-     ConditionMenuComponent, 
-     ConditionPopoverComponent
+
   ],
   entryComponents: [ 
     //XwsModalPage, 
     //UpgradeModalPage, 
     //PilotModalPage, 
-    DamageDeckActionsComponent,
-    PilotActionsComponent,
-    MovementChartComponent,
-    ConditionMenuComponent,
-    ConditionPopoverComponent
+
   ],
   imports: [
     BrowserModule,
@@ -57,7 +45,8 @@ import { ModalModule } from './modals/modal.module';
     IonicStorageModule.forRoot(),
     HttpClientModule,
     XwingModule,
-    ModalModule
+    ModalModule,
+    PopoverModule
   ],
   providers: [
     StatusBar,

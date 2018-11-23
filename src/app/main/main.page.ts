@@ -7,7 +7,7 @@ import { Platform } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
-import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
+import { DamageDeckActionsComponent } from '../popovers/damage-deck-actions/damage-deck-actions.component';
 import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
