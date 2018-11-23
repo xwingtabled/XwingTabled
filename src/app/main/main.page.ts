@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { XwsModalPage } from '../xws-modal/xws-modal.page';
-import { LoadingPage } from '../loading/loading.page';
 import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
 @Component({
   selector: 'app-main',
@@ -29,7 +29,8 @@ export class MainPage implements OnInit {
               public router: Router,
               public platform: Platform,
               public popoverController: PopoverController,
-              private events: Events) { }
+              private events: Events,
+              private alertController: AlertController) { }
 
   ngOnInit() {
     this.events.subscribe(
@@ -38,11 +39,7 @@ export class MainPage implements OnInit {
         this.data_event_handler(event);
       }
     );
-    /*
-    if (!this.dataService.initialized) {
-      this.presentLoadingModal();
-    }
-    */
+
   }
 
   data_event_handler(event: any) {
@@ -109,6 +106,27 @@ export class MainPage implements OnInit {
     } else {
       return 'pilot-minwidth';
     }
+  }
+
+  async removeSquadron(squadron: any) {
+
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Subtitle',
+      message: 'This is an alert message.',
+      buttons: [
+        { text: 'OK',
+          handler: () => { 
+            let index = this.squadrons.indexOf(squadron);
+            this.squadrons.splice(index, 1);
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present();
   }
 
   injectShipData(pilot: any, faction: string) {
@@ -237,36 +255,30 @@ export class MainPage implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    data.damagediscard = [ ];
-    data.damagedeck = this.dataService.getDamageDeck();
-    data.pilots.forEach(
-      (pilot) => {
-        this.injectShipData(pilot, data.faction);
-        this.injectPilotData(pilot, data.faction);
-        this.mangleUpgradeArray(pilot);
-    
-        // Process each upgrade card
-        pilot.upgrades.forEach(
-          (upgrade) => {
-            this.injectUpgradeData(pilot, upgrade);
-          }
-        );
-        this.injectShipBonuses(pilot);
-        this.injectForceBonuses(pilot);
-      }
-    )
-    data.pointsDestroyed = 0;
-    console.log("xws loaded and data injected", data);
     if (data) {
-      this.squadrons.push(data);
+      data.damagediscard = [ ];
+      data.damagedeck = this.dataService.getDamageDeck();
+      data.pilots.forEach(
+        (pilot) => {
+          this.injectShipData(pilot, data.faction);
+          this.injectPilotData(pilot, data.faction);
+          this.mangleUpgradeArray(pilot);
+      
+          // Process each upgrade card
+          pilot.upgrades.forEach(
+            (upgrade) => {
+              this.injectUpgradeData(pilot, upgrade);
+            }
+          );
+          this.injectShipBonuses(pilot);
+          this.injectForceBonuses(pilot);
+        }
+      )
+      data.pointsDestroyed = 0;
+      console.log("xws loaded and data injected", data);
+      if (data) {
+        this.squadrons.push(data);
+      }
     }
-  }
-
-  async presentLoadingModal() {
-    const modal = await this.modalController.create({
-      component: LoadingPage
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
   }
 }

@@ -28,6 +28,9 @@
               <span class="damage-deck-summary"><xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
                 <span class="damage-deck-summary-text">{{ squadron.damagedeck.length}}</span></span>
             </ion-button>
+            <ion-button (click)="removeSquadron(squadron)">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </div>
@@ -39,9 +42,9 @@
         [class]="pilotCss()"></xws-pilot>
     </div>
   </div>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="xwsAddButton()">
-      <ion-icon name="add"></ion-icon>
+      <ion-icon *ngIf="squadrons.length < 2" name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

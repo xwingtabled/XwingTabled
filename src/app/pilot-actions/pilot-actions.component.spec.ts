@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PilotActionsComponent } from './pilot-actions.component';
+import { PilotActionsComponent } from '../pilot-actions/pilot-actions.component';
 
 describe('PilotActionsComponent', () => {
   let component: PilotActionsComponent;
