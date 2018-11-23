@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
+import { Events } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
 @Component({
   selector: 'app-main',
@@ -15,16 +16,69 @@ import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-a
 export class MainPage implements OnInit {
 
   squadrons: any = [ ];
+
+  data_progress: number = 0;
+  data_message: string = "X-Wing Tabled";
+  data_button: boolean = false;
+  data_button_disabled: boolean = false;
+  image_button: boolean = false;
+  image_button_disabled: boolean = false;
+
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
               public router: Router,
               public platform: Platform,
-              public popoverController: PopoverController) { }
+              public popoverController: PopoverController,
+              private events: Events) { }
 
   ngOnInit() {
+    this.events.subscribe(
+      this.dataService.topic,
+      (event) => {
+        this.data_event_handler(event);
+      }
+    );
+    /*
     if (!this.dataService.initialized) {
       this.presentLoadingModal();
     }
+    */
+  }
+
+  data_event_handler(event: any) {
+    this.data_message = event.message;
+    this.data_progress = event.progress;
+    if (event.status == "manifest_outofdate") {
+      this.data_button = true;
+      this.data_message = "X-Wing Tabled requires a local data update";
+    }
+    if (event.status == "manifest_current" || event.status == "data_download_complete") {
+      this.data_button = false;
+    }
+    if (event.status == "images_missing") {
+      this.data_message = "X-Wing Tabled needs to download some artwork";
+      this.image_button = true;
+    }
+    if (event.status == "images_complete") {
+      this.image_button = false;
+      //this.continue();
+    }
+    if (event.status == "image_download_incomplete") {
+      this.image_button = true;
+    }
+    if (event.status == "image_download_complete") {
+      //this.continue();
+    }
+  }
+
+  downloadData() {
+    this.data_button_disabled = true;
+    this.dataService.download_data();
+  }
+
+  downloadArtwork() {
+    this.image_button_disabled = true;
+    this.dataService.download_missing_images(this.dataService.data);
   }
 
   async presentDamageDeckActionsPopover(ev: any, squadron: any) {

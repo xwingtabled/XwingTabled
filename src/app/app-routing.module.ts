@@ -4,14 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'main',
-    pathMatch: 'full'
-  },
-  {
-    path: 'loading',
-    loadChildren: './loading/loading.module#LoadingPageModule'
-  },
-  { path: 'main', loadChildren: './main/main.module#MainPageModule' }
+    loadChildren: './main/main.module#MainPageModule' 
+  }
 ];
 
 @NgModule({

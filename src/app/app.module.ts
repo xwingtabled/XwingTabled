@@ -18,7 +18,6 @@ import { HttpAngularProvider } from './providers/http-angular.provider';
 import { HttpNativeProvider } from './providers/http-native.provider';
 import { HTTP } from '@ionic-native/http/ngx';
 import { XwsModalPage } from './xws-modal/xws-modal.page';
-import { LoadingPageModule } from './loading/loading.module';
 import { UpgradeModalPage } from './upgrade-modal/upgrade-modal.page';
 import { XwingModule } from './components/xwing.module';
 import { PilotModalPage } from './pilot-modal/pilot-modal.page';
@@ -56,7 +55,6 @@ import { ConditionPopoverComponent } from './condition-popover/condition-popover
     AppRoutingModule,
     IonicStorageModule.forRoot(),
     HttpClientModule,
-    LoadingPageModule,
     XwingModule
   ],
   providers: [
