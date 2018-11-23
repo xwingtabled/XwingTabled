@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { DamagePopoverComponent } from '../components/damage-popover/damage-popover.component';
 import { MovementChartComponent } from '../movement-chart/movement-chart.component';
+import { ConditionMenuComponent } from '../condition-menu/condition-menu.component';
 import { NgZone } from '@angular/core';
 @Component({
   selector: 'app-pilot-actions',
@@ -15,6 +16,17 @@ export class PilotActionsComponent implements OnInit {
   constructor(private popoverController: PopoverController, private ngZone: NgZone) { }
 
   ngOnInit() {
+  }
+
+  async showConditionMenu() {
+    await this.popoverController.dismiss();
+    const popover = await this.popoverController.create({
+      component: ConditionMenuComponent,
+      componentProps: {
+        pilot: this.pilot
+      }
+    });
+    await popover.present();
   }
 
   async showMovementChart(){

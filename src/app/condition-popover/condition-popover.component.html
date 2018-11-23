@@ -1,0 +1,10 @@
+<div class="condition-popover">
+  <div class="condition-title">
+    {{ conditionObj.name }}
+  </div>
+  <img [src]="conditionObj.img_url">
+  <div class="condition-text">
+    <xwing-text [text]="conditionObj.ability"></xwing-text>
+  </div>
+  <ion-button expand="full" (click)="removeCondition()">Remove</ion-button>
+</div>

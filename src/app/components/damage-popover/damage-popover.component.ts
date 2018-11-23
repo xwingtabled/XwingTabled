@@ -35,6 +35,7 @@ export class DamagePopoverComponent implements OnInit {
           this.card.exposed = false;
           this.mutateCard();
         } else {
+          this.popoverController.dismiss();
           // Search for the damage card on each pilot and delete it
           this.squadron.pilots.forEach(
             (pilot) => {

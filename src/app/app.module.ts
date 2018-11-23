@@ -26,6 +26,8 @@ import { ToastController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-actions.component';
 import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
 import { MovementChartComponent } from './movement-chart/movement-chart.component';
+import { ConditionMenuComponent } from './condition-menu/condition-menu.component';
+import { ConditionPopoverComponent } from './condition-popover/condition-popover.component';
 @NgModule({
   declarations: [
     AppComponent, 
@@ -34,7 +36,9 @@ import { MovementChartComponent } from './movement-chart/movement-chart.componen
     PilotModalPage,
      DamageDeckActionsComponent, 
      PilotActionsComponent, 
-     MovementChartComponent 
+     MovementChartComponent, 
+     ConditionMenuComponent, 
+     ConditionPopoverComponent
   ],
   entryComponents: [ 
     XwsModalPage, 
@@ -42,7 +46,9 @@ import { MovementChartComponent } from './movement-chart/movement-chart.componen
     PilotModalPage, 
     DamageDeckActionsComponent,
     PilotActionsComponent,
-    MovementChartComponent
+    MovementChartComponent,
+    ConditionMenuComponent,
+    ConditionPopoverComponent
   ],
   imports: [
     BrowserModule,
