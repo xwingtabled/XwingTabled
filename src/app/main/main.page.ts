@@ -8,6 +8,7 @@ import { PopoverController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
+import { NgZone } from '@angular/core';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -30,7 +31,8 @@ export class MainPage implements OnInit {
               public platform: Platform,
               public popoverController: PopoverController,
               private events: Events,
-              private alertController: AlertController) { }
+              private alertController: AlertController,
+              private ngZone: NgZone) { }
 
   ngOnInit() {
     this.events.subscribe(
@@ -109,11 +111,9 @@ export class MainPage implements OnInit {
   }
 
   async removeSquadron(squadron: any) {
-
     const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: 'Subtitle',
-      message: 'This is an alert message.',
+      header: 'Remove squadron?',
+      message: 'You are about to remove ' + squadron.name,
       buttons: [
         { text: 'OK',
           handler: () => { 
@@ -127,6 +127,67 @@ export class MainPage implements OnInit {
       ]
     });
     return await alert.present();
+  }
+
+  async askRechargeRecurring() {
+    const alert = await this.alertController.create({
+      header: 'Recharge Recurring',
+      message: 'Do you wish to recover all recurring ' +
+               '<i class="xwing-miniatures-font xwing-miniatures-font-charge"></i> and ' +
+               '<i class="xwing-miniatures-font xwing-miniatures-font-forcecharge"></i>?',
+      buttons: [
+        { text: 'OK',
+          handler: () => { 
+            this.ngZone.run(
+              () => {
+                this.rechargeAllRecurring();
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present();
+  }
+
+  rechargeAllRecurring() {
+    this.squadrons.forEach(
+      (squadron) => {
+        squadron.pilots.forEach(
+          (pilot) => {
+            if (pilot.charges && pilot.charges.recovers) {
+              pilot.charges.remaining += pilot.charges.recovers;
+              if (pilot.charges.remaining > pilot.charges.value) {
+                pilot.charges.remaining = pilot.charges.value;
+              }
+              pilot.charges = JSON.parse(JSON.stringify(pilot.charges));
+            }
+            if (pilot.force && pilot.force.recovers) {
+              pilot.force.remaining += pilot.force.recovers;
+              if (pilot.force.remaining > pilot.force.value) {
+                pilot.force.remaining = pilot.force.value;
+              }
+              pilot.force = JSON.parse(JSON.stringify(pilot.force));
+            }
+            pilot.upgrades.forEach(
+              (upgrade) => {
+                let side = upgrade.sides[0];
+                if (side.charges && side.charges.recovers) {
+                  side.charges.remaining += side.charges.recovers;
+                  if (side.charges.remaining > side.charges.value) {
+                    side.charges.remaining = side.charges.value;
+                  }
+                  side.charges = JSON.parse(JSON.stringify(side.charges));
+                }
+              }
+            )
+          }
+        )
+      }
+    )
   }
 
   injectShipData(pilot: any, faction: string) {

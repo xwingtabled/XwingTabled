@@ -43,8 +43,17 @@
     </div>
   </div>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="xwsAddButton()">
-      <ion-icon *ngIf="squadrons.length < 2" name="add"></ion-icon>
+    <ion-fab-button>
+      <ion-icon name="more"></ion-icon>
     </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button *ngIf="squadrons.length > 0" class="recharge-all-button" (click)="askRechargeRecurring()">
+        <xwing-icon [name]="'charge'"></xwing-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="xwsAddButton()">
+        <ion-icon *ngIf="squadrons.length < 2" name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+
   </ion-fab>
 </ion-content>
