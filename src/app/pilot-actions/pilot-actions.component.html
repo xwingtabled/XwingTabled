@@ -1,6 +1,7 @@
 <div class="ship-actions">
   <strong>Ship Actions</strong><br />
   <ion-button expand="full" (click)="showMovementChart()">Manuever Dial <xwing-icon [name]="'trollleft'"></xwing-icon></ion-button>
+  <ion-button expand="full" (click)="assignIdNumber()">Assign ID Number</ion-button>
   <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
   <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
   <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">

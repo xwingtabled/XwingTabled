@@ -4,6 +4,7 @@ import { DamagePopoverComponent } from '../components/damage-popover/damage-popo
 import { MovementChartComponent } from '../movement-chart/movement-chart.component';
 import { ConditionMenuComponent } from '../condition-menu/condition-menu.component';
 import { NgZone } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-pilot-actions',
   templateUrl: './pilot-actions.component.html',
@@ -13,9 +14,44 @@ export class PilotActionsComponent implements OnInit {
   pilot;
   squadron;
 
-  constructor(private popoverController: PopoverController, private ngZone: NgZone) { }
+  constructor(private popoverController: PopoverController,
+              private alertController: AlertController,
+              private ngZone: NgZone) { }
 
   ngOnInit() {
+  }
+
+  async assignIdNumber() {
+    await this.popoverController.dismiss();
+    let alert = await this.alertController.create({
+      header: 'Assign ID',
+      message: 'Which ID/Lock token number should this pilot have?',
+      inputs: [
+        {
+          name: 'id',
+          type: "number"
+        }
+      ],
+      buttons: [
+        { text: 'OK',
+          handler: (data) => { 
+            this.ngZone.run(
+              () => {
+                if (data.id > 0) {
+                  this.pilot.idNumber = data.id;
+                } else {
+                  this.pilot.idNumber = -1;
+                }
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present(); 
   }
 
   async showConditionMenu() {

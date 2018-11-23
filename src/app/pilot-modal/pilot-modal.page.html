@@ -3,7 +3,7 @@
     <ion-buttons slot="end">
       <ion-button (click)="presentPilotActionsPopover($event)"><ion-icon name="more"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{ pilot.pilot.name }}</ion-title>
+    <ion-title>{{ pilot.pilot.name }}&nbsp;<span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span></ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content padding>

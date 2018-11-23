@@ -1,6 +1,9 @@
 <div class="pilot">
   <div>
-      <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship> {{ pilot.pilot.name }} ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
+      <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship>&nbsp;
+      {{ pilot.pilot.name }}&nbsp;
+      <span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
+      ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
     <div class="art-container">
       <div [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" (click)="showPilot()">
