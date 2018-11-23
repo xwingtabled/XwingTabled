@@ -47,6 +47,9 @@
       <ion-icon name="more"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
+      <ion-fab-button *ngIf="snapshots.length > 1" (click)="askUndo()">
+        <ion-icon name="undo"></ion-icon>
+      </ion-fab-button>
       <ion-fab-button *ngIf="squadrons.length > 0" class="recharge-all-button" (click)="askRechargeRecurring()">
         <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>

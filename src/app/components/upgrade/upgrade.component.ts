@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { UpgradeModalPage } from '../../upgrade-modal/upgrade-modal.page';
 import { ModalController } from '@ionic/angular';
+import { Events } from '@ionic/angular';
 @Component({
   selector: 'xws-upgrade',
   templateUrl: './upgrade.component.html',
@@ -12,9 +13,12 @@ export class UpgradeComponent implements OnInit {
   img_class: string = "img-box";
   img_urls: string[] = [ "", "" ];
 
-  constructor(public dataService: XwingDataService, private modalController: ModalController ) { }
+  constructor(public dataService: XwingDataService, 
+              private modalController: ModalController,
+              private events: Events) { }
 
   async presentUpgradeModal() {
+    let stateString = JSON.stringify(this.upgrade);
     const modal = await this.modalController.create({
       component: UpgradeModalPage,
       componentProps: {
@@ -23,6 +27,9 @@ export class UpgradeComponent implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
+    if (stateString != JSON.stringify(this.upgrade)) {
+      this.events.publish("snapshot", "create snapshot");
+    }
   }
 
   ngOnInit() {

@@ -9,6 +9,7 @@ import { Events } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../damage-deck-actions/damage-deck-actions.component';
 import { NgZone } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -16,6 +17,7 @@ import { NgZone } from '@angular/core';
 })
 export class MainPage implements OnInit {
 
+  snapshots = [ ];
   squadrons: any = [ ];
 
   data_progress: number = 0;
@@ -32,7 +34,8 @@ export class MainPage implements OnInit {
               public popoverController: PopoverController,
               private events: Events,
               private alertController: AlertController,
-              private ngZone: NgZone) { }
+              private ngZone: NgZone,
+              private toastController: ToastController) { }
 
   ngOnInit() {
     this.events.subscribe(
@@ -42,6 +45,13 @@ export class MainPage implements OnInit {
       }
     );
 
+    this.events.subscribe(
+      "snapshot",
+      (event) => {
+        this.snapshots.push({ time: new Date().toISOString(), squadrons: JSON.parse(JSON.stringify(this.squadrons)) } );
+        console.log("snapshot created", this.snapshots);
+      }
+    )
   }
 
   data_event_handler(event: any) {
@@ -153,6 +163,41 @@ export class MainPage implements OnInit {
     return await alert.present();
   }
 
+  async toastUndo(timestamp: string) {
+    const toast = await this.toastController.create({
+      message: 'Table restored to ' + timestamp,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+
+  async askUndo() {
+    const alert = await this.alertController.create({
+      header: 'Rewind Time?',
+      message: 'This will rewind time to ' + this.snapshots[this.snapshots.length - 2].time,
+      buttons: [
+        { text: 'OK',
+          handler: () => { 
+            this.ngZone.run(
+              () => {
+                this.snapshots.pop();
+                let snapshot = this.snapshots.pop();
+                this.squadrons = snapshot.squadrons;
+                this.events.publish("snapshot", "create snapshot");
+                this.toastUndo(snapshot.time);
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present(); 
+  }
+
   rechargeAllRecurring() {
     this.squadrons.forEach(
       (squadron) => {
@@ -188,6 +233,7 @@ export class MainPage implements OnInit {
         )
       }
     )
+    this.events.publish("snapshot", "create snapshot");
   }
 
   injectShipData(pilot: any, faction: string) {
@@ -337,9 +383,8 @@ export class MainPage implements OnInit {
       )
       data.pointsDestroyed = 0;
       console.log("xws loaded and data injected", data);
-      if (data) {
-        this.squadrons.push(data);
-      }
+      this.squadrons.push(data);
+      this.events.publish("snapshot", "create snapshot");
     }
   }
 }

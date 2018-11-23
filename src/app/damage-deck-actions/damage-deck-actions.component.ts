@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Events } from '@ionic/angular';
 
 @Component({
   selector: 'xws-damage-deck-actions',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class DamageDeckActionsComponent implements OnInit {
   squadron;
 
-  constructor() { }
+  constructor(private events: Events) { }
 
   ngOnInit() {
   }
@@ -38,6 +39,7 @@ export class DamageDeckActionsComponent implements OnInit {
         }
       }
     )
+    this.events.publish("snapshot", "create snapshot");
   }
 
   shuffleDiscarded() {
@@ -47,6 +49,7 @@ export class DamageDeckActionsComponent implements OnInit {
       }
     )
     this.squadron.damagediscard = [ ];
+    this.events.publish("snapshot", "create snapshot");
   }
 
   shuffleDeck() {

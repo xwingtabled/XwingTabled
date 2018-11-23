@@ -3,6 +3,7 @@ import { XwingDataService } from '../../services/xwing-data.service';
 import { PilotModalPage } from '../../pilot-modal/pilot-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
+import { Events } from '@ionic/angular';
 @Component({
   selector: 'xws-pilot',
   templateUrl: './pilot.component.html',
@@ -17,7 +18,10 @@ export class PilotComponent implements OnInit {
   shipData: any;
   pilotData: any;
 
-  constructor(public dataService: XwingDataService, private modalController: ModalController, private platform: Platform) { }
+  constructor(public dataService: XwingDataService, 
+              private modalController: ModalController, 
+              private platform: Platform,
+              private events: Events) { }
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
@@ -58,6 +62,7 @@ export class PilotComponent implements OnInit {
   }
 
   async presentPilotModal() {
+    let stateString = JSON.stringify(this.pilot);
     const modal = await this.modalController.create({
       component: PilotModalPage,
       componentProps: {
@@ -67,6 +72,9 @@ export class PilotComponent implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
+    if (stateString != JSON.stringify(this.pilot)) {
+      this.events.publish("snapshot", "create snapshot");
+    }
   }
 
   showPilot() {
