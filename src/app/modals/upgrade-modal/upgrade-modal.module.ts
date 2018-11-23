@@ -2,25 +2,29 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
-
-import { XwsModalPage } from './xws-modal.page';
-
+import { UpgradeModalPage } from './upgrade-modal.page';
+import { XwingModule } from '../../components/xwing.module';
 const routes: Routes = [
   {
     path: '',
-    component: XwsModalPage
+    component: UpgradeModalPage
   }
 ];
 
 @NgModule({
   imports: [
+    XwingModule,
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [XwsModalPage]
+  declarations: [
+    UpgradeModalPage
+  ],
+  entryComponents: [
+    UpgradeModalPage
+  ]
 })
-export class XwsModalPageModule {}
+export class UpgradeModalPageModule {}

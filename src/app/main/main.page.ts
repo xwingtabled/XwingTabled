@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { XwsModalPage } from '../xws-modal/xws-modal.page';
+import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
 import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';

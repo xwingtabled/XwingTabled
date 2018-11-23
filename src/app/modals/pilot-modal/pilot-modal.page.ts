@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
-import { PilotActionsComponent } from '../pilot-actions/pilot-actions.component';
-import { XwingDataService } from '../services/xwing-data.service';
+import { PilotActionsComponent } from '../../pilot-actions/pilot-actions.component';
+import { XwingDataService } from '../../services/xwing-data.service';
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',

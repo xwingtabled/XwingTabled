@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
-import { UpgradeModalPage } from '../../upgrade-modal/upgrade-modal.page';
+import { UpgradeModalPage } from '../../modals/upgrade-modal/upgrade-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 @Component({

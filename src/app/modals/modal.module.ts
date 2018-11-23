@@ -2,23 +2,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
-import { PilotModalPage } from './pilot-modal.page';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: PilotModalPage
-  }
-];
+import { IonicModule } from '@ionic/angular';
+
+import { XwsModalPageModule } from './xws-modal/xws-modal.module';
+import { UpgradeModalPageModule } from './upgrade-modal/upgrade-modal.module';
+import { PilotModalPageModule } from './pilot-modal/pilot-modal.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    XwsModalPageModule,
+    UpgradeModalPageModule,
+    PilotModalPageModule
   ],
-  declarations: [PilotModalPage]
 })
-export class PilotModalPageModule {}
+export class ModalModule {}

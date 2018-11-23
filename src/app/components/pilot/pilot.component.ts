@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
-import { PilotModalPage } from '../../pilot-modal/pilot-modal.page';
+import { PilotModalPage } from '../../modals/pilot-modal/pilot-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
 import { Events } from '@ionic/angular';
@@ -19,9 +19,9 @@ export class PilotComponent implements OnInit {
   pilotData: any;
 
   constructor(public dataService: XwingDataService, 
-              private modalController: ModalController, 
-              private platform: Platform,
-              private events: Events) { }
+              public modalController: ModalController, 
+              public platform: Platform,
+              public events: Events) { }
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { XwingDataService } from '../services/xwing-data.service';
+import { XwingDataService } from '../../services/xwing-data.service';
 
 @Component({
   selector: 'app-upgrade-modal',
