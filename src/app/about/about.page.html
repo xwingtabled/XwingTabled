@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>X-Wing Tabled</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <h3><i>...Because Second Edition has huge cards and too many tokens</i></h3>
+  <p>
+    This app will maintain your card state for The X-Wing Miniatures Game: Second Edition.
+    It is designed to maintain items that are off the play area - cards and shield/charge/force tokens.
+    This app is not a squadron builder. You can import XWS squadron data from places like
+    <a href="https://raithos.github.io">YASB 2.0</a> or Launch Bay Next.
+  </p>
+  <h3>
+    Found a bug or have a suggestion?
+  </h3>
+  <p>
+    Please submit an issue to <a href="https://github.com/jychuah/XwingTabled/issues">the XwingTabled GitHub repo</a>.
+    Better yet, if you have a fix or feature, feel free to fork the repo and submit pull requests!
+  </p>
+  <h3>Local Data Storage</h3>
+  <p>
+    This web app caches some data locally, such as card data or your table state.
+    This means you will be required to download data on first use or when 
+    new data is released. The advantage is that if you navigate away from
+    the app in the middle of the game, you don't have to worry about losing
+    your game state.
+  </p>
+  <h3>Artwork and Game Text Use</h3>
+  <p>
+    This app uses artwork from Fantasy Flight's image CDN, open source card
+    and text data from <a href="https://github.com/guidokessels/xwing-data2">Guido Kessel's Xwing Data 2 project</a>,
+    and <a href="https://github.com/geordanr/xwing-miniatures-font">GeordanR's X-Wing Miniatures Font</a>. 
+    This app is not distributed with copyright artwork or card data on its own. Data is downloaded and cached
+    upon first use. Artwork is hotlinked from Fantasy Flight for web versions of this application,
+    and downloaded and cached for mobile versions.
+  </p>
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button href="../">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

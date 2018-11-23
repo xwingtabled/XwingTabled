@@ -5,18 +5,22 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { XwsModalPageModule } from './xws-modal/xws-modal.module';
-import { UpgradeModalPageModule } from './upgrade-modal/upgrade-modal.module';
-import { PilotModalPageModule } from './pilot-modal/pilot-modal.module';
+import { AboutPage } from './about.page';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: AboutPage
+  }
+];
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    XwsModalPageModule,
-    UpgradeModalPageModule,
-    PilotModalPageModule,
+    RouterModule.forChild(routes)
   ],
+  declarations: [AboutPage]
 })
-export class ModalModule {}
+export class AboutPageModule {}

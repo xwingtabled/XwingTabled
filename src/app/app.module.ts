@@ -24,18 +24,13 @@ import { PopoverModule } from './popovers/popover.module';
 //import { PilotModalPage } from './pilot-modal/pilot-modal.page';
 import { ToastController } from '@ionic/angular';
 import { ModalModule } from './modals/modal.module';
+import { AboutPageModule } from './about/about.module';
 @NgModule({
   declarations: [
     AppComponent, 
-    //XwsModalPage, 
-    //UpgradeModalPage, 
-    //PilotModalPage,
 
   ],
   entryComponents: [ 
-    //XwsModalPage, 
-    //UpgradeModalPage, 
-    //PilotModalPage, 
 
   ],
   imports: [
@@ -46,7 +41,8 @@ import { ModalModule } from './modals/modal.module';
     HttpClientModule,
     XwingModule,
     ModalModule,
-    PopoverModule
+    PopoverModule,
+    AboutPageModule
   ],
   providers: [
     StatusBar,
