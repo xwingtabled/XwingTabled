@@ -50,8 +50,8 @@
       <ion-fab-button *ngIf="squadrons.length > 0" class="recharge-all-button" (click)="askRechargeRecurring()">
         <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="xwsAddButton()">
-        <ion-icon *ngIf="squadrons.length < 2" name="add"></ion-icon>
+      <ion-fab-button *ngIf="squadrons.length < 2" (click)="xwsAddButton()">
+        <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
 
