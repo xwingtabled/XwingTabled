@@ -72,6 +72,9 @@ export class MainPage implements OnInit {
   }
 
   snapshot() {
+    if(this.snapshots.length >= 5) {
+      this.snapshots.shift();
+    }
     this.snapshots.push({ time: new Date().toISOString(), squadrons: JSON.parse(JSON.stringify(this.squadrons)) } );
     this.storage.set("snapshots", this.snapshots);
     console.log("snapshot created", this.snapshots);
@@ -210,6 +213,68 @@ export class MainPage implements OnInit {
                 this.squadrons = snapshot.squadrons;
                 this.events.publish("snapshot", "create snapshot");
                 this.toastUndo(snapshot.time);
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present(); 
+  }
+
+  async resetSquadrons() {
+    this.squadrons.forEach(
+      (squadron) => {
+        squadron.pointsDestroyed = 0;
+        squadron.damagediscard = [ ];
+        squadron.damagedeck = this.dataService.getDamageDeck();
+        squadron.pilots.forEach(
+          (pilot) => {
+            pilot.damagecards = [ ];
+            pilot.conditions = [ ];
+            pilot.pointsDestroyed = 0;
+            pilot.hull.remaining = pilot.hull.value;
+            [ pilot.shields, pilot.charges, pilot.force ].forEach(
+              (stat) => {
+                if (stat) {
+                  stat.remaining = stat.value;
+                }
+              }
+            )
+            pilot.upgrades.forEach(
+              (upgrade) => {
+                upgrade.side = 0;
+                if (upgrade.sides[0].charges) {
+                  upgrade.sides[0].charges.remaining = upgrade.sides[0].charges.value;
+                }
+              }
+            )
+          }
+        )
+      }
+    )
+    this.events.publish("snapshot", "create snapshot");
+    const toast = await this.toastController.create({
+      message: 'Squadrons reset',
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+
+  async askReset() {
+    const alert = await this.alertController.create({
+      header: 'Reset all squadrons?',
+      message: 'All charges, force and shields will be restored, damage cards shuffled and conditions removed.',
+      buttons: [
+        { text: 'OK',
+          handler: () => { 
+            this.ngZone.run(
+              () => {
+                this.resetSquadrons();
               }
             )
           }
