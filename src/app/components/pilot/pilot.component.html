@@ -1,6 +1,7 @@
 <div class="pilot">
   <div class="pilot-header">
-    <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship>&nbsp;
+    <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship>
+    <span class="pilot-initiative">{{ pilot.pilot.initiative }}</span>
     {{ pilot.pilot.name }}&nbsp;
     <span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
     ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
@@ -15,7 +16,7 @@
     </div>
     <div class="conditions">
       <div *ngFor="let condition of pilot.conditions">
-        <xwing-icon [name]="'condition'"></xwing-icon>&nbsp;{{ condition.name }}
+        <xwing-icon [name]="'condition'"></xwing-icon>{{ condition.name }}
       </div>
     </div>
     <div class="damage-cards">
