@@ -1,40 +1,40 @@
 @import '../component.scss';
 
 .upgrade {
-    overflow: hidden;
-    width: 100%;
-    font-weight: 900;
-    font-size: 75%;
+    font-size: 1.5vh;
+    background: $xws-background;
+    color: white;
 }
 .upgrade-img-container {
-    overflow: hidden;
-    margin-right: -78%;
-    margin-bottom: -69%;
-    z-index: -1;
+    display: block;
 }
 
-.img-box {
-    position: relative;
-    left: -40%;
+.upgrade-img {
+    height: 10vh;
 }
 
-.img-config-box { 
-    position: relative;
-    left: -3.3%;
+.upgrade-name {
+    width: 100%;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 0.25vh;
+    padding-bottom: 0.25vh;
+  //  height: 2vh;
 }
 
 .upgrade-info-block {
     position: relative;
     bottom: 0%;
-    color: white;
-    background: $xws-background;
-    padding: 0.5em 0.5em 0.2em 0.5em;
+    box-sizing: border-box;
+    height: 3vh;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    padding-right: 0.5vw;
     width: 100%;
-    min-height: 2.5vw;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    font-size: 1.25vw;
+    font-size: 2vh;
 }
 
 .upgrade-info-block-left {

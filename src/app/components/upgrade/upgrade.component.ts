@@ -37,7 +37,7 @@ export class UpgradeComponent implements OnInit {
       this.img_class = "img-config-box";
     }
     for (let i = 0; i < this.upgrade.sides.length; i++) {
-      this.dataService.get_image_by_url(this.upgrade.sides[i].image).then(
+      this.dataService.get_image_by_url(this.upgrade.sides[i].artwork).then(
         (url) => {
           this.img_urls[i] = url;
         }

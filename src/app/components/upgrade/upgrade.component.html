@@ -1,10 +1,13 @@
 <div class="upgrade" (click)="showUpgrade()">
   <div class="upgrade-img-container">
-    <img [src]="img_urls[upgrade.side]" [class]="img_class"/>
+    <img [src]="img_urls[upgrade.side]" class="upgrade-img"/>
+  </div>
+  <div class="upgrade-name">
+    {{ upgrade.name }}
   </div>
   <div class="upgrade-info-block">
     <div class="upgrade-info-block-left">
-      <xws-attack-stats *ngIf="upgrade.sides[upgrade.side].attack" [attack]="upgrade.sides[upgrade.side].attack"></xws-attack-stats>
+      <xws-stat *ngIf="upgrade.sides[upgrade.side].attack" [stat]="upgrade.sides[upgrade.side].attack"></xws-stat>
       <xws-action *ngFor="let action of upgrade.sides[upgrade.side].actions" [action]="action" class="action-box"></xws-action>
     </div>
     <div class="upgrade-info-block-right">

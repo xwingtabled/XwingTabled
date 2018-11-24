@@ -2,6 +2,18 @@
 
 .pilot {
     margin-right: 0.2vw;
+    background: $xws-background;
+    color: white;
+}
+.pilot-header {
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    font-size: 2vh;
+}
+
+.upgrade-container {
+    display: inline-block;
+    vertical-align: top;
 }
 
 .upgrade-column {
@@ -10,12 +22,12 @@
 }
 
 .upgrade {
-    width: 10vw;
+    //width: 10vw;
     display: block;
 }
 
 .upgrade-portrait {
-    width: 20vw;
+    //width: 20vw;
     display: block
 }
 
@@ -37,18 +49,16 @@
     font-size: 4vw; 
 }
 .art-container {
-    background: $xws-background;
-    position: relative;
+    display: inline-block;
+    vertical-align: top;
 }
 .item-pilotart {
-    display: inline-block;
     vertical-align: top;
-    width: 18vw;
+    height: 10vh;
 }
 .item-pilotart-portrait {
-    display: inline-block;
-    vertical-align: top;
-    width: 32vw; 
+    display: block;
+    width: 100%; 
 }
 .item-status {
     display: inline-block;

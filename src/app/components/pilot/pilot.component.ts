@@ -43,7 +43,7 @@ export class PilotComponent implements OnInit {
     this.pilot.upgrades.forEach(
       (upgrade) => {
         column.push(upgrade);
-        if (column.length == 3) {
+        if (column.length == 2) {
           this.columns.push(column);
           column = [];
         }
@@ -52,7 +52,7 @@ export class PilotComponent implements OnInit {
     if (column.length > 0) {
       this.columns.push(column);
     }
-    this.dataService.get_image_by_url(this.pilot.pilot.image).then(
+    this.dataService.get_image_by_url(this.pilot.pilot.artwork).then(
       (url) => {
         this.img_url = url;
       }

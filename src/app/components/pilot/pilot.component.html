@@ -1,31 +1,32 @@
 <div class="pilot">
-  <div>
-      <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship>&nbsp;
-      {{ pilot.pilot.name }}&nbsp;
-      <span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
-      ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
+  <div class="pilot-header">
+    <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship>&nbsp;
+    {{ pilot.pilot.name }}&nbsp;
+    <span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
+    ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
+  </div>
+  <div class="art-container" (click)="showPilot()">
+    <img [src]="img_url" [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" />
+
+    <div class="condition-box">
+      <xws-condition-summary *ngFor="let condition of pilot.conditions" [condition]="condition"></xws-condition-summary>
     </div>
-    <div class="art-container">
-      <div [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" (click)="showPilot()">
-        <img [src]="img_url"/>
-      </div>
-      <div class="upgrade-column" *ngFor="let column of columns">
-        <xws-upgrade 
-          *ngFor="let upgrade of column" 
-          [upgrade]="upgrade" 
-          [class]="platform.isPortrait() ? 'upgrade-portrait' : 'upgrade'"></xws-upgrade>
-      </div>
-      <div class="condition-box">
-        <xws-condition-summary *ngFor="let condition of pilot.conditions" [condition]="condition"></xws-condition-summary>
-      </div>
+  </div>
+  <div class="upgrade-container">
+    <div class="upgrade-column" *ngFor="let column of columns">
+      <xws-upgrade 
+        *ngFor="let upgrade of column" 
+        [upgrade]="upgrade" 
+        [class]="platform.isPortrait() ? 'upgrade-portrait' : 'upgrade'"></xws-upgrade>
     </div>
-    <div [class]="platform.isPortrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
-      <xws-hull-summary [hull]="pilot.hull"></xws-hull-summary>&nbsp;
-      <xws-shield-summary *ngIf="pilot.shields" [shields]="pilot.shields"></xws-shield-summary>&nbsp;
-      <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges"></xws-charge-summary>&nbsp;
-      <xws-force-summary *ngIf="pilot.force" [force]="pilot.force"></xws-force-summary>&nbsp;
-    </div>
-    <div [class]="platform.isPortrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
-      <xws-damage-summary [damagecards]="pilot.damagecards" [squadron]="squadron"></xws-damage-summary>
-    </div>
+  </div>
+  <div [class]="platform.isPortrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
+    <xws-hull-summary [hull]="pilot.hull"></xws-hull-summary>&nbsp;
+    <xws-shield-summary *ngIf="pilot.shields" [shields]="pilot.shields"></xws-shield-summary>&nbsp;
+    <xws-charge-summary *ngIf="pilot.charges" [charges]="pilot.charges"></xws-charge-summary>&nbsp;
+    <xws-force-summary *ngIf="pilot.force" [force]="pilot.force"></xws-force-summary>&nbsp;
+  </div>
+  <div [class]="platform.isPortrait() ? 'ship-status-portrait' : 'ship-status'" (click)="showPilot()">
+    <xws-damage-summary [damagecards]="pilot.damagecards" [squadron]="squadron"></xws-damage-summary>
+  </div>
 </div>
