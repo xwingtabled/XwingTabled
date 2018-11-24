@@ -65,6 +65,7 @@ export class MainPage implements OnInit {
           this.snapshots = snapshots;
           let lastSnapshot = JSON.parse(JSON.stringify(this.snapshots[this.snapshots.length - 1]));
           this.squadrons = lastSnapshot.squadrons;
+          console.log(this.squadrons);
           this.toastUndo(lastSnapshot.time);
         }
       }
@@ -327,15 +328,25 @@ export class MainPage implements OnInit {
 
   injectShipData(pilot: any, faction: string) {
     pilot.ship = this.dataService.getShip(faction, pilot.ship);
+    pilot.stats = [ ];
 
     pilot.ship.stats.forEach(
       (stat) => {
-        if (stat['type'] == 'hull') {
-          pilot['hull'] = { value: stat.value, remaining: stat.value };
+        let statCopy = JSON.parse(JSON.stringify(stat));
+        statCopy.remaining = stat.value;
+        if (stat.recovers) {
+          statCopy.numbers = new Array(stat.recovers);
         }
-        if (stat['type'] == 'shields') {
-          pilot['shields'] = { value: stat.value, remaining: stat.value }; 
+        if (stat.type == 'force') {
+          stat.icon = 'forcecharge';
         }
+        if (stat.type == 'charges') {
+          stat.icon = 'charge';
+        }
+        if (stat.type == 'attack') {
+          stat.icon = stat.arc;
+        }
+        pilot.stats.push(statCopy);
       }
     )
   }
@@ -392,6 +403,8 @@ export class MainPage implements OnInit {
       (side) => {
         let img_url = side.image;
         if (side.charges) {
+          side.charges.type = "charges"
+          side.charges.icon = "charge";
           if (side.charges.remaining == undefined) {
             side.charges.remaining = side.charges.value;
             side.charges.numbers = Array(side.charges.recovers);
@@ -399,7 +412,13 @@ export class MainPage implements OnInit {
         }
         if (side.force) {
           side.force.numbers = Array(side.force.recovers);
+          side.force.type = "force";
+          side.force.icon = "forcecharge";
         } 
+        if (side.attack) {
+          side.attack.type = "attack";
+          side.attack.icon = side.attack.arc;
+        }
       }
     )
   }
@@ -412,8 +431,14 @@ export class MainPage implements OnInit {
           side.grants.forEach(
             (grant) => {
               if (grant.value == "shields" || grant.value == "hull") {
-                pilot[grant.value].value += grant.amount;
-                pilot[grant.value].remaining = pilot[grant.value].value;
+                pilot.stats.forEach(
+                  (stat) => {
+                    if (stat.type == grant.value) {
+                      stat.value += grant.amount;
+                      stat.remaining = stat.value;
+                    }
+                  }
+                )
               }
             }
           )

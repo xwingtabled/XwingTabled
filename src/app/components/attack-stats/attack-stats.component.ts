@@ -7,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AttackStatsComponent implements OnInit {
   @Input() attack: any;
+  @Input() orientation: string = "horizontal";
   constructor() { }
 
   ngOnInit() {

@@ -20,6 +20,7 @@ import { DamageCardComponent } from './damage-card/damage-card.component';
 import { DamageSummaryComponent} from './damage-summary/damage-summary.component';
 import { ConditionSummaryComponent } from './condition-summary/condition-summary.component';
 import { ConditionComponent } from './condition/condition.component';
+import { StatComponent } from './stat/stat.component';
 @NgModule({
   entryComponents: [
   ],
@@ -45,7 +46,8 @@ import { ConditionComponent } from './condition/condition.component';
     DamageCardComponent,
     DamageSummaryComponent,
     ConditionSummaryComponent,
-    ConditionComponent
+    ConditionComponent,
+    StatComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -65,7 +67,8 @@ import { ConditionComponent } from './condition/condition.component';
     DamageCardComponent,
     DamageSummaryComponent,
     ConditionSummaryComponent,
-    ConditionComponent
+    ConditionComponent,
+    StatComponent
   ]
 })
 export class XwingModule {}
