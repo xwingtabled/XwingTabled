@@ -43,7 +43,7 @@ export class PilotModalPage implements OnInit {
   }
 
   drawHit() {
-    let card = this.drawRandom(this.squadron.damagedeck);
+    let card = this.squadron.damagedeck.shift();
     if (card) {
       card.exposed = false;
       this.pilot.damagecards.push(card);
@@ -54,7 +54,7 @@ export class PilotModalPage implements OnInit {
   }
 
   drawCrit() {
-    let card = this.drawRandom(this.squadron.damagedeck);
+    let card = this.squadron.damagedeck.shift();
     if (card) {
       card.exposed = true;
       this.pilot.damagecards.push(card);
@@ -62,16 +62,6 @@ export class PilotModalPage implements OnInit {
     } else {
       this.presentDamageDeckEmpty();
     }
-  }
-
-  drawRandom(damagecards: any[]) {
-    if (damagecards.length == 0) {
-      return null;
-    }
-    let index = Math.floor(Math.random() * Math.floor(damagecards.length));
-    let card = damagecards[index];
-    damagecards.splice(index, 1);
-    return card;
   }
 
   async presentDamageDeckEmpty() {

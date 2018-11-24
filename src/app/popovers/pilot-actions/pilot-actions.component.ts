@@ -21,6 +21,16 @@ export class PilotActionsComponent implements OnInit {
   ngOnInit() {
   }
 
+  recycleAvailable() : boolean {
+    return this.pilot.hull.remaining <= 0 && this.pilot.damagecards.length > 0;
+  }
+
+  async recycleDamageCards() {
+    await this.popoverController.dismiss();
+    this.squadron.damagediscard = this.squadron.damagediscard.concat(this.pilot.damagecards);
+    this.pilot.damagecards = [ ];
+  }
+
   async assignIdNumber() {
     await this.popoverController.dismiss();
     let alert = await this.alertController.create({

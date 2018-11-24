@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Events } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'xws-damage-deck-actions',
@@ -9,53 +11,36 @@ import { Events } from '@ionic/angular';
 export class DamageDeckActionsComponent implements OnInit {
   squadron;
 
-  constructor(private events: Events) { }
+  constructor(private events: Events, 
+              private toastController: ToastController,
+              private popoverController: PopoverController) { }
 
   ngOnInit() {
   }
 
-  destroyedAvailable() : boolean {
-    let available = false;
-    this.squadron.pilots.forEach(
-      (pilot) => {
-        if (pilot.hull.remaining <= 0 && pilot.damagecards.length > 0) {
-          available = true;
-        }
-      }
-    )
-    return available;
+  async toastDamageDeck(text: string) {
+    const toast = await this.toastController.create({
+      message: text,
+      duration: 2000,
+      position: 'top'
+    });
+    return toast.present();
   }
 
-  discardDestroyed() {
-    this.squadron.pilots.forEach(
-      (pilot) => {
-        if (pilot.hull.remaining <= 0) {
-          pilot.damagecards.forEach(
-            (card) => {
-              this.squadron.damagediscard.push(card);
-            }
-          )
-          pilot.damagecards = [ ];
-        }
-      }
-    )
-    this.events.publish("snapshot", "create snapshot");
-  }
-
-  shuffleDiscarded() {
+  async shuffleDiscarded() {
+    await this.popoverController.dismiss();
     this.squadron.damagediscard.forEach(
       (card) => {
         this.squadron.damagedeck.push(card);
       }
     )
     this.squadron.damagediscard = [ ];
-    this.events.publish("snapshot", "create snapshot");
+    await this.toastDamageDeck("Discard pile shuffled into draw pile");
+    this.events.publish("snapshot", "Shuffled discarded Damage Cards");
   }
 
-  shuffleDeck() {
-    // Cards are dealt randomly, but if it makes
-    // someone feel better then this is a proper
-    // shuffle command
+  async shuffleDeck() {
+    await this.popoverController.dismiss();
     let newDeck = [ ];
     while (this.squadron.damagedeck.length > 0) {
       let index = Math.floor(Math.random() * Math.floor(this.squadron.damagedeck.length));
@@ -64,6 +49,8 @@ export class DamageDeckActionsComponent implements OnInit {
       newDeck.push(card);
     }
     this.squadron.damagedeck = newDeck;
+    await this.toastDamageDeck("Shuffled Damage Deck");
+    this.events.publish("snapshot", "Shuffled Damage Deck");
   }
 
 }
