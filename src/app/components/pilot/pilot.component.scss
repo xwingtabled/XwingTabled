@@ -2,6 +2,7 @@
 
 .pilot {
     margin-right: 0.2vw;
+    margin-bottom: 0.2vh;
     background: $xws-background;
     color: white;
 }
@@ -22,13 +23,30 @@
 }
 
 .upgrade {
-    //width: 10vw;
     display: block;
 }
 
 .upgrade-portrait {
-    //width: 20vw;
-    display: block
+    display: block;
+}
+.pilot-card {
+    width: 24vh;
+    display: inline-block;
+    vertical-align: top;
+}
+.action {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+.action-bar {
+    text-align: center;
+    font-size: 2vh;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    padding-right: 1em;
+    padding-left: 1em;
+    max-width: 100%;
+    overflow: wrap;
 }
 .stat {
     display: inline-block;
@@ -55,10 +73,6 @@
     @extend .ship-status;
     font-size: 4vw; 
 }
-.art-container {
-    display: inline-block;
-    vertical-align: top;
-}
 .item-pilotart {
     vertical-align: top;
     height: 10vh;
@@ -71,9 +85,14 @@
     display: inline-block;
     vertical-align: top;
 }
-
-.condition-box {
-    position: absolute;
-    left: 0%;
-    top: 0%;
+.damage-cards {
+    font-size: 1.5vh;
+    padding-left: 0.5em;
+}
+.damage-facedown {
+    color: red;
+}
+.conditions {
+    font-size: 1.5vh;
+    padding-left: 0.5em;
 }
