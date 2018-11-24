@@ -11,7 +11,7 @@ import { XwingDataService } from '../../services/xwing-data.service';
 export class ConditionComponent implements OnInit {
   @Input() pilot;
   @Input() condition;
-  conditionObj: any = null;
+  img_url: string = "";
 
   constructor(private dataService: XwingDataService, private popoverController : PopoverController) { }
 
@@ -20,17 +20,16 @@ export class ConditionComponent implements OnInit {
       component: ConditionPopoverComponent,
       componentProps: {
         pilot: this.pilot,
-        conditionObj: this.conditionObj
+        condition: this.condition
       }
     });
     await popover.present();
   }
 
   ngOnInit() {
-    this.conditionObj = this.dataService.getCondition(this.condition);
-    this.dataService.get_image_by_url(this.conditionObj.artwork).then(
+    this.dataService.get_image_by_url(this.condition.artwork).then(
       (url) => {
-        this.conditionObj.img_url = url;
+        this.img_url = url;
       }
     )
   }

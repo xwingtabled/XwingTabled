@@ -22,7 +22,8 @@ export class PilotActionsComponent implements OnInit {
   }
 
   recycleAvailable() : boolean {
-    return this.pilot.hull.remaining <= 0 && this.pilot.damagecards.length > 0;
+    let hull = this.pilot.stats.find((stat) => stat.type == 'hull');
+    return hull.remaining <= 0 && this.pilot.damagecards.length > 0;
   }
 
   async recycleDamageCards() {

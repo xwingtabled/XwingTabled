@@ -33,7 +33,6 @@ export class UpgradeComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("init upgrade", this.upgrade);
     if (this.upgrade['type'] == "configuration") {
       this.img_class = "img-config-box";
     }
