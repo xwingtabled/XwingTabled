@@ -30,7 +30,14 @@
     //width: 20vw;
     display: block
 }
-
+.stat {
+    display: inline-block;
+}
+.stat-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
 .ship-fw {
     display: inline-block;
     text-align: center;

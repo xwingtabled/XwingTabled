@@ -11,9 +11,9 @@
     <div class="pilot-art">
       <img [src]="img_url" /><br />
       <div class="token-box">
-        <xws-token-display *ngIf="pilot.shields" [name]="'shield'" [data]="pilot.shields"></xws-token-display>
-        <xws-token-display *ngIf="pilot.charges" [name]="'charge'" [data]="pilot.charges"></xws-token-display>
-        <xws-token-display *ngIf="pilot.force" [name]="'force'" [data]="pilot.force"></xws-token-display>
+        <xws-token-display *ngIf="shields" [name]="'shield'" [data]="shields"></xws-token-display>
+        <xws-token-display *ngIf="charges" [name]="'charge'" [data]="charges"></xws-token-display>
+        <xws-token-display *ngIf="force" [name]="'force'" [data]="force"></xws-token-display>
       </div>
     </div>
     <div class="damage-cards">

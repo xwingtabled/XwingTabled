@@ -7,9 +7,11 @@
   </div>
   <div class="art-container" (click)="showPilot()">
     <img [src]="img_url" [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" />
-
+    <div class="stat-block">
+      <xws-stat *ngFor="let stat of pilot.stats" [stat]="stat" [orientation]="'vertical'"></xws-stat>
+    </div>
     <div class="condition-box">
-      <xws-condition-summary *ngFor="let condition of pilot.conditions" [condition]="condition"></xws-condition-summary>
+      <xws-condition-summary *ngFor="let condition of pilot.conditions" [condition]="condition" class="stat"></xws-condition-summary>
     </div>
   </div>
   <div class="upgrade-container">

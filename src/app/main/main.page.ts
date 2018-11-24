@@ -153,10 +153,14 @@ export class MainPage implements OnInit {
       message: 'You are about to remove ' + squadron.name,
       buttons: [
         { text: 'OK',
-          handler: () => { 
-            let index = this.squadrons.indexOf(squadron);
-            this.squadrons.splice(index, 1);
-            this.events.publish("snapshot", "create snapshot");
+          handler: () => {
+            this.ngZone.run(
+              () => {
+                let index = this.squadrons.indexOf(squadron);
+                this.squadrons.splice(index, 1);
+                this.events.publish("snapshot", "create snapshot");
+              }
+            )
           }
         },
         { text: 'Cancel',
@@ -238,11 +242,9 @@ export class MainPage implements OnInit {
             pilot.conditions = [ ];
             pilot.pointsDestroyed = 0;
             pilot.hull.remaining = pilot.hull.value;
-            [ pilot.shields, pilot.charges, pilot.force ].forEach(
+            pilot.stats.forEach(
               (stat) => {
-                if (stat) {
-                  stat.remaining = stat.value;
-                }
+                stat.remaining = stat.value;
               }
             )
             pilot.upgrades.forEach(
@@ -289,32 +291,28 @@ export class MainPage implements OnInit {
   }
 
   rechargeAllRecurring() {
+    let recover = (stat) => {
+      stat.remaining += stat.recovers;
+      if (stat.remaining > stat.value) {
+        stat.remaining = stat.value;
+      }
+    }
     this.squadrons.forEach(
       (squadron) => {
         squadron.pilots.forEach(
           (pilot) => {
-            if (pilot.charges && pilot.charges.recovers) {
-              pilot.charges.remaining += pilot.charges.recovers;
-              if (pilot.charges.remaining > pilot.charges.value) {
-                pilot.charges.remaining = pilot.charges.value;
+            for (let i = 0; i < pilot.stats.length; i++) {
+              let stat = pilot.stats[i];
+              if (stat.recovers) {
+                recover(stat);
+                pilot.stats.splice(i, 1, JSON.parse(JSON.stringify(stat)));
               }
-              pilot.charges = JSON.parse(JSON.stringify(pilot.charges));
-            }
-            if (pilot.force && pilot.force.recovers) {
-              pilot.force.remaining += pilot.force.recovers;
-              if (pilot.force.remaining > pilot.force.value) {
-                pilot.force.remaining = pilot.force.value;
-              }
-              pilot.force = JSON.parse(JSON.stringify(pilot.force));
             }
             pilot.upgrades.forEach(
               (upgrade) => {
                 let side = upgrade.sides[0];
                 if (side.charges && side.charges.recovers) {
-                  side.charges.remaining += side.charges.recovers;
-                  if (side.charges.remaining > side.charges.value) {
-                    side.charges.remaining = side.charges.value;
-                  }
+                  recover(side.charges);
                   side.charges = JSON.parse(JSON.stringify(side.charges));
                 }
               }
@@ -326,25 +324,20 @@ export class MainPage implements OnInit {
     this.events.publish("snapshot", "create snapshot");
   }
 
-  injectShipData(pilot: any, faction: string) {
-    pilot.ship = this.dataService.getShip(faction, pilot.ship);
-    pilot.stats = [ ];
 
+  injectShipData(pilot: any, faction: string) {
+    // Inject ship data into pilot
+    pilot.ship = this.dataService.getShip(faction, pilot.ship);
+
+    // Inject stats array in pilot root
+    pilot.stats = [ ];
     pilot.ship.stats.forEach(
       (stat) => {
         let statCopy = JSON.parse(JSON.stringify(stat));
+        // Future proofing - in case a chassis ever has baked in recurring charge stats
         statCopy.remaining = stat.value;
         if (stat.recovers) {
           statCopy.numbers = new Array(stat.recovers);
-        }
-        if (stat.type == 'force') {
-          stat.icon = 'forcecharge';
-        }
-        if (stat.type == 'charges') {
-          stat.icon = 'charge';
-        }
-        if (stat.type == 'attack') {
-          stat.icon = stat.arc;
         }
         pilot.stats.push(statCopy);
       }
@@ -352,26 +345,36 @@ export class MainPage implements OnInit {
   }
 
   injectPilotData(pilot: any, faction: string) {
+    // Get pilot data and insert it into pilot object
     pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.name);
+
+    // Creates a stat of { type: statType, remaining: 2, numbers: Array() }
+    // for display compatibility
+    let pushStat = (stat, statType) => {
+      let statCopy = JSON.parse(JSON.stringify(stat));
+      statCopy.type = statType;
+      statCopy.remaining = stat.value;
+      statCopy.numbers = Array(stat.numbers);
+      pilot.stats.push(stat);
+    }
+    // If the pilot has charges, insert it as a stat
     if (pilot.pilot.charges) {
-      pilot.charges = JSON.parse(JSON.stringify(pilot.pilot.charges));
-      if (pilot.charges.remaining == undefined) {
-        pilot.charges.remaining = pilot.charges.value;
-        pilot.charges.numbers = Array(pilot.charges.recovers);
-      }
+      pushStat(pilot.pilot.charges, 'charges');
     }
-    // Copy force data to pilot object root
+    // If the pilot has force, insert it as a stat
     if (pilot.pilot.force) {
-      pilot.force = JSON.parse(JSON.stringify(pilot.pilot.force));
-      pilot.force.remaining = pilot.force.value;
-      pilot.force.numbers = Array(pilot.force.recovers);
+      pushStat(pilot.pilot.force, 'force');
     }
+
+    // Add additional game state variables
     pilot.damagecards = []; 
     pilot.conditions = [];
     pilot.pointsDestroyed = 0;
   }
 
   mangleUpgradeArray(pilot: any) {
+    // Take xws upgrade list {'astromech': ['r2d2']} and mangle it to
+    // [ { type: 'astromech', name: 'r2d2', etc... } ]
     let mangledUpgrades = [ ];
     if (pilot.upgrades) {
       Object.entries(pilot.upgrades).forEach(
@@ -379,6 +382,7 @@ export class MainPage implements OnInit {
           if (Array.isArray(upgradeArray)) {
             upgradeArray.forEach(
               (upgradeName) => {
+                // 
                 if (upgradeType == "force") {
                   upgradeType = "forcepower";
                 }
@@ -402,21 +406,21 @@ export class MainPage implements OnInit {
     upgrade.sides.forEach(
       (side) => {
         let img_url = side.image;
+        // Mangle charges stats
         if (side.charges) {
           side.charges.type = "charges"
-          side.charges.icon = "charge";
-          if (side.charges.remaining == undefined) {
-            side.charges.remaining = side.charges.value;
-            side.charges.numbers = Array(side.charges.recovers);
-          }
+          side.charges.remaining = side.charges.value;
+          side.charges.numbers = Array(side.charges.recovers);
         }
+        // Mangle force stats
         if (side.force) {
           side.force.numbers = Array(side.force.recovers);
           side.force.type = "force";
-          side.force.icon = "forcecharge";
         } 
+        // Mangle attack stats
         if (side.attack) {
           side.attack.type = "attack";
+          // Displayed icon should be the attack's icon
           side.attack.icon = side.attack.arc;
         }
       }
@@ -424,46 +428,46 @@ export class MainPage implements OnInit {
   }
 
   injectShipBonuses(pilot: any) {
+    // Search upgrades for any upgrade that has a 'grant'
     pilot.upgrades.forEach(
       (upgrade) => {
         let side = upgrade.sides[0];
         if (side.grants) {
-          side.grants.forEach(
-            (grant) => {
-              if (grant.value == "shields" || grant.value == "hull") {
-                pilot.stats.forEach(
-                  (stat) => {
-                    if (stat.type == grant.value) {
-                      stat.value += grant.amount;
-                      stat.remaining = stat.value;
-                    }
-                  }
-                )
-              }
-            }
-          )
+          // Find shield or hull bonuses
+          let grant = side.grants.find((grant) => grant.value == "shields" || grant.value == "hull");
+          if (grant) {
+            // Find the granted bonus stat on the pilot and add it
+            let stat = pilot.stats.find((element) => element.type == grant.value);
+            stat.value += grant.amount;
+            stat.remaining = stat.value; 
+          }
         }
       }
     )
   }
 
   injectForceBonuses(pilot: any) {
+    // Add any force bonuses to the pilot, creating a force stat if necessary
     pilot.upgrades.forEach(
       (upgrade) => {
         let side = upgrade.sides[0];
+        // Find upgrades that have a force bonus
         if (side.force) {
-          if (!pilot.force) {
-            pilot.force = { value: 0, recovers: 0, numbers: [] }
+          // Get the pilot's force stat
+          let forceStat = pilot.stats.find((element) => element.type == 'force');
+          // If no force stat exists, create one
+          if (!forceStat) {
+            forceStat = { value: 0, recovers: 0, type: 'force', numbers: [] };
+            pilot.stats.push(forceStat);
           }
-          pilot.force.value += side.force.value;
-          pilot.force.recovers += side.force.recovers;
+          // Add force bonuses
+          forceStat.value += side.force.value;
+          forceStat.recovers += side.force.recovers;
+          forceStat.numbers = Array(forceStat.recovers);
+          forceStat.remaining = forceStat.value;
         }
       }
     )
-    if (pilot.force) {
-      pilot.force.numbers = Array(pilot.force.recovers);
-      pilot.force.remaining = pilot.force.value;
-    }
   }
 
   xwsAddButton() {
