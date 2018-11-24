@@ -3,10 +3,14 @@
     <xwing-icon [name]="stat.icon ? stat.icon : stat.type"></xwing-icon>
   </div>
   <div [class]="orientation">
-    <span *ngIf="bonus">+</span>
-    <span *ngIf="stat.remaining == undefined">{{ stat.value }}</span>
-    <span *ngIf="stat.remaining >= 0 && stat.remaining == stat.value">{{ stat.value }}</span>
-    <span *ngIf="stat.remaining >= 0 && stat.remaining != stat.value">({{stat.remaining}})</span>
+    <span *ngIf="bonus">+{{stat.value}}</span>
+    <span *ngIf="stat.type == 'attack'">
+      {{ stat.value }}
+    </span>
+    <span *ngIf="!bonus && stat.type != 'attack'">
+      <span *ngIf="stat.remaining == stat.value">{{ stat.value }}</span>
+      <span *ngIf="stat.remaining != stat.value">({{stat.remaining}})</span>
+    </span> 
     <span *ngIf="stat.recovers">
       <xwing-icon *ngFor="let number of stat.numbers" [name]="'recurring'"></xwing-icon>
     </span>
