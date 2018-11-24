@@ -470,6 +470,18 @@ export class MainPage implements OnInit {
     )
   }
 
+  shuffleDamageDeck(squadron: any) {
+    let newDeck = [ ];
+    while (squadron.damagedeck.length > 0) {
+      let index = Math.floor(Math.random() * Math.floor(squadron.damagedeck.length));
+      let card = squadron.damagedeck[index];
+      squadron.damagedeck.splice(index, 1);
+      newDeck.push(card);
+    }
+    squadron.damagedeck = newDeck;
+
+  }
+
   xwsAddButton() {
     this.presentXwsModal();
   }
@@ -480,13 +492,14 @@ export class MainPage implements OnInit {
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    if (data) {
-      data.damagediscard = [ ];
-      data.damagedeck = this.dataService.getDamageDeck();
-      data.pilots.forEach(
+    let squadron = data;
+    if (squadron) {
+      squadron.damagediscard = [ ];
+      squadron.damagedeck = this.dataService.getDamageDeck();
+      squadron.pilots.forEach(
         (pilot) => {
-          this.injectShipData(pilot, data.faction);
-          this.injectPilotData(pilot, data.faction);
+          this.injectShipData(pilot, squadron.faction);
+          this.injectPilotData(pilot, squadron.faction);
           this.mangleUpgradeArray(pilot);
       
           // Process each upgrade card
@@ -499,10 +512,18 @@ export class MainPage implements OnInit {
           this.injectForceBonuses(pilot);
         }
       )
-      data.pointsDestroyed = 0;
-      console.log("xws loaded and data injected", data);
-      this.squadrons.push(data);
-      this.events.publish("snapshot", "create snapshot");
+      squadron.pointsDestroyed = 0;
+      this.shuffleDamageDeck(squadron);
+      console.log("xws loaded and data injected", squadron);
+      this.events.publish("snapshot", "Squadron " + squadron.name + " added");
+      this.squadrons.push(squadron);
+      const toast = await this.toastController.create({
+        message: 'Squadron added, Damage Deck shuffled',
+        duration: 2000,
+        position: 'bottom'
+      });
+      return await toast.present();
+
     }
   }
 }
