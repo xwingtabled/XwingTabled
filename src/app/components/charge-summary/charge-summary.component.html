@@ -1,6 +1,0 @@
-<span class="charge-summary">
-  <xwing-icon [name]="'charge'"></xwing-icon>
-  <span *ngIf="charges.remaining == charges.value" class="charge-text">{{ charges.remaining }}</span>
-  <span *ngIf="charges.remaining != charges.value" class="charge-text">({{ charges.remaining }})</span>
-  <xwing-icon [name]="'recurring'" *ngFor="let number of charges.numbers"></xwing-icon>
-</span>
