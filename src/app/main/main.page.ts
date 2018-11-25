@@ -241,7 +241,6 @@ export class MainPage implements OnInit {
             pilot.damagecards = [ ];
             pilot.conditions = [ ];
             pilot.pointsDestroyed = 0;
-            pilot.hull.remaining = pilot.hull.value;
             pilot.stats.forEach(
               (stat) => {
                 stat.remaining = stat.value;
