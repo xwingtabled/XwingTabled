@@ -236,6 +236,7 @@ export class MainPage implements OnInit {
         squadron.pointsDestroyed = 0;
         squadron.damagediscard = [ ];
         squadron.damagedeck = this.dataService.getDamageDeck();
+        this.shuffleDamageDeck(squadron);
         squadron.pilots.forEach(
           (pilot) => {
             pilot.damagecards = [ ];
