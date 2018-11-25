@@ -1,26 +1,82 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="presentPilotActionsPopover($event)"><ion-icon name="more"></ion-icon></ion-button>
-    </ion-buttons>
     <ion-title>{{ pilot.pilot.name }}&nbsp;<span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span></ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
-  <div class="modal-content">
-    <div class="pilot-art">
-      <img [src]="img_url" /><br />
-      <div class="token-box">
-        <xws-token-display *ngIf="shields" [name]="'shield'" [data]="shields"></xws-token-display>
-        <xws-token-display *ngIf="charges" [name]="'charge'" [data]="charges"></xws-token-display>
-        <xws-token-display *ngIf="force" [name]="'force'" [data]="force"></xws-token-display>
+  <ion-tabs>
+    <ion-tab tab="tokens">  
+      <div class="pilot-modal">
+        <div class="pilot-art-container">
+          <img [src]="img_url" class="pilot-art"/>
+        </div>
+        <div class="token-box">
+            <ion-button expand="full" (click)="assignIdNumber()">Assign ID Number</ion-button>
+            <xws-token-display *ngIf="shields" [name]="'shield'" [data]="shields" class="token-set"></xws-token-display>
+            <xws-token-display *ngIf="charges" [name]="'charge'" [data]="charges" class="token-set"></xws-token-display>
+            <xws-token-display *ngIf="force" [name]="'force'" [data]="force" class="token-set"></xws-token-display>
+        </div>
       </div>
-    </div>
-    <div class="damage-cards">
-        <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
-        <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
-        <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card>
-        <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
-    </div>
-  </div>
+    </ion-tab>
+    <ion-tab tab="cards">
+      <div class="pilot-modal">
+        <div class="damage-buttons">
+          <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
+          <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+          <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">
+            Expose Random <xwing-icon [name]="'hit'"></xwing-icon>
+          </ion-button>
+          <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
+          <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
+          <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>
+        </div>
+        <div class="damage-cards">
+          <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
+          <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
+        </div>
+      </div>
+    </ion-tab>
+    <ion-tab tab="dial">
+      <div class="pilot-modal">
+        <div class="dial-name">
+          {{ pilot.ship.name }}
+        </div>
+        <div class="maneuver-chart">
+          <table>
+            <tr *ngFor="let row of maneuverChart">
+              <span *ngIf="hasManeuvers(row)">
+                <th class="white">{{ row.speed }}</th>
+                <td *ngFor="let maneuver of row.maneuvers">
+                  <span *ngIf="!maneuver" class="white">
+                    &nbsp;
+                  </span>
+                  <span *ngIf="maneuver" [class]="maneuver.difficulty">
+                    <xwing-icon [name]="maneuver.name"></xwing-icon>
+                  </span>
+                </td>
+              </span>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </ion-tab>
+  
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="tokens">
+        <xwing-icon [name]="'shield'" class="tab-icon"></xwing-icon>
+        <ion-label>Tokens</ion-label>
+      </ion-tab-button>
+  
+      <ion-tab-button tab="cards">
+        <xwing-icon [name]="'hit'" class="tab-icon"></xwing-icon>
+        <ion-label>Cards</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="dial">
+        <xwing-icon [name]="'trollleft'" class="tab-icon"></xwing-icon>
+        <ion-label>Maneuver Dial</ion-label>
+      </ion-tab-button>
+  
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-content>

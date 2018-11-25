@@ -39,9 +39,7 @@ export class TokenDisplayComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.data.recovers) {
-      this.recovers = new Array(this.data.recovers);
-    }
+    console.log("token display", this.data);
     this.makeTokens();
   }
 

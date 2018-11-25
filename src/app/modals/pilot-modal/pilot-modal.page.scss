@@ -1,12 +1,83 @@
 @import '../../components/component.scss';
 
+.pilot-modal {
+    @extend .modal-content;
+    overflow: scroll;
+    height: 100%;
+}
 .pilot-art {
     display: inline-block;
-    width: 50%;
+}
+.pilot-art-container {
+    display: inline-block;
+    width: 58%;
+}
+.token-box {
+    display: inline-block;
+    padding-left: 1vw;
+    vertical-align: top;
+    width: 42%;
+    font-size: 6vh;
+}
+.token-set {
+    display: block;
+    width: 100%;
+    font-size: 6vh;
+    overflow: wrap;
 }
 .damage-cards {
     display: inline-block;
     width: 50%;
     vertical-align: top;
     padding-left: 1vw;
+}
+.tab-icon {
+    font-size: 2vh;
+}
+.half-column {
+    width: 50%;
+    display: inline-block;
+}
+.damage-cards {
+    @extend .half-column;
+    padding-left: 1vw;
+}
+.damage-buttons {
+    @extend .half-column;
+}
+
+.dial-name {
+    color: white;
+    font-size: 2vh;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.maneuver-chart {
+    width: 100%;
+    font-size: 2vh;
+    text-align: center;
+    background-color: $xws-background;
+}
+
+.maneuver-icon {
+    display: inline-block;
+    text-align: center;
+    width: 2em;
+    font-size: 1.5em;
+}
+
+.white {
+    @extend .maneuver-icon;
+    color: white;
+}
+
+.blue {
+    @extend .maneuver-icon;
+    color: #7777FF;
+}
+
+.red {
+    @extend .maneuver-icon;
+    color: red;
 }

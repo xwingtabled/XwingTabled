@@ -19,6 +19,7 @@ export class PilotActionsComponent implements OnInit {
               private ngZone: NgZone) { }
 
   ngOnInit() {
+
   }
 
   recycleAvailable() : boolean {

@@ -11,7 +11,7 @@
     <div>
       <img [src]="img_urls[upgrade.side]" />
     </div>
-    <div *ngIf="upgrade.sides[upgrade.side].charges">
+    <div *ngIf="upgrade.sides[upgrade.side].charges" class="token-set">
       <xws-token-display [name]="'charge'" [data]="upgrade.sides[upgrade.side].charges"></xws-token-display>
     </div>
   </div>
