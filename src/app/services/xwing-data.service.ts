@@ -54,6 +54,15 @@ export class XwingDataService {
     console.log(status, message);
   }
 
+  async reset() {
+    this.initialized = false;
+    this.image_map = { };
+    this.image_urls = { };
+    this.data = { };
+    await this.storage.clear();
+    this.check_manifest();
+  }
+
 
   load_from_storage(keys: string[]) : Observable<{ key: string, value: any }> {
     let done: number = 0;
@@ -323,7 +332,7 @@ export class XwingDataService {
     // Extract file.json from end of URL and strip to friendly keyname
     let url_elements = url.split('/');
     let name = url_elements[url_elements.length - 1];
-    return this.mangle_name(name).replace(/.json$/, '').replace(/.png$/, '');
+    return this.mangle_name(name).replace(/.json$/, '').replace(/.png$/, '').replace(/.jpg$/, '');
   }
 
   getDamageDeck() {
@@ -424,6 +433,11 @@ export class XwingDataService {
         filenames.push(this.url_to_filename(url));
       }
     );
+    this.create_file_list(manifest, ".jpg").forEach(
+      (url) => {
+        filenames.push(this.url_to_filename(url));
+      }
+    )
     this.file.resolveDirectoryUrl(this.file.cacheDirectory).then(
       (value) => {
         this.load_files_from_directory(value, filenames);

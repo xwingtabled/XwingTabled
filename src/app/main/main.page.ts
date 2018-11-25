@@ -171,6 +171,36 @@ export class MainPage implements OnInit {
     return await alert.present();
   }
 
+  async resetData(squadron: any) {
+    const alert = await this.alertController.create({
+      header: 'Clear data cache?',
+      message: 'You are about to reset your data cache. You may have to re-download some data.',
+      buttons: [
+        { text: 'OK',
+          handler: () => {
+            this.ngZone.run(
+              () => {
+                this.squadrons = [ ];
+                this.snapshots = [ ];
+                this.data_progress = 0;
+                this.data_message = "X-Wing Tabled";
+                this.data_button = false;
+                this.data_button_disabled = false;
+                this.image_button = false;
+                this.image_button_disabled = false;
+                this.dataService.reset();
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present();
+  }
+
   async askRechargeRecurring() {
     const alert = await this.alertController.create({
       header: 'Recharge Recurring',
