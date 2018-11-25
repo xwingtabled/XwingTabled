@@ -27,7 +27,7 @@ import { ModalModule } from './modals/modal.module';
 import { AboutPageModule } from './about/about.module';
 @NgModule({
   declarations: [
-    AppComponent, 
+    AppComponent,
 
   ],
   entryComponents: [ 

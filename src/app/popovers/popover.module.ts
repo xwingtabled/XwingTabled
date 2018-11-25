@@ -11,10 +11,6 @@ import { ConditionMenuComponent } from './condition-menu/condition-menu.componen
 import { ConditionPopoverComponent } from './condition-popover/condition-popover.component';
 import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-actions.component';
 import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
-import { MovementChartComponent } from './movement-chart/movement-chart.component';
-import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
-
-
 
 @NgModule({
   imports: [
@@ -28,8 +24,6 @@ import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
     ConditionPopoverComponent,
     DamageDeckActionsComponent,
     DamagePopoverComponent,
-    MovementChartComponent,
-    PilotActionsComponent 
   ],
   exports: [
   ],
@@ -38,8 +32,6 @@ import { PilotActionsComponent } from './pilot-actions/pilot-actions.component';
     ConditionPopoverComponent,
     DamageDeckActionsComponent,
     DamagePopoverComponent,
-    MovementChartComponent,
-    PilotActionsComponent 
   ]
 })
 export class PopoverModule {}

@@ -1,0 +1,50 @@
+.stats {
+    padding-left: 0.2vw;
+    padding-right: 0.2vw;
+    display: inline-block;
+}
+.vertical {
+    display: block;
+    width: 1.5em;
+    text-align: center;
+    font-size: 2vh;
+}
+.horizontal {
+    display: inline-block;
+    padding-left: 0.1vw;
+    padding-right: 0.1vw;
+}
+
+.agility {
+    @extend .stats;
+    color: green;
+}
+
+.attack {
+    @extend .stats;
+    color: red;
+}
+
+.hull { 
+    @extend .stats;
+    color: yellow;
+}
+
+.charges {
+    @extend .stats;
+    color: yellow;
+}
+
+.force {
+    @extend .stats;
+    color: blueviolet;
+}
+
+.shields {
+    @extend .stats;
+    color: lightblue;
+}
+
+.attack-range {
+    color: white;
+}

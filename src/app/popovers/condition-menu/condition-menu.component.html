@@ -5,6 +5,6 @@
   <ion-select placeholder="Select One" (ionChange)="changeEvent($event)">
       <ion-select-option *ngFor="let condition of conditions" value="{{condition.xws}}">{{ condition.name }}</ion-select-option>
   </ion-select>
-  <img [src]="img_url">
+  <img *ngIf="selected_condition" [src]="img_urls[selected_condition.xws]">
   <ion-button [disabled]="!selected_condition" expand="full" (click)="assignCondition()">Assign Condition</ion-button>
 </div>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShieldSummaryComponent } from './shield-summary.component';
+import { StatComponent } from './stat.component';
 
-describe('ShieldSummaryComponent', () => {
-  let component: ShieldSummaryComponent;
-  let fixture: ComponentFixture<ShieldSummaryComponent>;
+describe('StatComponent', () => {
+  let component: StatComponent;
+  let fixture: ComponentFixture<StatComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ShieldSummaryComponent ]
+      declarations: [ StatComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShieldSummaryComponent);
+    fixture = TestBed.createComponent(StatComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

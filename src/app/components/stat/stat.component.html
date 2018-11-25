@@ -1,0 +1,22 @@
+<div [class]="stat.type">
+  <div [class]="orientation">
+    <xwing-icon [name]="stat.icon ? stat.icon : stat.type"></xwing-icon>
+  </div>
+  <div [class]="orientation">
+    <span *ngIf="bonus">+{{stat.value}}</span>
+    <span *ngIf="stat.type == 'attack'">
+      {{ stat.value }}
+    </span>
+    <span *ngIf="!bonus && stat.type != 'attack'">
+      <span *ngIf="stat.remaining == stat.value">{{ stat.value }}</span>
+      <span *ngIf="stat.remaining != stat.value">({{stat.remaining}})</span>
+    </span> 
+    <span *ngIf="stat.recovers">
+      <xwing-icon *ngFor="let number of stat.numbers" [name]="'recurring'"></xwing-icon>
+    </span>
+  </div>
+  <div *ngIf="stat.minrange" [class]="orientation">
+    <xwing-icon *ngIf="stat.ordnance" [name]="'rangebonusindicator'"></xwing-icon>
+    <span class="attack-range">{{ stat.minrange }}-{{ stat.maxrange }}</span>
+  </div>
+</div>

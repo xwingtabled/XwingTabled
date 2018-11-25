@@ -60,6 +60,9 @@ i.xwing-miniatures-font-cargo:before {
 i.xwing-miniatures-font-charge:before {
   content: "g"; }
 
+i.xwing-miniatures-font-charges:before {
+  content: "g"; }
+
 i.xwing-miniatures-font-cloak:before {
   content: "k"; }
 
@@ -110,6 +113,9 @@ i.xwing-miniatures-font-firstorder:before {
 
 i.xwing-miniatures-font-focus:before {
   content: "f"; }
+
+i.xwing-miniatures-font-force:before {
+  content: "h"; }
 
 i.xwing-miniatures-font-forcecharge:before {
   content: "h"; }
@@ -337,6 +343,9 @@ i.xwing-miniatures-font-sensor:before {
   content: "S"; }
 
 i.xwing-miniatures-font-shield:before {
+  content: "*"; }
+
+i.xwing-miniatures-font-shields:before {
   content: "*"; }
 
 i.xwing-miniatures-font-singleturretarc:before {

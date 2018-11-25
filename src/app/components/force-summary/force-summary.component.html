@@ -1,6 +1,0 @@
-<span class="force-summary">
-  <xwing-icon [name]="'forcecharge'"></xwing-icon>
-  <span *ngIf="force.remaining == force.value" class="force-text">{{ force.remaining }}</span>
-  <span *ngIf="force.remaining != force.value" class="force-text">({{ force.remaining }})</span>
-  <xwing-icon [name]="'recurring'" *ngFor="let number of force.numbers"></xwing-icon>
-</span>

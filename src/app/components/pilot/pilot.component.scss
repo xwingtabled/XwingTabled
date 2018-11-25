@@ -1,7 +1,25 @@
 @import '../component.scss';
 
 .pilot {
+    margin-top : 0.2vh;
     margin-right: 0.2vw;
+    background: $xws-background;
+    color: white;
+}
+.pilot-header {
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    font-size: 2vh;
+}
+.pilot-initiative {
+    color: orange;
+    font-weight: 900;
+    margin-right: 0.5em;
+}
+
+.upgrade-container {
+    display: inline-block;
+    vertical-align: top;
 }
 
 .upgrade-column {
@@ -10,15 +28,42 @@
 }
 
 .upgrade {
-    width: 10vw;
     display: block;
 }
 
 .upgrade-portrait {
-    width: 20vw;
-    display: block
+    display: block;
 }
-
+.pilot-card {
+    width: 24vh;
+    height: 40vh;
+    display: inline-block;
+    vertical-align: top;
+    overflow: scroll;
+}
+.action {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+.action-bar {
+    text-align: center;
+    font-size: 2vh;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    padding-right: 1em;
+    padding-left: 1em;
+    max-width: 100%;
+    overflow: wrap;
+}
+.stat {
+    display: inline-block;
+}
+.stat-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5vh;
+}
 .ship-fw {
     display: inline-block;
     text-align: center;
@@ -36,27 +81,35 @@
     @extend .ship-status;
     font-size: 4vw; 
 }
-.art-container {
-    background: $xws-background;
-    position: relative;
+.image-container {
+    display: inline-block;
+    max-width: 24vh;
+    max-height: 10vh;
+    overflow: hidden;
+}
+.image-constrained {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 30%, 0 30%);
 }
 .item-pilotart {
-    display: inline-block;
     vertical-align: top;
-    width: 18vw;
+    height: 10vh;
 }
 .item-pilotart-portrait {
-    display: inline-block;
-    vertical-align: top;
-    width: 32vw; 
+    display: block;
+    width: 100%; 
 }
 .item-status {
     display: inline-block;
     vertical-align: top;
 }
-
-.condition-box {
-    position: absolute;
-    left: 0%;
-    top: 0%;
+.damage-cards {
+    font-size: 1.5vh;
+    padding-left: 0.5em;
+}
+.damage-facedown {
+    color: red;
+}
+.conditions {
+    font-size: 1.5vh;
+    padding-left: 0.5em;
 }

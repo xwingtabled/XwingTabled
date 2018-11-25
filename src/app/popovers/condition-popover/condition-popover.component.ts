@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { XwingDataService } from '../../services/xwing-data.service';
 @Component({
   selector: 'app-condition-popover',
   templateUrl: './condition-popover.component.html',
@@ -7,13 +8,15 @@ import { PopoverController } from '@ionic/angular';
 })
 export class ConditionPopoverComponent implements OnInit {
   pilot;
-  conditionObj;
+  condition;
+  img_url: string = "";
   
-  constructor(private popoverController: PopoverController) { }
+  constructor(private popoverController: PopoverController,
+              private dataService: XwingDataService) { }
 
   async removeCondition() {
     await this.popoverController.dismiss();
-    let index = this.pilot.conditions.indexOf(this.conditionObj.xws);
+    let index = this.pilot.conditions.indexOf(this.condition);
     if (index > -1) {
       this.pilot.conditions.splice(index, 1);
     }
@@ -21,7 +24,13 @@ export class ConditionPopoverComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.conditionObj);
+    console.log(this.condition);
+    this.dataService.get_image_by_url(this.condition.artwork).then(
+      (url) => {
+        this.img_url = url;
+      }
+    )
+    
   }
 
 }
