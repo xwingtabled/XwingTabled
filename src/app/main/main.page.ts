@@ -355,7 +355,7 @@ export class MainPage implements OnInit {
       statCopy.type = statType;
       statCopy.remaining = stat.value;
       statCopy.numbers = Array(stat.numbers);
-      pilot.stats.push(stat);
+      pilot.stats.push(statCopy);
     }
     // If the pilot has charges, insert it as a stat
     if (pilot.pilot.charges) {
