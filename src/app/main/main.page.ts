@@ -514,8 +514,8 @@ export class MainPage implements OnInit {
       squadron.pointsDestroyed = 0;
       this.shuffleDamageDeck(squadron);
       console.log("xws loaded and data injected", squadron);
-      this.events.publish("snapshot", "Squadron " + squadron.name + " added");
       this.squadrons.push(squadron);
+      this.events.publish("snapshot", "Squadron " + squadron.name + " added");
       const toast = await this.toastController.create({
         message: 'Squadron added, Damage Deck shuffled',
         duration: 2000,

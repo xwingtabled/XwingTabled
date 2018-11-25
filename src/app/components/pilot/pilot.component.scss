@@ -81,6 +81,15 @@
     @extend .ship-status;
     font-size: 4vw; 
 }
+.image-container {
+    display: inline-block;
+    max-width: 24vh;
+    max-height: 10vh;
+    overflow: hidden;
+}
+.image-constrained {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 30%, 0 30%);
+}
 .item-pilotart {
     vertical-align: top;
     height: 10vh;

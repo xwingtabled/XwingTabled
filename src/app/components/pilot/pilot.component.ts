@@ -52,7 +52,11 @@ export class PilotComponent implements OnInit {
     if (column.length > 0) {
       this.columns.push(column);
     }
-    this.dataService.get_image_by_url(this.pilot.pilot.artwork).then(
+    let get_url = this.pilot.pilot.artwork;
+    if (!get_url) {
+      get_url = this.pilot.pilot.image;
+    }
+    this.dataService.get_image_by_url(get_url).then(
       (url) => {
         this.img_url = url;
       }
