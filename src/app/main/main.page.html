@@ -50,13 +50,13 @@
       <ion-fab-button (click)="resetData()">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadrons.length > 0" class="recharge-all-button" (click)="askReset()">
+      <ion-fab-button *ngIf="squadrons.length > 0" (click)="askReset()">
         <xwing-icon [name]="'reload'"></xwing-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="snapshots.length > 1" (click)="askUndo()">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadrons.length > 0" class="recharge-all-button" (click)="askRechargeRecurring()">
+      <ion-fab-button *ngIf="squadrons.length > 0" (click)="askRechargeRecurring()">
         <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadrons.length < 2" (click)="xwsAddButton()">
