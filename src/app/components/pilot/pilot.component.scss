@@ -3,7 +3,7 @@
 .pilot {
     margin-top : 0.2vh;
     margin-right: 0.2vw;
-    background: $xws-background;
+    background: #282828;
     color: white;
 }
 .pilot-header {
@@ -43,21 +43,21 @@
 }
 .pilot-card::-webkit-scrollbar-track
 {
-	-webkit-box-shadow: inset 0 0 0.25vh rgba(0,0,0,0.3);
-	border-radius: 0.25vh;
-	background-color: $xws-background;
+	-webkit-box-shadow: inset 0 0 0.2vh #282828;
+	border-radius: 0.2vh;
+	background-color: #282828;
 }
 
 .pilot-card::-webkit-scrollbar
 {
 	width: 0.5vh;
-	background-color: $xws-background;
+	background-color: #282828;
 }
 
 .pilot-card::-webkit-scrollbar-thumb
 {
-	border-radius: 0.25vh;
-	-webkit-box-shadow: inset 0 0 0.25vh rgba(0,0,0,.3);
+	border-radius: 0.2vh;
+	-webkit-box-shadow: inset 0 0 0.2vh rgba(0,0,0,.3);
 	background-color: #555;
 }
 .action {
