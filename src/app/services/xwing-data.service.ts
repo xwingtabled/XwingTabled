@@ -208,7 +208,8 @@ export class XwingDataService {
           this.status("manifest_downloading", "Downloading current manifest... received!");
           var new_manifest = data;
           if (!this.data || this.data["version"] != new_manifest["version"] ||
-            this.create_data_file_list(this.data, ".json").length > 0) {
+              this.create_data_file_list(this.data, ".json").length > 0 || 
+              !this.data.yasb) {
             this.status("manifest_outofdate", "Current manifest out of date");
             this.storage.set('manifest', new_manifest);
             this.data = this.reshape_manifest(new_manifest);
@@ -277,6 +278,17 @@ export class XwingDataService {
   }
 
   download_data() {
+    // Manually download yasb.json from XwingTabled repo
+    this.http.get("https://raw.githubusercontent.com/jychuah/XwingTabled/master/yasbdata/yasb.json").subscribe(
+      (result) => {
+        this.data.yasb = result;
+        console.log("YASB data", this.data.yasb);
+      },
+      (error) => {
+        console.log("Unable to download YASB data");
+      }
+    )
+
     let queue = this.create_data_file_list(this.data, ".json");
     for (var i in queue) {
       queue[i] = XwingDataService.manifest_url + queue[i];
