@@ -420,6 +420,14 @@ export class XwingDataService {
     )
     return upgrade;
   }
+
+  getYasbUpgrade(id: number) {
+    return JSON.parse(JSON.stringify(this.data.yasb.upgrades[id]));
+  }
+
+  getYasbPilot(id: number) {
+    return JSON.parse(JSON.stringify(this.data.yasb.pilots[id]));
+  }
   
   getShip(faction: string, xwsShip: string) {
     try {

@@ -1,10 +1,20 @@
 <ion-content padding>
   <div class="container">
     <h3>Import Squadron</h3>
-    <ion-label position="stacked">Paste XWS squadron data or an FFG SquadBuilder URL here</ion-label>
+      You can import squadron data from:
+      <ul>
+        <li>YASB 2.0 URL<br />
+          <i>https://raithos.github.io/...</i><br /><br /></li>
+        <li>FFG SquadBuilder URLs<br />
+          <i>https://squadbuilder.fantasyflightgames.com/...</i><br /><br /></li>
+        <li>XWS Data<br />
+          <i>"{{ '{' }}"faction" : "rebelalliance", "name" : "My Squadron" ... {{ '}' }}</i></li>
+      </ul>
+    <ion-label position="stacked">Paste XWS squadron data or URL here</ion-label>
     <ion-textarea (ionChange)="textChange($event)"
-      placeholder='https://squadbuilder.fantasyflightgames.com/squad-preview/dbb5ed32-8d19-4f59-a3d2-b9b961f5f547 or 
-      {"description":"","faction":"rebelalliance","name":"ABXY","pilots":[{"id":"jakefarrell","name":"jakefarrell","points":45,"ship":"rz1awing","upgrades":{"missile":["clustermissiles"]}}],"points":45,"vendor":{"yasb":{"builder":"Yet Another Squad Builder 2.0","builder_url":"https://raithos.github.io/","link":"https://raithos.github.io/?f=Rebel%20Alliance&d=v5!s!50:-1,98:&sn=MySquad&obs="}},"version":"2.0.0"}'>
+      placeholder='https://squadbuilder.fantasyflightgames.com ---
+      https:/raithos.github.io ---
+      {"faction":"rebelalliance","name":"My Squadron"}'>
     </ion-textarea>
     <div class="button-container">
       <ion-button color="light" (click)="cancel()">Cancel</ion-button>

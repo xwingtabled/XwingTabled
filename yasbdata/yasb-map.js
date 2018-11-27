@@ -4,7 +4,8 @@ pilots = { };
 card_data.pilotsById.forEach(
     (pilot) => {
         if (pilot.name && pilot.faction) {
-            pilots[pilot.id] = { faction: pilot.faction.canonicalize(), xws: pilot.name.canonicalize() };
+            let shipxws = card_data.ships[pilot.ship].xws.canonicalize();
+            pilots[pilot.id] = { faction: pilot.faction.canonicalize(), xws: pilot.name.canonicalize(), ship: shipxws };
         }
     }
 )

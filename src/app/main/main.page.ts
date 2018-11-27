@@ -585,6 +585,35 @@ export class MainPage implements OnInit {
     )
   }
 
+  async processYasb(data: any) {
+    let pilots = [ ];
+    data.pilots.forEach(
+      (pilot) => {
+        let yasbPilot = this.dataService.getYasbPilot(pilot.id);
+        let xwsPilot = { id: yasbPilot.xws, ship: yasbPilot.ship, upgrades: { } };
+        let upgrades = { };
+        pilot.upgrades.forEach(
+          (upgrade) => {
+            let yasbUpgrade = this.dataService.getYasbUpgrade(parseInt(upgrade));
+            if (upgrades[yasbUpgrade.slot] == undefined) {
+              upgrades[yasbUpgrade.slot] = [ ];
+            }
+            upgrades[yasbUpgrade.slot].push(yasbUpgrade.xws);
+          }
+        )
+        xwsPilot.upgrades = upgrades;
+        pilots.push(xwsPilot);
+      }
+    )
+    let squadron = {
+      name: data.name,
+      faction: data.faction,
+      pilots: pilots
+    };
+    console.log("YASB squadron", squadron);
+    return await this.processXws(squadron);
+  }
+
   async processXws(squadron: any) {
     this.ngZone.run(
       () => {
@@ -636,6 +665,9 @@ export class MainPage implements OnInit {
     if (!data) return;
     if (data.ffg) {
       return this.processFFG(data.ffg);
+    }
+    if (data.yasb) {
+      return this.processYasb(data.yasb);
     }
     if (data.xws) {
       let squadron = data.xws;
