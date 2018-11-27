@@ -69,6 +69,11 @@ export class MainPage implements OnInit {
           this.squadrons = lastSnapshot.squadrons;
           console.log(this.squadrons);
           this.toastUndo(lastSnapshot.time);
+          if (this.squadrons.length == 0) {
+            this.presentXwsModal();
+          }
+        } else {
+          this.presentXwsModal();
         }
       }
     )
@@ -564,29 +569,33 @@ export class MainPage implements OnInit {
   }
 
   async processXws(squadron: any) {
-    squadron.damagediscard = [ ];
-    squadron.damagedeck = this.dataService.getDamageDeck();
-    squadron.pilots.forEach(
-      (pilot) => {
-        this.injectShipData(pilot, squadron.faction);
-        this.injectPilotData(pilot, squadron.faction);
-        this.mangleUpgradeArray(pilot);
-    
-        // Process each upgrade card
-        pilot.upgrades.forEach(
-          (upgrade) => {
-            this.injectUpgradeData(pilot, upgrade);
+    this.ngZone.run(
+      () => {
+        squadron.damagediscard = [ ];
+        squadron.damagedeck = this.dataService.getDamageDeck();
+        squadron.pilots.forEach(
+          (pilot) => {
+            this.injectShipData(pilot, squadron.faction);
+            this.injectPilotData(pilot, squadron.faction);
+            this.mangleUpgradeArray(pilot);
+        
+            // Process each upgrade card
+            pilot.upgrades.forEach(
+              (upgrade) => {
+                this.injectUpgradeData(pilot, upgrade);
+              }
+            );
+            this.injectShipBonuses(pilot);
+            this.injectForceBonuses(pilot);
           }
-        );
-        this.injectShipBonuses(pilot);
-        this.injectForceBonuses(pilot);
+        )
+        squadron.pointsDestroyed = 0;
+        this.shuffleDamageDeck(squadron);
+        console.log("xws loaded and data injected", squadron);
+        this.squadrons = [ squadron ];
+        this.events.publish("snapshot", "Squadron " + squadron.name + " added");
       }
     )
-    squadron.pointsDestroyed = 0;
-    this.shuffleDamageDeck(squadron);
-    console.log("xws loaded and data injected", squadron);
-    this.squadrons.push(squadron);
-    this.events.publish("snapshot", "Squadron " + squadron.name + " added");
     const toast = await this.toastController.create({
       message: 'Squadron added, Damage Deck shuffled',
       duration: 2000,
