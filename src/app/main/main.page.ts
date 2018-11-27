@@ -69,7 +69,7 @@ export class MainPage implements OnInit {
           this.squadrons = lastSnapshot.squadrons;
           console.log(this.squadrons);
           this.toastUndo(lastSnapshot.time);
-          if (this.squadrons.length == 0) {
+          if (this.squadrons && this.squadrons.length == 0) {
             this.presentXwsModal();
           }
         } else {
@@ -383,7 +383,7 @@ export class MainPage implements OnInit {
 
   injectPilotData(pilot: any, faction: string) {
     // Get pilot data and insert it into pilot object
-    pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.name);
+    pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.id);
 
     // Creates a stat of { type: statType, remaining: 2, numbers: Array() }
     // for display compatibility
