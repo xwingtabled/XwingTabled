@@ -507,6 +507,23 @@ export class MainPage implements OnInit {
     )
   }
 
+  calculatePoints(pilot: any) {
+    let pilotCost = pilot.pilot.cost;
+    let upgradeCost = 0;
+    pilot.upgrades.forEach(
+      (upgrade) => {
+        if ("value" in upgrade.cost) {
+          upgradeCost += upgrade.cost.value;
+        }
+        if ("variable" in upgrade.cost) {
+          let statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
+          upgradeCost += upgrade.cost.values[statValue];
+        }
+      }
+    );
+    pilot.points = pilotCost + upgradeCost;
+  }
+
   shuffleDamageDeck(squadron: any) {
     let newDeck = [ ];
     while (squadron.damagedeck.length > 0) {
@@ -571,6 +588,7 @@ export class MainPage implements OnInit {
   async processXws(squadron: any) {
     this.ngZone.run(
       () => {
+        let squadPoints = 0;
         squadron.damagediscard = [ ];
         squadron.damagedeck = this.dataService.getDamageDeck();
         squadron.pilots.forEach(
@@ -585,10 +603,15 @@ export class MainPage implements OnInit {
                 this.injectUpgradeData(pilot, upgrade);
               }
             );
+
+            this.calculatePoints(pilot);
+            squadPoints += pilot.points;
+
             this.injectShipBonuses(pilot);
             this.injectForceBonuses(pilot);
           }
         )
+        squadron.points = squadPoints;
         squadron.pointsDestroyed = 0;
         this.shuffleDamageDeck(squadron);
         console.log("xws loaded and data injected", squadron);
