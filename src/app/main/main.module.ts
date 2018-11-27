@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { XwingModule } from '../components/xwing.module';
 import { ProgressBarModule } from 'angular-progress-bar';
 import { MainPage } from './main.page';
-
+import { HttpProvider } from '../providers/http.provider';
 const routes: Routes = [
   {
     path: '',
@@ -22,8 +22,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     XwingModule,
-    ProgressBarModule
+    ProgressBarModule,
   ],
-  declarations: [MainPage]
+  declarations: [MainPage],
+  providers: [HttpProvider]
 })
 export class MainPageModule {}

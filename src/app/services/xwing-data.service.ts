@@ -379,6 +379,35 @@ export class XwingDataService {
     );
     return JSON.parse(JSON.stringify(pilot));
   }
+
+  getXwsFromFFG(id: number) {
+    let pilot = null;
+    this.data.pilots.forEach(
+      (faction) => {
+        Object.entries(faction.ships).forEach(
+          ([ship_key, ship]) => {
+            let shipData = ship['pilots'].find((pilot) => pilot.ffg == id);
+            if (shipData) {
+              pilot = { id: shipData.xws, name: shipData.xws, ship: ship['xws'] };
+            }
+          }
+        )
+      }
+    )
+    if (pilot) {
+      return pilot;
+    }
+    let upgrade = null;
+    Object.entries(this.data.upgrades).forEach(
+      ([upgrade_type, upgrade_array]) => {
+        let upgradeData = (<Array<any> >upgrade_array).find((upgrade) => upgrade.sides[0].ffg == id);
+        if (upgradeData) {
+          upgrade = { type: upgrade_type, xws: upgradeData.xws };
+        }
+      }
+    )
+    return upgrade;
+  }
   
   getShip(faction: string, xwsShip: string) {
     try {

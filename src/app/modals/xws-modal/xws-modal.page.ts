@@ -9,20 +9,41 @@ import { ModalController } from '@ionic/angular';
 export class XwsModalPage implements OnInit {
 
   xwsData: any = null;
-  okDisabled: boolean = true;
+  dataValid: boolean = false;
 
   constructor(public modal: ModalController) { }
 
   ngOnInit() {
   }
 
-  textChange($event) {
+  processXws(value: string) : boolean {
     try {
-      this.xwsData = JSON.parse($event.detail.value);
-      this.okDisabled = false;
+      this.xwsData = { xws: JSON.parse(value) };
+      return true;
     } catch(error) {
-      this.okDisabled = true;
+      return false;
+    } 
+  }
+
+  processFFGSquadBuilder(value: string) : boolean {
+    if (!value || value.length == 0) {
+      return false;
     }
+    let isSquadBuilder = value.startsWith("https://squadbuilder.fantasyflightgames.com");
+    let matchArray = value.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
+    let uuid = null;
+    if (matchArray.length) {
+      uuid = matchArray[0];
+    }
+    if (isSquadBuilder && uuid) {
+      this.xwsData = { ffg: uuid };
+    }
+    return isSquadBuilder;
+  }
+
+  textChange($event) {
+    let value = $event.detail.value;
+    this.dataValid = this.processXws(value) || this.processFFGSquadBuilder(value);
   }
 
   cancel() {

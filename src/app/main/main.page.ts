@@ -11,6 +11,7 @@ import { DamageDeckActionsComponent } from '../popovers/damage-deck-actions/dama
 import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { HttpProvider } from '../providers/http.provider';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -37,7 +38,8 @@ export class MainPage implements OnInit {
               private alertController: AlertController,
               private ngZone: NgZone,
               private toastController: ToastController,
-              private storage: Storage) { }
+              private storage: Storage,
+              private http: HttpProvider) { }
 
   ngOnInit() {
     this.events.subscribe(
@@ -516,44 +518,95 @@ export class MainPage implements OnInit {
     this.presentXwsModal();
   }
 
+  async processFFG(uuid: string) {
+    let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + uuid + "/";
+    
+    this.http.get(url).subscribe(
+      (data) => {
+
+        let cost = data.cost;
+        let name = data.name;
+        let faction = data.faction.name;
+        let pilots = [ ];
+        data.deck.forEach(
+          (pilot) => {
+            let xwsPilot = this.dataService.getXwsFromFFG(pilot.pilot_card.id);
+            xwsPilot.points = pilot.cost;
+            let upgrades = { };
+            pilot.slots.forEach(
+              (upgrade) => {
+                let upgradeData = this.dataService.getXwsFromFFG(upgrade.id);
+                if (upgrades[upgradeData.type] == undefined) {
+                  upgrades[upgradeData.type] = [ ];
+                }
+                upgrades[upgradeData.type].push(upgradeData.xws);
+              }
+            )
+            xwsPilot.upgrades = upgrades;
+            pilots.push(xwsPilot);
+          }
+        );
+        let squadron = {
+          description: data.description,
+          faction: data.faction.name.replace(/ /g, '').toLowerCase(),
+          name: data.name,
+          points: data.cost,
+          pilots: pilots
+        }
+        console.log("FFG SquadBuilder response", data);
+        console.log("FFG -> XWS", squadron);
+        this.processXws(squadron);
+      },
+      (error) => {
+        console.log("Unable to get FFG SquadBuilder data", error);
+      }
+    )
+  }
+
+  async processXws(squadron: any) {
+    squadron.damagediscard = [ ];
+    squadron.damagedeck = this.dataService.getDamageDeck();
+    squadron.pilots.forEach(
+      (pilot) => {
+        this.injectShipData(pilot, squadron.faction);
+        this.injectPilotData(pilot, squadron.faction);
+        this.mangleUpgradeArray(pilot);
+    
+        // Process each upgrade card
+        pilot.upgrades.forEach(
+          (upgrade) => {
+            this.injectUpgradeData(pilot, upgrade);
+          }
+        );
+        this.injectShipBonuses(pilot);
+        this.injectForceBonuses(pilot);
+      }
+    )
+    squadron.pointsDestroyed = 0;
+    this.shuffleDamageDeck(squadron);
+    console.log("xws loaded and data injected", squadron);
+    this.squadrons.push(squadron);
+    this.events.publish("snapshot", "Squadron " + squadron.name + " added");
+    const toast = await this.toastController.create({
+      message: 'Squadron added, Damage Deck shuffled',
+      duration: 2000,
+      position: 'bottom'
+    });
+    return await toast.present();
+  }
+
   async presentXwsModal() {
     const modal = await this.modalController.create({
       component: XwsModalPage
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    let squadron = data;
-    if (squadron) {
-      squadron.damagediscard = [ ];
-      squadron.damagedeck = this.dataService.getDamageDeck();
-      squadron.pilots.forEach(
-        (pilot) => {
-          this.injectShipData(pilot, squadron.faction);
-          this.injectPilotData(pilot, squadron.faction);
-          this.mangleUpgradeArray(pilot);
-      
-          // Process each upgrade card
-          pilot.upgrades.forEach(
-            (upgrade) => {
-              this.injectUpgradeData(pilot, upgrade);
-            }
-          );
-          this.injectShipBonuses(pilot);
-          this.injectForceBonuses(pilot);
-        }
-      )
-      squadron.pointsDestroyed = 0;
-      this.shuffleDamageDeck(squadron);
-      console.log("xws loaded and data injected", squadron);
-      this.squadrons.push(squadron);
-      this.events.publish("snapshot", "Squadron " + squadron.name + " added");
-      const toast = await this.toastController.create({
-        message: 'Squadron added, Damage Deck shuffled',
-        duration: 2000,
-        position: 'bottom'
-      });
-      return await toast.present();
-
+    if (data.ffg) {
+      return this.processFFG(data.ffg);
+    }
+    if (data.xws) {
+      let squadron = data.xws;
+      return this.processXws(squadron);
     }
   }
 }
