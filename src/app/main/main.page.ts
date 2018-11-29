@@ -516,7 +516,12 @@ export class MainPage implements OnInit {
           upgradeCost += upgrade.cost.value;
         }
         if ("variable" in upgrade.cost) {
-          let statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
+          let statValue = "";
+          if (upgrade.cost.variable == "size") {
+            statValue = pilot.ship.size;
+          } else {
+            statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
+          }
           upgradeCost += upgrade.cost.values[statValue];
         }
       }
