@@ -14,13 +14,18 @@ export class ConditionPopoverComponent implements OnInit {
   constructor(private popoverController: PopoverController,
               private dataService: XwingDataService) { }
 
+  async assignPilotDamage() {
+    await this.popoverController.dismiss();
+    this.pilot.damage_cards.push(this.condition.pilotDamageCard);
+    this.condition.pilotDamageCard = null;
+  }
+
   async removeCondition() {
     await this.popoverController.dismiss();
     let index = this.pilot.conditions.indexOf(this.condition);
     if (index > -1) {
       this.pilot.conditions.splice(index, 1);
     }
-
   }
 
   ngOnInit() {

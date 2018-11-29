@@ -96,6 +96,11 @@ export class PilotModalPage implements OnInit {
   }
 
   async recycleDamageCards() {
+    this.pilot.damagecards.forEach(
+      (card) => {
+        card.exposed = false;
+      }
+    )
     this.squadron.damagediscard = this.squadron.damagediscard.concat(this.pilot.damagecards);
     this.pilot.damagecards = [ ];
   }
@@ -136,7 +141,8 @@ export class PilotModalPage implements OnInit {
     const popover = await this.popoverController.create({
       component: ConditionMenuComponent,
       componentProps: {
-        pilot: this.pilot
+        pilot: this.pilot,
+        squadron: this.squadron
       }
     });
     await popover.present();

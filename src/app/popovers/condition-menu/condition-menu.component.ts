@@ -10,9 +10,12 @@ import { ToastController } from '@ionic/angular';
 })
 export class ConditionMenuComponent implements OnInit {
   pilot;
+  squadron;
   conditions: any[] = [];
   img_urls: any = { };
   selected_condition: any;
+  pilotDamageCards: any[] = [];
+  darksideXws: string = "illshowyouthedarkside"
 
   constructor(private dataService: XwingDataService, 
               private popoverController: PopoverController,
@@ -21,6 +24,10 @@ export class ConditionMenuComponent implements OnInit {
   async assignCondition() {
     let existing = this.pilot.conditions.find((condition) => condition.xws == this.selected_condition.xws);
     if (!existing) {
+      if (this.selected_condition.xws == this.darksideXws && this.selected_condition.pilotDamageCard != null) {
+        let index = this.squadron.damage_deck.indexOf(this.selected_condition.pilotDamageCard);
+        this.squadron.damage_deck.splice(index, 1);
+      }
       this.pilot.conditions.push(this.selected_condition);
       return this.popoverController.dismiss();
     } else {
@@ -33,8 +40,27 @@ export class ConditionMenuComponent implements OnInit {
     }
   }
 
+  getPilotDamageCards() {
+    this.pilotDamageCards = [ ];
+    this.squadron.damage_deck.forEach(
+      (damagecard) => {
+        if (!this.pilotDamageCards.find((card) => card.name == card.name) && damagecard.type == 'Pilot') {
+          this.pilotDamageCards.push(damagecard);
+        }
+      }
+    )
+  }
+
   changeEvent(event) {
     this.selected_condition = this.conditions.find((condition) => condition.xws == event.detail.value);
+    if (this.selected_condition.xws == this.darksideXws) {
+      this.getPilotDamageCards();
+    }
+  }
+
+  changeDamageCard(event) {
+    this.selected_condition.pilotDamageCard = event.detail.value;
+    this.selected_condition.pilotDamageCard.exposed = true;
   }
 
   ngOnInit() {
