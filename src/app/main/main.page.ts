@@ -24,6 +24,8 @@ export class MainPage implements OnInit {
 
   data_progress: number = 0;
   data_message: string = "X-Wing Tabled";
+  retry_button: boolean = false;
+  retry_button_disabled: boolean = false;
   data_button: boolean = false;
   data_button_disabled: boolean = false;
   image_button: boolean = false;
@@ -88,12 +90,37 @@ export class MainPage implements OnInit {
     console.log("snapshot created", this.snapshots);
   }
 
-  data_event_handler(event: any) {
+  async data_event_handler(event: any) {
     this.data_message = event.message;
     this.data_progress = event.progress;
-    if (event.status == "manifest_outofdate") {
+    if (event.status == "manifest_incomplete") {
       this.data_button = true;
       this.data_message = "X-Wing Tabled requires a local data update";
+    }
+    if (event.status == "data_download_errors") {
+      this.data_button = true;
+      this.data_message = "Some X-Wing data could not be downloaded";
+    }
+    if (event.status == "no_data_no_connection") {
+      this.retry_button = true;
+      this.retry_button_disabled = false;
+      const alert = await this.alertController.create({
+        header: 'Internet Connection Required',
+        message: 'An Internet connection is required to update or download necessary data files the first time X-Wing Tabled runs.',
+        buttons: [
+          { text: 'Retry',
+            handler: () => { 
+              this.ngZone.run(
+                async () => {
+                  await this.alertController.dismiss();
+                  this.retryDownload();
+                }
+              )
+            }
+          },
+        ]
+      });
+      return await alert.present();
     }
     if (event.status == "manifest_current" || event.status == "data_download_complete") {
       this.data_button = false;
@@ -112,6 +139,12 @@ export class MainPage implements OnInit {
     if (event.status == "image_download_complete") {
       this.restoreFromDisk();
     }
+  }
+
+  retryDownload() {
+    this.retry_button_disabled = true;
+    this.retry_button = false;
+    this.dataService.check_manifest();
   }
 
   downloadData() {

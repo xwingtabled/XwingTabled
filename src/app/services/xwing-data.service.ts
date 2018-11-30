@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { Observable, from, onErrorResumeNext, of, zip } from 'rxjs';
-import { concatMap, tap, catchError } from 'rxjs/operators';
+import { concatMap, flatMap, tap, catchError } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -55,6 +55,7 @@ export class XwingDataService {
   }
 
   async reset() {
+    // Delete all locally stored DB data (not images)
     this.initialized = false;
     this.image_map = { };
     this.image_urls = { };
@@ -65,6 +66,7 @@ export class XwingDataService {
 
 
   load_from_storage(keys: string[]) : Observable<{ key: string, value: any }> {
+    // Helper function to sequentially load keys from storage
     let done: number = 0;
     // Stream keys one at a time
     let keys_obs = from(keys);
@@ -124,11 +126,13 @@ export class XwingDataService {
   }
 
   url_to_filename(url: string) {
+    // Extract the filename from a URL
     let tokens = url.split('/');
     return tokens[tokens.length - 1];
   }
 
   download(urls: string[], options: any = {}) {
+    // Helper function to sequentially download files
     this.progress =  0;
     this.downloading = true;
     let done: number = 0;
@@ -153,6 +157,7 @@ export class XwingDataService {
   }
 
   mangle_name(name: string) : string {
+    // Canonicalizes names: T-65 X-Wing => t65xwing
     return name.replace(/\s/g, '').replace(/\-/g, '').toLowerCase();
   }
 
@@ -163,6 +168,10 @@ export class XwingDataService {
   }
 
   check_manifest() {
+    // Start of data verification/download sequence
+    // Loads cached data structure containing all xwing-data2 data.
+    // If none is stored, then this.data will be null
+    // Followed by download_manifest()
     this.status("manifest_loading", "Loading cached manifest... ");
     this.storage.get('manifest').then(
       (data) => {
@@ -178,52 +187,94 @@ export class XwingDataService {
   }
 
   reshape_manifest(manifest: any) {
+    // Reshapes a manifest file in preparation for downloads
     let new_manifest = JSON.parse(JSON.stringify(manifest));
+    
+    // Reshapes pilots from { faction, ships[] } to { faction: ships[] }
     new_manifest.pilots.forEach(
       (faction) => {
         let shipDictionary = { };
-        faction.ships.forEach(
-          (shipUrl) => {
-            shipDictionary[this.url_to_key_name(shipUrl)] = shipUrl;
-          }
-        )
-        faction.ships = shipDictionary;
+        if (Array.isArray(faction.ships)) {
+          faction.ships.forEach(
+            (shipUrl) => {
+              shipDictionary[this.url_to_key_name(shipUrl)] = shipUrl;
+            }
+          )
+          faction.ships = shipDictionary;
+        }
       }
     )
+
+    // Reshapes upgrades from upgrade[] to upgrades: { type: upgrade[] }
     let upgradeDictionary = { };
-    new_manifest.upgrades.forEach(
-      (upgradeUrl) => {
-        upgradeDictionary[this.url_to_key_name(upgradeUrl)] = upgradeUrl;
-      }
-    )
-    new_manifest.upgrades = upgradeDictionary;
+    if (Array.isArray(new_manifest.upgrades)) { 
+      new_manifest.upgrades.forEach(
+        (upgradeUrl) => {
+          upgradeDictionary[this.url_to_key_name(upgradeUrl)] = upgradeUrl;
+        }
+      )
+      new_manifest.upgrades = upgradeDictionary;
+    }
     return new_manifest;
   }
 
   download_manifest() {
+    // Download the current manifest from xwing-data2
     this.status("manifest_downloading", "Downloading current manifest...");
-    this.http.get(XwingDataService.manifest_url + "data/manifest.json").subscribe(
-      (data) => {
-        if (data instanceof Object) {
+    let manifest_url = XwingDataService.manifest_url + "data/manifest.json";
+    console.log("Downloading from", manifest_url)
+    this.http.get(manifest_url).subscribe(
+      (manifest) => {
+        if (manifest) {
           this.status("manifest_downloading", "Downloading current manifest... received!");
-          var new_manifest = data;
-          if (!this.data || this.data["version"] != new_manifest["version"] ||
-              this.create_data_file_list(this.data, ".json").length > 0 || 
-              !this.data.yasb) {
+          let new_manifest = manifest;
+
+          if (!this.data || this.data["version"] != new_manifest["version"]) {
+            // If the current manifest version is out of date, overwrite our data
+            // with an empty, reshaped manifest. This will invalidate it.
             this.status("manifest_outofdate", "Current manifest out of date");
-            this.storage.set('manifest', new_manifest);
-            this.data = this.reshape_manifest(new_manifest);
+            console.log("Old manifest", this.data);
+            console.log("New manifest", new_manifest);
+            let reshaped_new_manifest = this.reshape_manifest(new_manifest); 
+            this.storage.set('manifest', reshaped_new_manifest);
+            this.data = this.reshape_manifest(reshaped_new_manifest);
           } else {
+            // Otherwise the manifest is current. Leave it alone.
             this.status("manifest_current", "Manifest is current.");
             console.log("X-Wing Json Data", this.data);
-            this.load_images(this.data);
           }
         }
       },
       (error) => {
+        // The manifest could not be downloaded, possibly due to no Internet connection
+        // Do nothing to our currently cached data
         this.status("manifest_error", "Downloading current manifest... unavailable!");
+        console.log("Manifest download error", error);
+        if (this.data) {
+          // If we have partial data, then perhaps we are ok. Go to checkMissingData()
+          this.checkMissingData();
+        } else {
+          // Otherwise, we have no internet connection and no data. Notify the Main page to notify the user.
+          // The main page should start over with check_manifest() once that's resolved
+          this.status("no_data_no_connection", "Unable to continue without X-Wing Data");
+        }
+      },
+      () => {
+        // Whatever happens, proceed to next step - check for missing data files
+        this.checkMissingData();
       }
     );
+  }
+
+  checkMissingData() {
+    if (this.create_data_file_list(this.data, ".json").length > 0 || !this.data.yasb) {
+      // If we are missing any data, broadcast an event so the user can proceed with
+      // a download. Main page should initiate download_data()
+      this.status("manifest_incomplete", "Some X-Wing Data is missing.");
+    } else {
+      // If no data is missing, proceed to load images from storage.
+      this.load_images(this.data);
+    }
   }
 
   injectConditionArtwork(xwsCondition: string, artwork: string) {
@@ -289,18 +340,26 @@ export class XwingDataService {
       }
     )
 
+    // Look at current manifest. Any missing data will have a .json file
+    // string in its place.
     let queue = this.create_data_file_list(this.data, ".json");
+
+    // Construct a queue of raw.github URLs for xwing-data2
     for (var i in queue) {
       queue[i] = XwingDataService.manifest_url + queue[i];
     }
+
+    // Download data from the queue
     let missing = [ ];
     this.download(queue).subscribe(
       (result) => {
         let key = this.url_to_key_name(result.url);
         if (result.response) {
+          // If a response was received for a .json download, insert it into our data structure
           this.insert_json_data(result.url.replace(XwingDataService.manifest_url, ''), result.response);
           this.status("data_download_item", "Downloaded data for " + key);
         } else {
+          // ... if no response was received for a data file, mark it as an incomplete download
           this.status("data_download_item", "Data unavailable for " + key);
           missing.push(key);
         }
@@ -308,26 +367,35 @@ export class XwingDataService {
       (error) => {
       },
       () => {
+        // Inject some extra data into the conditions structure
         this.searchConditions();
+
         if (missing.length) {
+          // If any data was missing, send an event so the Main page can prompt the user to attempt
+          // to download the data again. This may occur due to lack of internet connection
           this.status("data_download_errors", "X-Wing Data download complete with errors");
         } else {
+          // Otherwise store the data and continue to load_images
           this.status("data_download_complete", "X-Wing Data download complete!")
+          this.storage.set('manifest', this.data);
+          console.log("X-Wing Json Data", this.data);
+          this.load_images(this.data);
         }
-        this.storage.set('manifest', this.data);
-        console.log("X-Wing Json Data", this.data);
-        this.load_images(this.data);
       }
     );
   }
 
   insert_json_data(filename: string, json: any) {
+    // Helper function to replace a ".json" filename in the data set
+    // with the contents of the .json file as an object
     let jsonString = JSON.stringify(this.data);
     jsonString = jsonString.replace('"' + filename + '"', JSON.stringify(json));
     this.data = JSON.parse(jsonString);
   }
 
   create_data_file_list(manifest: any, extension: string) {
+    // Create a list of data files to download. Skip ships.json since it no longer
+    // exists in xwing-data2
     let files = this.create_file_list(manifest, extension);
     let filtered = [ ];
     files.forEach(
@@ -464,17 +532,22 @@ export class XwingDataService {
       return null;
     }
   }
+
+
   load_images(manifest: any) {
     if (this.hotlink) {
+      // If this is running in a desktop browser, then we can simply
+      // hotlink to FFG's image CDN
       this.hotlink_images(manifest);
     } else {
+      // Otherwise, attempt to load images from local file storage.
       this.load_images_from_storage(manifest);
     }
   }
 
-
-
   load_images_from_storage(manifest: any) {
+    // Create a list of image filenames to search for locally
+    // from a manifest.
     let filenames = [ ];
 
     this.create_file_list(manifest, ".png").forEach(
@@ -487,33 +560,45 @@ export class XwingDataService {
         filenames.push(this.url_to_filename(url));
       }
     )
+
+    // Find the app's cacheDirectory
     this.file.resolveDirectoryUrl(this.file.cacheDirectory).then(
       (value) => {
+        // Once found, load image files from the app's cache directory
         this.load_files_from_directory(value, filenames);
       },
       (error) => {
+        // Something is seriously wrong - we can't load the app cache directory?
         console.log("can't resolve directory url", error);
       }
     )
   }
 
   async get_image_by_key(key: string) : Promise<string> {
+    // Image loader helper method
+    // Given a image keyname, find its associated URL
     if (this.image_urls[key]) {
+      // For hotlinked images, this should always be filled
       return this.image_urls[key];
     }
+    // If an image_url[key] is empty, that means we must load from disk and cache it for later
     let base64url = await this.file.readAsDataURL(this.file.cacheDirectory, this.image_map[key]);
     this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(base64url);
     return this.image_urls[key];
   }
 
   async get_image_by_url(url: string) : Promise<string> {
+    // Get an image via its URL
     return await this.get_image_by_key(this.url_to_key_name(url));
   }
 
   load_files_from_directory(directory: any, filenames: string[]) {
+    // Do a quick file check for a list of images in a directory
+
+    // Create a ({filename, status}) sequence
     let filenames_obs = from(filenames);
     let filereader_obs = from(filenames).pipe(
-      concatMap(
+      flatMap(
         filename => from(
           this.file.checkFile(this.file.cacheDirectory, filename)
         )
@@ -532,16 +617,20 @@ export class XwingDataService {
     let done = 0;
     let missing = [ ];
 
+    // Subscribe to the sequence
     zipped.subscribe(
       (item) => {
+        // Mark progress that a file has been checked
         done = done + 1;
         this.progress = (done / filenames.length) * 100;
         let key = this.url_to_key_name(item.filename);
 
         if (item.status) {
+          // If a file is present, record its filename in our image_map
           this.image_map[key] = item.filename;
           this.status("image_loaded", "Found image " + item.filename);
         } else {
+          // If it's missing, mark it as missing
           this.status("image_loaded", "Missing image " + item.filename);
           missing.push(item.filename);
         }
@@ -551,17 +640,23 @@ export class XwingDataService {
       },
       () => {
         if (missing.length) {
+          // If there are missing images, notify the Main Page so the user can be prompted to download it
+          // This should trigger download_missing_images()
           this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded");
         } else {
+          // If there are no missing images, then mark this service as initialized!
           this.initialized = true;
           this.status("images_complete", "All X-Wing artwork loaded");
+          console.log("X-Wing Image Data", this.image_map);
         }
-        console.log("X-Wing Image Data", this.image_map);
       }
     )
   }
 
   missing_file_list(manifest: any) : string[ ] {
+    // Construct a list of missing image files. Missing image
+    // files are any .png or .jpg that do not appear in the image_map, which
+    // should have been loaded during load_files_from_directory
     let missing_files = [ ];
     this.create_file_list(manifest, ".png").forEach(
       (url) => {
@@ -581,6 +676,7 @@ export class XwingDataService {
   }
 
   hotlink_images(manifest: any) {
+    // Hotlink any images in our image_urls structure directly to FFG.
     this.create_file_list(manifest, ".png").forEach(
       (url) => {
         this.image_urls[this.url_to_key_name(url)] = url;
@@ -597,8 +693,13 @@ export class XwingDataService {
   }
 
   download_missing_images(manifest: any) {
+    // Sequentially ownload missing images from FFG image-cdn
+
+    // Create a list of images to download
     let missing = [ ]
     let urls = this.missing_file_list(manifest);
+
+    // Create a sequence of ( { urls, fileEntry })
     let url_obs = from(urls);
     let file_obs = from(urls).pipe(
       concatMap(
@@ -613,28 +714,35 @@ export class XwingDataService {
     );
     let zipped = zip(url_obs, file_obs, (url, fileEntry) => ({ url, fileEntry}));
     let done = 0;
+
+    // Subscribe to the downloads
     zipped.subscribe(
       (result) => {
         let key = this.url_to_key_name(result.url);
         done = done + 1;
         this.progress = (done / urls.length) * 100;
+        // Check each download
         if (result.fileEntry) {
+          // If a fileEntry is present, mark it as downloaded in our image_map
           this.status("image_download", "Downloaded " + key);
           this.image_map[key] = this.url_to_filename(result.url);
         } else {
-          this.status("image_download", "Unaable to download " + key);
+          // Otherwise mark it is missing
+          this.status("image_download", "Unable to download " + key);
           missing.push(key);
         }
       },
       (error) => { },
       () => {
         if (missing.length) {
+          // If there are images that could not be downloaded, inform the Main Page
           this.status("image_download_incomplete", "Unable to download one or more images");
         } else {
+          // Otherwise we are good to go. Mark the service as initialized!
           this.status("image_download_complete", "X-Wing artwork has been downloaded");
+          this.initialized = true;
+          console.log("X-Wing Image Data", this.image_map);
         }
-        this.initialized = true;
-        console.log("X-Wing Image Data", this.image_map);
       }
     );
   }
