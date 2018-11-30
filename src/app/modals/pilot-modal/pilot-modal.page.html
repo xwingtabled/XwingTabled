@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button (click)="assignIdNumber()">Assign ID Number</ion-button>
+    </ion-buttons>
     <ion-title>{{ pilot.pilot.name }}&nbsp;<span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span></ion-title>
   </ion-toolbar>
 </ion-header>
@@ -11,7 +14,6 @@
           <img [src]="img_url" class="pilot-art"/>
         </div>
         <div class="token-box">
-            <ion-button expand="full" (click)="assignIdNumber()">Assign ID Number</ion-button>
             <xws-token-display *ngIf="shields" [name]="'shield'" [data]="shields" class="token-set"></xws-token-display>
             <xws-token-display *ngIf="charges" [name]="'charge'" [data]="charges" class="token-set"></xws-token-display>
             <xws-token-display *ngIf="force" [name]="'force'" [data]="force" class="token-set"></xws-token-display>
