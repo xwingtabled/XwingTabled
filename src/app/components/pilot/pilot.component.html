@@ -37,4 +37,7 @@
         [class]="platform.isPortrait() ? 'upgrade-portrait' : 'upgrade'"></xws-upgrade>
     </div>
   </div>
+  <div class="pilot-destroyed-overlay" *ngIf="pilot.points == pilot.pointsDestroyed">
+  </div>
 </div>
+
