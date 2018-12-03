@@ -134,7 +134,11 @@ export class MainPage implements OnInit {
       this.events.publish("mainpage", { message : "loading_controller_present" });
     }
     if (event.status == "loading_images_complete") {
-      return await this.loadingCtrl.dismiss();
+      try {
+        await this.loadingCtrl.dismiss();
+      } catch (err) {
+        
+      }
     }
     if (event.status == "manifest_current" || event.status == "data_download_complete") {
       this.data_button = false;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'xws-token-display',
@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class TokenDisplayComponent implements OnInit {
   @Input() name: string;
   @Input() data: any = { };
+  @Output() change = new EventEmitter();
 
   spent = [];
   available = [];
@@ -18,6 +19,7 @@ export class TokenDisplayComponent implements OnInit {
   makeTokens() {
     this.available = new Array(this.data.remaining);
     this.spent = new Array(this.data.value - this.data.remaining);
+    this.change.emit(this.data);
   }
 
   spend() {

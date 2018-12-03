@@ -28,7 +28,7 @@ export class PilotModalPage implements OnInit {
               private alertController: AlertController,
               private ngZone: NgZone) { }
 
-  postDamage() {
+  async postDamage() {
     // Get the hull stat
     let hull = this.pilot.stats.find((stat) => stat.type == 'hull');
     // Compute hull remaining based on number of damage cards
@@ -36,6 +36,12 @@ export class PilotModalPage implements OnInit {
     // Calculate points destroyed
     if (hull.remaining <= 0) {
       this.pilot.pointsDestroyed = this.pilot.points;
+      const toast = await this.toastController.create({
+        message: this.pilot.ship.name + " destroyed",
+        duration: 2000,
+        position: 'middle'
+      });
+      toast.present();
     } else {
       let totalPoints = hull.value;
       let remainingPoints = hull.remaining;
@@ -46,6 +52,12 @@ export class PilotModalPage implements OnInit {
       }
       if (remainingPoints <= totalPoints / 2) {
         this.pilot.pointsDestroyed = Math.ceil(this.pilot.points / 2);
+        const toast = await this.toastController.create({
+          message: this.pilot.ship.name + " at half points",
+          duration: 2000,
+          position: 'middle'
+        });
+        toast.present();
       }
     }
     this.squadron.pointsDestroyed = 0;
