@@ -535,14 +535,29 @@ export class XwingDataService {
 
 
   load_images(manifest: any) {
+
     if (this.hotlink) {
       // If this is running in a desktop browser, then we can simply
       // hotlink to FFG's image CDN
       this.hotlink_images(manifest);
     } else {
-      // Otherwise, attempt to load images from local file storage.
-      this.load_images_from_storage(manifest);
+      // Otherwise, begin a local file storage loading sequence.
+      this.await_mainpage_loading_notification(manifest);
     }
+  }
+
+  await_mainpage_loading_notification(manifest: any) {
+    // Wait for the Main Page to verify that the "loading" screen is present
+    this.events.subscribe("mainpage", (event) => {
+      if (event.message == "loading_controller_present") {
+        this.load_images_from_storage(manifest);
+      }
+    });
+    // Notify the Main Page that we will begin loading images. 
+    // The above subscription actually begins the loading - but we have
+    // to wait for the Main Page to disable screen interactions with
+    // LoadingController
+    this.status("loading_images", "Loading artwork.");
   }
 
   load_images_from_storage(manifest: any) {
@@ -639,6 +654,8 @@ export class XwingDataService {
         console.log("image loader error", error);
       },
       () => {
+        // Notify Main Page that loading images has finished
+        this.status("loading_images_complete", "Loading images complete"); 
         if (missing.length) {
           // If there are missing images, notify the Main Page so the user can be prompted to download it
           // This should trigger download_missing_images()
@@ -687,6 +704,8 @@ export class XwingDataService {
         this.image_urls[this.url_to_key_name(url)] = url;
       }
     )
+    // Notify Main Page that loading images has finished
+    this.status("loading_images_complete", "Loading images complete");
     this.status("images_complete", "X-Wing artwork hotlinked");
     this.initialized = true;
     console.log("X-Wing Images hotlinked URLS", this.image_urls);

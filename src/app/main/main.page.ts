@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController, LoadingController } from '@ionic/angular';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
 import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
-import { PopoverController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../popovers/damage-deck-actions/damage-deck-actions.component';
@@ -12,6 +11,7 @@ import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -41,7 +41,8 @@ export class MainPage implements OnInit {
               private ngZone: NgZone,
               private toastController: ToastController,
               private storage: Storage,
-              private http: HttpProvider) { }
+              private http: HttpProvider,
+              private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
     this.events.subscribe(
@@ -121,6 +122,19 @@ export class MainPage implements OnInit {
         ]
       });
       return await alert.present();
+    }
+    if (event.status == "loading_images") {
+      // Disable screen interactions with LoadingController
+      const loading = await this.loadingCtrl.create({
+        message: "Loading artwork"
+      });
+      await loading.present();
+      // Once the loading screen is present, signal XwingDataService that
+      // the controller is present. It will begin image loading sequence.
+      this.events.publish("mainpage", { message : "loading_controller_present" });
+    }
+    if (event.status == "loading_images_complete") {
+      return await this.loadingCtrl.dismiss();
     }
     if (event.status == "manifest_current" || event.status == "data_download_complete") {
       this.data_button = false;
