@@ -14,7 +14,7 @@ export class PilotComponent implements OnInit {
   @Input() pilot: any;
   @Input() faction: string;
   columns: any[][] = [];
-  img_url: string = "";
+  img_url: string = null;
   shipData: any;
   pilotData: any;
 
@@ -56,13 +56,13 @@ export class PilotComponent implements OnInit {
     if (!get_url) {
       get_url = this.pilot.pilot.image;
     }
-    this.dataService.get_image_by_url(get_url).then(
-      (url) => {
-        this.img_url = url;
-      }
-    )
-    
-
+    if (get_url) {
+      this.dataService.get_image_by_url(get_url).then(
+        (url) => {
+          this.img_url = url;
+        }
+      )
+    }
   }
 
   async presentPilotModal() {

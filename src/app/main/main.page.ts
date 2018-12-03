@@ -137,7 +137,7 @@ export class MainPage implements OnInit {
       try {
         await this.loadingCtrl.dismiss();
       } catch (err) {
-        
+
       }
     }
     if (event.status == "manifest_current" || event.status == "data_download_complete") {
@@ -412,52 +412,78 @@ export class MainPage implements OnInit {
     this.events.publish("snapshot", "create snapshot");
   }
 
+  async toastNotFound(xws: string, xwsType: string) {
+    const toast = await this.toastController.create({
+      message: "WARNING: The " + xwsType + " " + xws + " could not be found. Try nuking your local data and downloading the latest XWS Data.",
+      duration: 5000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
 
   injectShipData(pilot: any, faction: string) {
     // Inject ship data into pilot
     pilot.ship = this.dataService.getShip(faction, pilot.ship);
-
-    // Inject stats array in pilot root
-    pilot.stats = [ ];
-    pilot.ship.stats.forEach(
-      (stat) => {
-        let statCopy = JSON.parse(JSON.stringify(stat));
-        // Future proofing - in case a chassis ever has baked in recurring charge stats
-        statCopy.remaining = stat.value;
-        if (stat.recovers) {
-          statCopy.numbers = new Array(stat.recovers);
+    if (pilot.ship != null) {
+      // Inject stats array in pilot root
+      pilot.stats = [ ];
+      pilot.ship.stats.forEach(
+        (stat) => {
+          let statCopy = JSON.parse(JSON.stringify(stat));
+          // Future proofing - in case a chassis ever has baked in recurring charge stats
+          statCopy.remaining = stat.value;
+          if (stat.recovers) {
+            statCopy.numbers = new Array(stat.recovers);
+          }
+          pilot.stats.push(statCopy);
         }
-        pilot.stats.push(statCopy);
-      }
-    )
+      )
+    } else {
+      this.toastNotFound(pilot.ship, "ship");
+    }
   }
 
   injectPilotData(pilot: any, faction: string) {
     // Get pilot data and insert it into pilot object
     pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.id);
+    if (pilot.pilot != null) {
+      // Creates a stat of { type: statType, remaining: 2, numbers: Array() }
+      // for display compatibility
+      let pushStat = (stat, statType) => {
+        let statCopy = JSON.parse(JSON.stringify(stat));
+        statCopy.type = statType;
+        statCopy.remaining = stat.value;
+        statCopy.numbers = Array(stat.numbers);
+        pilot.stats.push(statCopy);
+      }
+      // If the pilot has charges, insert it as a stat
+      if (pilot.pilot.charges) {
+        pushStat(pilot.pilot.charges, 'charges');
+      }
+      // If the pilot has force, insert it as a stat
+      if (pilot.pilot.force) {
+        pushStat(pilot.pilot.force, 'force');
+      }
 
-    // Creates a stat of { type: statType, remaining: 2, numbers: Array() }
-    // for display compatibility
-    let pushStat = (stat, statType) => {
-      let statCopy = JSON.parse(JSON.stringify(stat));
-      statCopy.type = statType;
-      statCopy.remaining = stat.value;
-      statCopy.numbers = Array(stat.numbers);
-      pilot.stats.push(statCopy);
-    }
-    // If the pilot has charges, insert it as a stat
-    if (pilot.pilot.charges) {
-      pushStat(pilot.pilot.charges, 'charges');
-    }
-    // If the pilot has force, insert it as a stat
-    if (pilot.pilot.force) {
-      pushStat(pilot.pilot.force, 'force');
-    }
+      pilot.card_text = "";
+      if (pilot.pilot.ability) {
+        pilot.card_text += pilot.pilot.ability + "<br /><br />";
+      }
+      if (pilot.pilot.text) {
+        pilot.card_text += pilot.pilot.text + "<br /><br />";
+      }
+      if (pilot.pilot.shipAbility && pilot.pilot.shipAbility.text) {
+        pilot.card_text += "<i>" + pilot.pilot.shipAbility.name + "</i>: " +
+                          pilot.pilot.shipAbility.text;
+      }
 
-    // Add additional game state variables
-    pilot.damagecards = []; 
-    pilot.conditions = [];
-    pilot.pointsDestroyed = 0;
+      // Add additional game state variables
+      pilot.damagecards = []; 
+      pilot.conditions = [];
+      pilot.pointsDestroyed = 0;
+    } else {
+      this.toastNotFound(pilot.id, "pilot");
+    }
   }
 
   mangleUpgradeArray(pilot: any) {
@@ -475,8 +501,12 @@ export class MainPage implements OnInit {
                   upgradeType = "forcepower";
                 }
                 let upgradeData = this.dataService.getUpgrade(upgradeType, upgradeName);
-                upgradeData['type'] = upgradeType;
-                mangledUpgrades.push(upgradeData);
+                if (upgradeData != null) {
+                  upgradeData['type'] = upgradeType;
+                  mangledUpgrades.push(upgradeData);
+                } else {
+                  this.toastNotFound(upgradeName, "upgrade");
+                }
               }
             )
           }
@@ -563,17 +593,19 @@ export class MainPage implements OnInit {
     let upgradeCost = 0;
     pilot.upgrades.forEach(
       (upgrade) => {
-        if ("value" in upgrade.cost) {
-          upgradeCost += upgrade.cost.value;
-        }
-        if ("variable" in upgrade.cost) {
-          let statValue = "";
-          if (upgrade.cost.variable == "size") {
-            statValue = pilot.ship.size;
-          } else {
-            statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
+        if (upgrade.cost) {
+          if ("value" in upgrade.cost) {
+            upgradeCost += upgrade.cost.value;
           }
-          upgradeCost += upgrade.cost.values[statValue];
+          if ("variable" in upgrade.cost) {
+            let statValue = "";
+            if (upgrade.cost.variable == "size") {
+              statValue = pilot.ship.size;
+            } else {
+              statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
+            }
+            upgradeCost += upgrade.cost.values[statValue];
+          }
         }
       }
     );

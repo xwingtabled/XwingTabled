@@ -9,7 +9,10 @@
   <div class="pilot-card" (click)="showPilot()">
     <img *ngIf="pilot.pilot.artwork" [src]="img_url" [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" />
     <div *ngIf="!pilot.pilot.artwork" class="image-container">
-      <img [src]="img_url" class="image-constrained" />
+      <img *ngIf="img_url" [src]="img_url" class="image-constrained" />
+      <div *ngIf="!img_url" class="card-text">
+        <xwing-text [text]="pilot.card_text"></xwing-text>
+      </div>
     </div>
     <div class="action-bar">
       <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>

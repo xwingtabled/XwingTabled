@@ -8,8 +8,11 @@
 </ion-header>
 <ion-content padding>
   <div class="modal-content">
-    <div>
+    <div *ngIf="img_urls[upgrade.side]">
       <img [src]="img_urls[upgrade.side]" />
+    </div>
+    <div *ngIf="!img_urls[upgrade.side]" class="card-text">
+      <xwing-text [text]="upgrade.sides[upgrade.side].ability"></xwing-text>
     </div>
     <div *ngIf="upgrade.sides[upgrade.side].charges" class="token-set">
       <xws-token-display [name]="'charge'" [data]="upgrade.sides[upgrade.side].charges"></xws-token-display>

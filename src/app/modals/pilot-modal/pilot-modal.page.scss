@@ -46,6 +46,11 @@
     @extend .half-column;
 }
 
+.card-text {
+    font-size: 2vh;
+    color: white;
+}
+
 .dial-name {
     color: white;
     font-size: 2vh;

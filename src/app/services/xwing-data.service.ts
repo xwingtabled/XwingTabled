@@ -498,6 +498,9 @@ export class XwingDataService {
   }
   
   getShip(faction: string, xwsShip: string) {
+    if (xwsShip == "mg100starfortress") {
+      xwsShip = "mg100starfortresssf17";
+    }
     try {
       let ships = { };
       this.data.pilots.forEach(

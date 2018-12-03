@@ -14,7 +14,8 @@ import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-pop
 export class PilotModalPage implements OnInit {
   pilot;
   squadron;
-  img_url: string = "";
+  img_url: string = null;
+  card_text: string = null;
 
   shields: any = null;
   charges: any = null;
@@ -229,11 +230,15 @@ export class PilotModalPage implements OnInit {
     this.fillManeuverChart(this.pilot.ship.dial);
 
     // Load pilot card
-    this.dataService.get_image_by_url(this.pilot.pilot.image).then(
-      (url) => {
-        this.img_url = url;
-      }
-    )
+    if (this.pilot.pilot.image) {
+      this.dataService.get_image_by_url(this.pilot.pilot.image).then(
+        (url) => {
+          this.img_url = url;
+        },
+        (error) => {
+        }
+      );
+    }
   }
 
   fillManeuverChart(dial: string[]) {
