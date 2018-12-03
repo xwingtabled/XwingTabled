@@ -14,7 +14,9 @@
     padding-left: 0.1vw;
     padding-right: 0.1vw;
 }
-
+.underline {
+    text-decoration: underline;
+}
 .agility {
     @extend .stats;
     color: green;

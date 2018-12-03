@@ -8,8 +8,7 @@
       {{ stat.value }}
     </span>
     <span *ngIf="!bonus && stat.type != 'attack'">
-      <span *ngIf="stat.remaining == stat.value">{{ stat.value }}</span>
-      <span *ngIf="stat.remaining != stat.value">({{stat.remaining}})</span>
+      <span [class]="stat.remaining != stat.value ? 'underline' : ''">{{ stat.remaining }}</span>
     </span> 
     <span *ngIf="stat.recovers">
       <xwing-icon *ngFor="let number of stat.numbers" [name]="'recurring'"></xwing-icon>
