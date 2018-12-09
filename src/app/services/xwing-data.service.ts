@@ -100,26 +100,40 @@ export class XwingDataService {
         // Dequeue the front item
         let item = unpack_queue.shift();
 
-        // If the item is a string, see if it matches our extension
-        if (typeof item == "string") {
-          if (item.endsWith(extension)) {
-            download_list.push(item);
+        try {
+          // If the item is a string, see if it matches our extension
+          if (typeof item == "string") {
+            if (item.endsWith(extension)) {
+              download_list.push(item);
+            }
+          } else if (item instanceof Array) {
+            // If it's an array, push all values to the back of the unpack queue
+            item.forEach(
+              (element) => {
+                if (element == undefined) {
+                  console.log("Empty array element in ", item);
+                } else {
+                  unpack_queue.push(element);
+                }
+              }
+            );
+          } else {
+            // If it's a dictionary, unpack all key/value pairs and only push the values
+            Object.entries(item).forEach(
+              ([ key, value ]) => {
+                if (value == undefined) {
+                  console.log("Empty value in ", item);
+                } else {
+                  unpack_queue.push(value);
+                }
+              }
+            )
           }
-        } else if (item instanceof Array) {
-          // If it's an array, push all values to the back of the unpack queue
-          item.forEach(
-            (element) => {
-              unpack_queue.push(element);
-            }
-          );
-        } else {
-          // If it's a dictionary, unpack all key/value pairs and only push the values
-          Object.entries(item).forEach(
-            ([ key, value ]) => {
-              unpack_queue.push(value);
-            }
-          )
+        } catch (err) {
+          console.log("Error creating file list from manifest", manifest);
+          console.log("Could not unpack", item);
         }
+
       }
     } 
     return download_list;
@@ -280,7 +294,7 @@ export class XwingDataService {
   injectConditionArtwork(xwsCondition: string, artwork: string) {
     this.data.conditions.forEach(
       (condition) => {
-        if (condition.xws == xwsCondition) {
+        if (condition.xws == xwsCondition && artwork) {
           condition.artwork = artwork;
         }
       }
