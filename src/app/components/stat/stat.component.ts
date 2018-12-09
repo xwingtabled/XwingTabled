@@ -12,5 +12,8 @@ export class StatComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if (this.stat.type == "attack") {
+      this.stat.icon = this.stat.arc;
+    }
   }
 }

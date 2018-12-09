@@ -41,7 +41,6 @@ export class TokenDisplayComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("token display", this.data);
     this.makeTokens();
   }
 
