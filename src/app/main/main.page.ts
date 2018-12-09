@@ -496,9 +496,12 @@ export class MainPage implements OnInit {
           if (Array.isArray(upgradeArray)) {
             upgradeArray.forEach(
               (upgradeName) => {
-                // 
                 if (upgradeType == "force") {
                   upgradeType = "forcepower";
+                }
+                // Skip hardpoints on T70s for xws exports from raithos.github.io
+                if (upgradeType == "hardpoint") {
+                  return;
                 }
                 let upgradeData = this.dataService.getUpgrade(upgradeType, upgradeName);
                 if (upgradeData != null) {
