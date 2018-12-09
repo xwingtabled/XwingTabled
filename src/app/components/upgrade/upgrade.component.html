@@ -1,6 +1,9 @@
 <div class="upgrade" (click)="showUpgrade()">
-  <div class="upgrade-img-container">
+  <div *ngIf="artwork" class="upgrade-img-container">
     <img [src]="img_urls[upgrade.side]" class="upgrade-img"/>
+  </div>
+  <div *ngIf="!artwork" class="upgrade-alt-container">
+    <img [src]="img_urls[upgrade.side]" [class]="img_class"/>
   </div>
   <div class="upgrade-name">
     {{ upgrade.name }}

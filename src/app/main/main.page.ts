@@ -526,7 +526,6 @@ export class MainPage implements OnInit {
     // Process each side
     upgrade.sides.forEach(
       (side) => {
-        let img_url = side.image;
         // Mangle charges stats
         if (side.charges) {
           side.charges.type = "charges"
@@ -543,6 +542,21 @@ export class MainPage implements OnInit {
           side.attack.type = "attack";
           // Displayed icon should be the attack's icon
           side.attack.icon = side.attack.arc;
+        }
+
+        // If side has granted actions that aren't listed as actions, 
+        // inject those
+        if (!side.actions) {
+          side.actions = [ ];
+          if (side.grants) {
+            side.grants.forEach(
+              (grant) => {
+                if (grant['type'] == "action") {
+                  side.actions.push(grant.value);
+                }
+              }
+            )
+          }
         }
       }
     )

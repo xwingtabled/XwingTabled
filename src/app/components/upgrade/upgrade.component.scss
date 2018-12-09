@@ -11,6 +11,22 @@
     display: block;
 }
 
+.upgrade-alt-container {
+    display: block;
+    overflow: hidden;
+    height: 10vh;
+    margin-right: -24vh;
+}
+
+.img-alt {
+    clip-path: polygon(40% 0%, 92% 0%, 92% 32%, 40% 32%);
+    margin-left: -47%;
+}
+.img-alt-config {
+    clip-path: polygon(3% 0%, 48% 0%, 48% 32%, 3% 32%);
+    margin-left: -3%;
+}
+
 .upgrade-img {
     height: 10vh;
 }
