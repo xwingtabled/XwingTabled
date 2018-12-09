@@ -685,7 +685,18 @@ export class MainPage implements OnInit {
         let upgrades = { };
         pilot.upgrades.forEach(
           (upgrade) => {
-            let yasbUpgrade = this.dataService.getYasbUpgrade(parseInt(upgrade));
+            let hardpointRegex = /\d{3}(\:U\.\-?\d+)/g
+            let hardpoints = upgrade.match(hardpointRegex);
+            let upgradeNum = -1;
+            if (hardpoints && hardpoints[0]) {
+              upgradeNum = parseInt(hardpoints[0].split('.')[1]);
+            } else {
+              upgradeNum = parseInt(upgrade);
+            }
+            if (upgradeNum == -1) {
+              return;
+            }
+            let yasbUpgrade = this.dataService.getYasbUpgrade(upgradeNum);
             if (upgrades[yasbUpgrade.slot] == undefined) {
               upgrades[yasbUpgrade.slot] = [ ];
             }

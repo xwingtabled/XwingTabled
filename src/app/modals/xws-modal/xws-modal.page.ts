@@ -42,6 +42,8 @@ export class XwsModalPage implements OnInit {
   }
 
   processYasb(value: string) : boolean {
+
+    let pilotRegex = /(\d+:(\-?\d+\,?)*)+(\:U\.\-?\d+)?/g;
     if (!value || value.length == 0) {
       return false;
     }
@@ -49,7 +51,7 @@ export class XwsModalPage implements OnInit {
     if (!isYasb) {
       return false;
     }
-    let matchArray = value.match(/s\!((\d+:(\-?\d+\,?)*)\:\;?)*/);
+    let matchArray = value.match(/s\!.*\&sn/g);
     this.xwsData = { 
       yasb : {
         pilots: [ ],
@@ -57,17 +59,16 @@ export class XwsModalPage implements OnInit {
       }
     }
     if (matchArray && matchArray.length > 0) {
-      let squadString = matchArray[0].substring(2);
-      let pilotStrings = squadString.match(/(\d+:(\-?\d+\,?)*)\:/g);
+      let squadString = matchArray[0].substring(2).slice(0, -3);
+      let pilotStrings = squadString.match(pilotRegex);
       if (pilotStrings.length > 0) {
         pilotStrings.forEach(
           (pilotString) => {
-            let pilotTokens = pilotString.split(':');
-            if (pilotTokens.length >= 2) {
-              let pilotId = pilotTokens[0];
-              let upgradeIds = pilotTokens[1].split(',').filter((id) => id != "-1");
-              this.xwsData.yasb.pilots.push({ id: pilotId, upgrades: upgradeIds });
-            }
+            let separatorIndex = pilotString.indexOf(':');
+            let pilotId = pilotString.substring(0, separatorIndex);
+            let upgradeString = pilotString.substring(separatorIndex + 1);
+            let upgradeIds = upgradeString.split(',');
+            this.xwsData.yasb.pilots.push({ id: pilotId, upgrades: upgradeIds });
           }
         )
         let squadNameParam = value.match(/sn\=([a-zA-Z\%\d])*/);
