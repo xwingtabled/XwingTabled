@@ -38,7 +38,7 @@ export class PilotModalPage implements OnInit {
     if (hull.remaining <= 0) {
       this.pilot.pointsDestroyed = this.pilot.points;
       const toast = await this.toastController.create({
-        message: this.pilot.ship.name + " destroyed",
+        message: this.pilot.pilot.name + " destroyed",
         duration: 2000,
         position: 'middle'
       });
@@ -51,10 +51,12 @@ export class PilotModalPage implements OnInit {
         totalPoints += shields.value;
         remainingPoints += shields.remaining;
       }
-      if (remainingPoints <= totalPoints / 2) {
+      let threshold = Math.floor(totalPoints / 2);
+      if (remainingPoints == threshold ||
+          remainingPoints == threshold - 1) {
         this.pilot.pointsDestroyed = Math.ceil(this.pilot.points / 2);
         const toast = await this.toastController.create({
-          message: this.pilot.ship.name + " at half points",
+          message: this.pilot.pilot.name + " at half points",
           duration: 2000,
           position: 'middle'
         });

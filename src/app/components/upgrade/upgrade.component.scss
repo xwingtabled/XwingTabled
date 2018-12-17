@@ -15,16 +15,19 @@
     display: block;
     overflow: hidden;
     height: 10vh;
+    width: 40vh;
     margin-right: -24vh;
 }
 
 .img-alt {
-    clip-path: polygon(40% 0%, 92% 0%, 92% 32%, 40% 32%);
-    margin-left: -47%;
+    //clip-path: polygon(40% 0%, 92% 0%, 92% 32%, 40% 32%);
+    //clip-path: polygon(10vh 0vh, 24vh 0vh, 24vh 5vh, 10vh 5vh);
+    margin-left: -24vh;
 }
 .img-alt-config {
-    clip-path: polygon(3% 0%, 48% 0%, 48% 32%, 3% 32%);
-    margin-left: -3%;
+    //clip-path: polygon(3% 0%, 48% 0%, 48% 32%, 3% 32%);
+    //clip-path: polygon(0.5vh 0vh, 5vh 0vh, 5vh 4vh, 0vh 4vh);
+    margin-left: -2vh;
 }
 
 .upgrade-img {
