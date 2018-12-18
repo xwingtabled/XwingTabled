@@ -9,7 +9,7 @@ export class HttpNativeProvider {
 
     public get(url: string, params?: any, options: any = {}) {
         let responseData = this.http.get(url, params, {})
-            .then(resp => options.responseType == 'blob' ? resp.data : JSON.parse(resp.data));
+            .then(resp => !options.responseType ? JSON.parse(resp.data) : resp.data);
 
         return from(responseData);
     }

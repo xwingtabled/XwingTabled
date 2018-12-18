@@ -1,10 +1,8 @@
-/**
- * Downloads card JSON data from https://squadbuilder.fantasyflightgames.com/api/cards/{id}/ and
- * stores them in ffgcards.json
- */
-
 var https = require('https');
 var fs = require('fs');
+var jsonpack = require('jsonpack');
+var zlib = require('zlib');
+
 const { Observable, from, zip } = require('rxjs');
 const { concatMap } = require('rxjs/operators');
 
@@ -236,9 +234,15 @@ get(baseUrl + "data/manifest.json").then(
             () => {
                 stripText(manifest);
                 manifest.yasb = getYasbData();
-                let jsonString = JSON.stringify(manifest);
-                console.log("Done -- writing " + jsonString.length + " bytes to manifest.json");
-                fs.writeFileSync("manifest.json", jsonString);
+                console.log("Compressing...");
+                zlib.gzip(JSON.stringify(manifest), (err, buffer) => {
+                    if (err) {
+                        console.log("Error compressing: ", err);
+                    } else {
+                        console.log("Done -- writing " + buffer.length + " bytes to manifest.gz");
+                        fs.writeFileSync("manifest.gz", buffer);            
+                    }
+                });
             }
         );
     }

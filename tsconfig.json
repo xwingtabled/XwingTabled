@@ -11,6 +11,10 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths" : {
+      "zlib" : [ "./node_modules/browserify-zlib/lib/index.js" ],
+      "stream" : [ "./node_modules/stream-browserify/index.js" ]
+    }
   }
 }

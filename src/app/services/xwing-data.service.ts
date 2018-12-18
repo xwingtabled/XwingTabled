@@ -8,6 +8,8 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ng
 import { DomSanitizer } from '@angular/platform-browser';
 import { Platform } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
+import { gunzip, gzip } from 'zlib';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,12 +36,57 @@ export class XwingDataService {
   // Json Data
   data: any = { };
 
-
   constructor(private storage: Storage, private http: HttpProvider, private events: Events, 
               private platform: Platform, private file: File, private fileTransfer: FileTransfer,
               private sanitizer: DomSanitizer) { 
+    
     this.hotlink = !(platform.is('ios') || platform.is('android'));
     this.transfer = fileTransfer.create();
+                
+    this.http.get("../../assets/data/manifest.gz", {}, { responseType: "arraybuffer" }).subscribe(
+      (data) => {
+        let gzippedString = String.fromCharCode.apply(null, new Int8Array(data));
+        console.log("Data length", gzippedString.length);
+        
+        gunzip(gzippedString, (error, result) => {
+          if (error) {
+            console.log("Error unzipping", error);
+          } else {
+            console.log("Unzip", result);
+          }
+        });
+        
+        /*
+        gunzip(data, (error, result) => {
+          if (error) {
+            console.log("Error unzipping", error);
+          } else {
+            console.log("Unzip", result);
+          }
+        });*/
+        /*
+        let reader = new FileReader();
+        reader.addEventListener("loadend", function() {
+          console.log(reader.result.length);
+          // reader.result contains the contents of blob as a typed array
+          gunzip(reader.result, (error, result) => {
+            if (error) {
+              console.log("Error decompressing manifest.gz", error);
+            } else {
+              console.log("manifest.gz", result.toJSON());
+            }
+          });
+        });
+        reader.readAsArrayBuffer(data);
+*/
+      },
+      (error) => {
+        console.log("Error downloading manifest.gz", error);
+      },
+      () => {
+        console.log("Download finished");
+      }
+    );
     this.storage.ready().then(
       () => {
         this.status("service_ready", "X-Wing Data Service Ready");

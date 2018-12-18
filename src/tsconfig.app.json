@@ -3,7 +3,11 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
-    "module": "es2015"
+    "module": "es2015",
+    "paths" : {
+      "zlib" : [ "../node_modules/browserify-zlib/lib/index.js" ],
+      "stream" : ["../node_modules/stream-browserify/index.js" ]
+    }
   },
   "exclude": [
     "test.ts",
