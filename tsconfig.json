@@ -13,8 +13,8 @@
       "dom"
     ],
     "paths" : {
-      "zlib" : [ "./node_modules/browserify-zlib/lib/index.js" ],
-      "stream" : [ "./node_modules/stream-browserify/index.js" ]
+      "stream" : [ "./node_modules/stream-browserify/index.js" ],
+      "jszip" : [ "./node_modules/jszip/dist/jszip.min.js" ]
     }
   }
 }

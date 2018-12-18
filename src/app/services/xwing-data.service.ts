@@ -9,6 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Platform } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { gunzip, gzip } from 'zlib';
+import * as JSZip from 'jszip';
 
 @Injectable({
   providedIn: 'root'
@@ -43,19 +44,26 @@ export class XwingDataService {
     this.hotlink = !(platform.is('ios') || platform.is('android'));
     this.transfer = fileTransfer.create();
                 
-    this.http.get("../../assets/data/manifest.gz", {}, { responseType: "arraybuffer" }).subscribe(
+    this.http.get("../../assets/data/manifest.zip", {}, { responseType: "arraybuffer" }).subscribe(
       (data) => {
-        let gzippedString = String.fromCharCode.apply(null, new Int8Array(data));
+        console.log("Got data from manifest load", data);
+        let gzippedString = String.fromCharCode.apply(null, new Uint8Array(data));
         console.log("Data length", gzippedString.length);
-        
-        gunzip(gzippedString, (error, result) => {
-          if (error) {
-            console.log("Error unzipping", error);
-          } else {
-            console.log("Unzip", result);
+       
+        let read_zip = new JSZip();
+        read_zip.loadAsync(data).then(
+          (result) => {
+            read_zip.file("manifest").async("string").then(
+              (contents) => {
+                console.log("zip contents", contents);
+              },
+              (error) => {
+                console.log("error in zip", error);
+              }
+
+            )
           }
-        });
-        
+        )
         /*
         gunzip(data, (error, result) => {
           if (error) {
@@ -63,22 +71,10 @@ export class XwingDataService {
           } else {
             console.log("Unzip", result);
           }
-        });*/
-        /*
-        let reader = new FileReader();
-        reader.addEventListener("loadend", function() {
-          console.log(reader.result.length);
-          // reader.result contains the contents of blob as a typed array
-          gunzip(reader.result, (error, result) => {
-            if (error) {
-              console.log("Error decompressing manifest.gz", error);
-            } else {
-              console.log("manifest.gz", result.toJSON());
-            }
-          });
         });
-        reader.readAsArrayBuffer(data);
-*/
+        */
+        
+        
       },
       (error) => {
         console.log("Error downloading manifest.gz", error);
