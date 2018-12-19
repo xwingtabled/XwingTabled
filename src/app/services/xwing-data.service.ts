@@ -103,6 +103,14 @@ export class XwingDataService {
           this.load_images(this.data);
         }
       },
+      (error) => {
+        if (this.data) {
+          // Even if we weren't able to download a manifest, at least we have some existing data
+          this.load_images(this.data);
+        } else {
+          this.status("no_data_no_connection", "Unable to load or download manifest.json");
+        }
+      }
     );
   }
 
