@@ -43,38 +43,30 @@ export class XwingDataService {
     
     this.hotlink = !(platform.is('ios') || platform.is('android'));
     this.transfer = fileTransfer.create();
-                
-    this.http.get("../../assets/data/manifest.zip", {}, { responseType: "arraybuffer" }).subscribe(
+    
+    this.load_data();
+  }
+
+  load_data() {
+    this.http.get("../../assets/data/manifest.json.zip", {}, { responseType: "arraybuffer" }).subscribe(
       (data) => {
-        console.log("Got data from manifest load", data);
-        let gzippedString = String.fromCharCode.apply(null, new Uint8Array(data));
-        console.log("Data length", gzippedString.length);
-       
+        console.log("Loaded manifest.json.zip");
         let read_zip = new JSZip();
         read_zip.loadAsync(data).then(
           (result) => {
-            read_zip.file("manifest").async("string").then(
+            read_zip.file("manifest.json").async("string").then(
               (contents) => {
-                console.log("zip contents", contents);
+                console.log("manifest.json bytes", contents.length);
+                this.data = JSON.parse(contents);
+                console.log("manifest.json", this.data);
+                this.load_images(this.data);
               },
               (error) => {
                 console.log("error in zip", error);
               }
-
             )
           }
-        )
-        /*
-        gunzip(data, (error, result) => {
-          if (error) {
-            console.log("Error unzipping", error);
-          } else {
-            console.log("Unzip", result);
-          }
-        });
-        */
-        
-        
+        );
       },
       (error) => {
         console.log("Error downloading manifest.gz", error);
@@ -83,12 +75,6 @@ export class XwingDataService {
         console.log("Download finished");
       }
     );
-    this.storage.ready().then(
-      () => {
-        this.status("service_ready", "X-Wing Data Service Ready");
-        this.check_manifest();
-      }
-    )
   }
 
   status(status: string, message: string = "", progress: number = this.progress) {
@@ -104,7 +90,7 @@ export class XwingDataService {
     this.image_urls = { };
     this.data = { };
     await this.storage.clear();
-    this.check_manifest();
+    this.load_data();
   }
 
 
@@ -224,232 +210,6 @@ export class XwingDataService {
     this.storage.set(key, value);
   }
 
-  check_manifest() {
-    // Start of data verification/download sequence
-    // Loads cached data structure containing all xwing-data2 data.
-    // If none is stored, then this.data will be null
-    // Followed by download_manifest()
-    this.status("manifest_loading", "Loading cached manifest... ");
-    this.storage.get('manifest').then(
-      (data) => {
-        this.status("manifest_loading", "Loading cached manifest... found!");
-        this.data = data;
-        this.download_manifest();
-      },
-      (error) => {
-        this.status("manifest_loading", "Loading cached manifest... none found");
-        this.download_manifest();
-      }
-    );
-  }
-
-  reshape_manifest(manifest: any) {
-    // Reshapes a manifest file in preparation for downloads
-    let new_manifest = JSON.parse(JSON.stringify(manifest));
-    
-    // Reshapes pilots from { faction, ships[] } to { faction: ships[] }
-    new_manifest.pilots.forEach(
-      (faction) => {
-        let shipDictionary = { };
-        if (Array.isArray(faction.ships)) {
-          faction.ships.forEach(
-            (shipUrl) => {
-              shipDictionary[this.url_to_key_name(shipUrl)] = shipUrl;
-            }
-          )
-          faction.ships = shipDictionary;
-        }
-      }
-    )
-
-    // Reshapes upgrades from upgrade[] to upgrades: { type: upgrade[] }
-    let upgradeDictionary = { };
-    if (Array.isArray(new_manifest.upgrades)) { 
-      new_manifest.upgrades.forEach(
-        (upgradeUrl) => {
-          upgradeDictionary[this.url_to_key_name(upgradeUrl)] = upgradeUrl;
-        }
-      )
-      new_manifest.upgrades = upgradeDictionary;
-    }
-    return new_manifest;
-  }
-
-  download_manifest() {
-    // Download the current manifest from xwing-data2
-    this.status("manifest_downloading", "Downloading current manifest...");
-    let manifest_url = XwingDataService.manifest_url + "data/manifest.json";
-    console.log("Downloading from", manifest_url)
-    this.http.get(manifest_url).subscribe(
-      (manifest) => {
-        if (manifest) {
-          this.status("manifest_downloading", "Downloading current manifest... received!");
-          let new_manifest = manifest;
-
-          if (!this.data || this.data["version"] != new_manifest["version"]) {
-            // If the current manifest version is out of date, overwrite our data
-            // with an empty, reshaped manifest. This will invalidate it.
-            this.status("manifest_outofdate", "Current manifest out of date");
-            console.log("Old manifest", this.data);
-            console.log("New manifest", new_manifest);
-            let reshaped_new_manifest = this.reshape_manifest(new_manifest); 
-            this.storage.set('manifest', reshaped_new_manifest);
-            this.data = this.reshape_manifest(reshaped_new_manifest);
-          } else {
-            // Otherwise the manifest is current. Leave it alone.
-            this.status("manifest_current", "Manifest is current.");
-            console.log("X-Wing Json Data", this.data);
-          }
-        }
-      },
-      (error) => {
-        // The manifest could not be downloaded, possibly due to no Internet connection
-        // Do nothing to our currently cached data
-        this.status("manifest_error", "Downloading current manifest... unavailable!");
-        console.log("Manifest download error", error);
-        if (this.data) {
-          // If we have partial data, then perhaps we are ok. Go to checkMissingData()
-          this.checkMissingData();
-        } else {
-          // Otherwise, we have no internet connection and no data. Notify the Main page to notify the user.
-          // The main page should start over with check_manifest() once that's resolved
-          this.status("no_data_no_connection", "Unable to continue without X-Wing Data");
-        }
-      },
-      () => {
-        // Whatever happens, proceed to next step - check for missing data files
-        this.checkMissingData();
-      }
-    );
-  }
-
-  checkMissingData() {
-    if (this.create_data_file_list(this.data, ".json").length > 0 || !this.data.yasb) {
-      // If we are missing any data, broadcast an event so the user can proceed with
-      // a download. Main page should initiate download_data()
-      this.status("manifest_incomplete", "Some X-Wing Data is missing.");
-    } else {
-      // If no data is missing, proceed to load images from storage.
-      this.load_images(this.data);
-    }
-  }
-
-  injectConditionArtwork(xwsCondition: string, artwork: string) {
-    this.data.conditions.forEach(
-      (condition) => {
-        if (condition.xws == xwsCondition && artwork) {
-          condition.artwork = artwork;
-        }
-      }
-    )
-  }
-
-  searchConditions() {
-    this.data.pilots.forEach(
-      (faction) => {
-        Object.entries(faction.ships).forEach(
-          ([keyname, ship]) => {
-            ship['pilots'].forEach(
-              (pilot) => {
-                if (pilot.conditions) {
-                  pilot.conditions.forEach(
-                    (condition) => {
-                      this.injectConditionArtwork(condition, pilot.artwork);
-                    }
-                  )
-                }
-              }
-            )
-          }
-        )
-      }
-    );
-    Object.entries(this.data.upgrades).forEach(
-      ([upgradeType, upgrades ]) => {
-        (<any>upgrades).forEach(
-          (upgrade) => {
-            upgrade.sides.forEach(
-              (side) => {
-                if (side.conditions) {
-                  side.conditions.forEach(
-                    (condition) => {
-                      this.injectConditionArtwork(condition, side.artwork);
-                    }
-                  )
-                }
-              }
-            )
-          }
-        )
-      }
-    );
-  }
-
-  download_data() {
-    // Manually download yasb.json from XwingTabled repo
-    this.http.get("https://raw.githubusercontent.com/jychuah/XwingTabled/master/yasbdata/yasb.json").subscribe(
-      (result) => {
-        this.data.yasb = result;
-        console.log("YASB data", this.data.yasb);
-      },
-      (error) => {
-        console.log("Unable to download YASB data");
-      }
-    )
-
-    // Look at current manifest. Any missing data will have a .json file
-    // string in its place.
-    let queue = this.create_data_file_list(this.data, ".json");
-
-    // Construct a queue of raw.github URLs for xwing-data2
-    for (var i in queue) {
-      queue[i] = XwingDataService.manifest_url + queue[i];
-    }
-
-    // Download data from the queue
-    let missing = [ ];
-    this.download(queue).subscribe(
-      (result) => {
-        let key = this.url_to_key_name(result.url);
-        if (result.response) {
-          // If a response was received for a .json download, insert it into our data structure
-          this.insert_json_data(result.url.replace(XwingDataService.manifest_url, ''), result.response);
-          this.status("data_download_item", "Downloaded data for " + key);
-        } else {
-          // ... if no response was received for a data file, mark it as an incomplete download
-          this.status("data_download_item", "Data unavailable for " + key);
-          missing.push(key);
-        }
-      },
-      (error) => {
-      },
-      () => {
-        // Inject some extra data into the conditions structure
-        this.searchConditions();
-
-        if (missing.length) {
-          // If any data was missing, send an event so the Main page can prompt the user to attempt
-          // to download the data again. This may occur due to lack of internet connection
-          this.status("data_download_errors", "X-Wing Data download complete with errors");
-        } else {
-          // Otherwise store the data and continue to load_images
-          this.status("data_download_complete", "X-Wing Data download complete!")
-          this.storage.set('manifest', this.data);
-          console.log("X-Wing Json Data", this.data);
-          this.load_images(this.data);
-        }
-      }
-    );
-  }
-
-  insert_json_data(filename: string, json: any) {
-    // Helper function to replace a ".json" filename in the data set
-    // with the contents of the .json file as an object
-    let jsonString = JSON.stringify(this.data);
-    jsonString = jsonString.replace('"' + filename + '"', JSON.stringify(json));
-    this.data = JSON.parse(jsonString);
-  }
-
   create_data_file_list(manifest: any, extension: string) {
     // Create a list of data files to download. Skip ships.json since it no longer
     // exists in xwing-data2
@@ -558,15 +318,12 @@ export class XwingDataService {
     if (xwsShip == "mg100starfortress") {
       xwsShip = "mg100starfortresssf17";
     }
+    if (xwsShip == "upsilonclassshuttle") {
+      xwsShip = "upsilonclasscommandshuttle";
+    }
     try {
-      let ships = { };
-      this.data.pilots.forEach(
-        (factionData) => {
-          if (factionData.faction == faction) {
-            ships = factionData.ships; 
-          }
-        }
-      );
+      let factionData = this.data.pilots.find((pilotsEntry) => pilotsEntry.faction == faction);
+      let ships = factionData.ships;
       let ship = ships[xwsShip];
       // For some reason, xws data in guidokessels data uses different names for 
       // TIE Fighters. For exåmple, tieininterceptor instead of tieinterceptor
@@ -595,7 +352,6 @@ export class XwingDataService {
 
 
   load_images(manifest: any) {
-
     if (this.hotlink) {
       // If this is running in a desktop browser, then we can simply
       // hotlink to FFG's image CDN

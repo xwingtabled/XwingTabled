@@ -1,7 +1,7 @@
 var https = require('https');
 var fs = require('fs');
 var jsonpack = require('jsonpack');
-var zlib = require('zlib');
+var JSZip = require('jszip');
 
 const { Observable, from, zip } = require('rxjs');
 const { concatMap } = require('rxjs/operators');
@@ -203,6 +203,58 @@ function stripText(manifest) {
     )
 }
 
+
+function injectConditionArtwork(data, xwsCondition, artwork) {
+    data.conditions.forEach(
+        (condition) => {
+            if (condition.xws == xwsCondition && artwork) {
+                condition.artwork = artwork;
+            }
+        }
+    )
+}
+
+function searchConditions(data) {
+    data.pilots.forEach(
+        (faction) => {
+            Object.entries(faction.ships).forEach(
+                ([keyname, ship]) => {
+                    ship['pilots'].forEach(
+                        (pilot) => {
+                            if (pilot.conditions) {
+                                pilot.conditions.forEach(
+                                    (condition) => {
+                                        injectConditionArtwork(data, condition, pilot.artwork);
+                                    }
+                                )
+                            }
+                        }
+                    )
+                }
+            )
+        }
+    );
+    Object.entries(data.upgrades).forEach(
+        ([upgradeType, upgrades ]) => {
+            (upgrades).forEach(
+                (upgrade) => {
+                upgrade.sides.forEach(
+                    (side) => {
+                        if (side.conditions) {
+                            side.conditions.forEach(
+                                (condition) => {
+                                    injectConditionArtwork(data, condition, side.artwork);
+                                }
+                            )
+                        }
+                    }
+                )
+                }
+            )
+        }
+    );
+}
+
 get(baseUrl + "data/manifest.json").then(
     (manifest) => {
         manifest = reshape_manifest(manifest);
@@ -234,15 +286,30 @@ get(baseUrl + "data/manifest.json").then(
             () => {
                 stripText(manifest);
                 manifest.yasb = getYasbData();
+                searchConditions(manifest);
+                console.log("Writing to manifest.json");
+                fs.writeFileSync("./manifest.json", JSON.stringify(manifest));
+                /*
+
+                // Zipping doesn't work great right now
                 console.log("Compressing...");
-                zlib.gzip(JSON.stringify(manifest), (err, buffer) => {
-                    if (err) {
-                        console.log("Error compressing: ", err);
-                    } else {
-                        console.log("Done -- writing " + buffer.length + " bytes to manifest.gz");
-                        fs.writeFileSync("manifest.gz", buffer);            
+                var zip = new JSZip();
+                zip.file("manifest.json", JSON.stringify(manifest));
+                // Generate the zip file asynchronously
+                zip.generateAsync({
+                    type: "string",
+                    compression: "DEFLATE",
+                    compressionOptions: {
+                        level: 9
                     }
-                });
+                }).then(
+                    (data) => {
+                        console.log("Writing to ../src/assets/data/manifest.zip");
+                        fs.writeFileSync("../src/assets/data/manifest.zip", data);
+                        console.log("...Done!");
+                    }
+                )
+                */
             }
         );
     }

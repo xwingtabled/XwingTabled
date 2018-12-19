@@ -1213,9 +1213,9 @@ exportObj.basicCardData = ->
               [ 0, 0, 1, 0, 0, 0, 0, 0]
             ]
             isHyperspace: true
-        "TIE Silencer":
-            name: "TIE Silencer"
-            xws: "TIE Silencer".canonicalize()
+        "TIE/VN Silencer":
+            name: "TIE/VN Silencer"
+            xws: "TIE/VN Silencer".canonicalize()
             factions: ["First Order"]
             attack: 3
             agility: 3
@@ -5357,7 +5357,7 @@ exportObj.basicCardData = ->
             id: 236
             unique: true
             faction: "First Order"
-            ship: "TIE Silencer"
+            ship: "TIE/VN Silencer"
             skill: 5
             force: 2
             points: 82
@@ -5376,7 +5376,7 @@ exportObj.basicCardData = ->
             id: 237
             unique: true
             faction: "First Order"
-            ship: "TIE Silencer"
+            ship: "TIE/VN Silencer"
             skill: 5
             points: 70
             slots: [
@@ -5496,6 +5496,7 @@ exportObj.basicCardData = ->
             force: 2
             slots: [
                 "Force"
+                "Missile"
                 "Crew"
                 "Crew"
                 "Gunner"
@@ -5509,12 +5510,14 @@ exportObj.basicCardData = ->
             name: "Han Solo (Resistance)"
             id: 245
             unique: true
+            xws: "hansolo-scavengedyt1300"
             faction: "Resistance"
             ship: "Scavenged YT-1300"
             skill: 6
             points: 76
             slots: [
                 "Talent"
+                "Missile"
                 "Crew"
                 "Crew"
                 "Gunner"
@@ -5529,11 +5532,13 @@ exportObj.basicCardData = ->
             id: 246
             unique: true
             faction: "Resistance"
+            xws: "chewbacca-scavengedyt1300"
             ship: "Scavenged YT-1300"
             skill: 4
             points: 72
             slots: [
                 "Talent"
+                "Missile"
                 "Crew"
                 "Crew"
                 "Gunner"
@@ -5704,6 +5709,7 @@ exportObj.basicCardData = ->
             name: "Black Squadron Ace (T-70)"
             id: 256
             faction: "Resistance"
+            xws: "blacksquadronace-t70xwing" 
             ship: "T-70 X-Wing"
             skill: 4
             points: 50
@@ -5930,6 +5936,7 @@ exportObj.basicCardData = ->
                 "Missile"
                 "Tech"
             ]
+            isHyperspace: true
         }
         {
             name: "Zari Bangel"
@@ -5945,6 +5952,7 @@ exportObj.basicCardData = ->
                 "Missile"
                 "Tech"
             ]
+            isHyperspace: true
         }
         {
             name: "Darth Maul"
@@ -6124,7 +6132,7 @@ exportObj.basicCardData = ->
             id: 283
             unique: true
             faction: "First Order"
-            ship: "TIE Silencer"
+            ship: "TIE/VN Silencer"
             skill: 3
             points: 62
             slots: [
@@ -6141,7 +6149,7 @@ exportObj.basicCardData = ->
             id: 284
             unique: true
             faction: "First Order"
-            ship: "TIE Silencer"
+            ship: "TIE/VN Silencer"
             skill: 4
             points: 63
             slots: [
@@ -6174,7 +6182,7 @@ exportObj.basicCardData = ->
             name: "Sienar-Jaemus Engineer"
             id: 286
             faction: "First Order"
-            ship: "TIE Silencer"
+            ship: "TIE/VN Silencer"
             skill: 1
             points: 56
             slots: [
@@ -6189,7 +6197,7 @@ exportObj.basicCardData = ->
             name: "First Order Test Pilot"
             id: 287
             faction: "First Order"
-            ship: "TIE Silencer"
+            ship: "TIE/VN Silencer"
             skill: 4
             points: 62
             slots: [
@@ -6226,7 +6234,7 @@ exportObj.basicCardData = ->
             unique: true
             faction: "First Order"
             ship: "Upsilon-Class Shuttle"
-            skill: 2
+            skill: 3
             charge: 2
             recurring: true
             points: 62
@@ -6296,6 +6304,7 @@ exportObj.basicCardData = ->
                 "Modification"
             ]
             isHyperspace: true
+            applies_condition: 'Rattled'.canonicalize()
         }
         {
             name: "Edon Kappehl"
@@ -6345,6 +6354,7 @@ exportObj.basicCardData = ->
             skill: 2
             points: 68
             slots: [
+                "Missile"
                 "Crew"
                 "Crew"
                 "Gunner"
@@ -6394,7 +6404,7 @@ exportObj.basicCardData = ->
             isHyperspace: true
         }
         {
-            name: "Nien Numb"
+            name: "Nien Nunb"
             id: 298
             unique: true
             faction: "Resistance"
@@ -7089,6 +7099,7 @@ exportObj.basicCardData = ->
            points: 8
            unique: true
            faction: "Rebel Alliance"
+           isHyperspace: true
        }
        {
            name: "Seasoned Navigator"
@@ -8433,7 +8444,7 @@ exportObj.basicCardData = ->
             isHyperspace: true
        }
        {
-            name: "Rey's Millenium Falcon"
+            name: "Rey's Millennium Falcon"
             id: 193
             slot: "Title"
             points: 5
@@ -8611,6 +8622,10 @@ exportObj.basicCardData = ->
         {
             name: 'Proximity Mine'
             id: 11
+        }
+        {
+            name: 'Rattled'
+            id: 12
         }
     ]
 

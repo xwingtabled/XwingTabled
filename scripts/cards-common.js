@@ -54,6 +54,17 @@ exportObj.secondEditionCheck = function(data, faction) {
     return false;
 };
 
+exportObj.hyperspaceCheck = function(data, faction) {
+// Handle special cases
+    if (faction == null) { faction = ''; }
+    if ((data.name === 'Y-Wing') && (faction === 'Scum and Villainy')) {
+        return false;
+    } else if ((data.name === 'TIE Fighter') && (faction === 'Rebel Alliance')) {
+        return false;
+    }
+    return data.isHyperspace;
+};
+
 String.prototype.canonicalize = function() {
     return this.toLowerCase()
         .replace(/[^a-z0-9]/g, '')
@@ -88,7 +99,8 @@ exportObj.basicCardData = () =>
                   [ 1, 2, 2, 2, 1, 0, 0, 0, 0, 0],
                   [ 1, 1, 1, 1, 1, 0, 0, 0, 3, 3],
                   [ 0, 0, 1, 0, 0, 3, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "Y-Wing": {
                 name: "Y-Wing",
@@ -112,7 +124,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0],
                   [ 3, 1, 1, 1, 3, 0],
                   [ 0, 0, 3, 0, 0, 3]
-                ]
+                ],
+                isHyperspace: true
             },
             "A-Wing": {
                 name: "A-Wing",
@@ -163,7 +176,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 3, 3],
                   [ 0, 0, 1, 0, 0, 3, 0, 0]
                 ],
-                large: true
+                large: true,
+                isHyperspace: true
             },
             "Customized YT-1300": {
                 name: "Customized YT-1300",
@@ -189,7 +203,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 3, 3],
                   [ 0, 0, 1, 0, 0, 3, 0, 0]
                 ],
-                large: true
+                large: true,
+                isHyperspace: true
             },
             "TIE Fighter": {
                 name: "TIE Fighter",
@@ -213,7 +228,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 3],
                   [ 0, 0, 1, 0, 0, 3],
                   [ 0, 0, 1, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "TIE Advanced": {
                 name: "TIE Advanced",
@@ -238,7 +254,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 0, 0, 3, 3],
                   [ 0, 0, 1, 0, 0, 3, 0, 0, 0, 0],
                   [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "TIE Interceptor": {
                 name: "TIE Interceptor",
@@ -289,7 +306,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 0, 0, 0, 0],
                   [ 0, 1, 2, 1, 0, 0, 0, 0, 3, 3],
                   [ 0, 0, 1, 0, 0, 3, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "HWK-290": {
                 name: "HWK-290",
@@ -897,7 +915,8 @@ exportObj.basicCardData = () =>
                     [ 1, 1, 2, 1, 1, 0, 0, 0, 0, 0 ],
                     [ 0, 0, 1, 0, 0, 3, 0, 0, 0, 0 ],
                     [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ]
-                ]
+                ],
+                isHyperspace: true
             },
             "Lancer-Class Pursuit Craft": {
                 name: "Lancer-Class Pursuit Craft",
@@ -970,7 +989,8 @@ exportObj.basicCardData = () =>
                     [ 1, 2, 2, 2, 1 ],
                     [ 0, 1, 1, 1, 0 ],
                     [ 0, 0, 1, 0, 0 ]
-                ]
+                ],
+                isHyperspace: true
             },
             "TIE Striker": {
                 name: "TIE Striker",
@@ -992,7 +1012,8 @@ exportObj.basicCardData = () =>
                     [ 1, 2, 2, 2, 1, 3, 0, 0 ],
                     [ 1, 2, 2, 2, 1, 0, 3, 3 ],
                     [ 0, 1, 2, 1, 0, 0, 0, 0 ]
-                ]
+                ],
+                isHyperspace: true
             },
             "Auzituck Gunship": {
                 name: "Auzituck Gunship",
@@ -1159,7 +1180,8 @@ exportObj.basicCardData = () =>
                     [ 3, 2, 2, 2, 3, 0, 3, 3 ],
                     [ 3, 1, 2, 1, 3, 0, 0, 0 ],
                     [ 0, 1, 2, 1, 0, 0, 0, 0 ]
-                ]
+                ],
+                isHyperspace: true
             },
             "Escape Craft": {
                 name: "Escape Craft",
@@ -1181,7 +1203,8 @@ exportObj.basicCardData = () =>
                     [ 0, 2, 2, 2, 0, 0, 0, 0 ],
                     [ 3, 1, 2, 1, 3, 0, 0, 0 ],
                     [ 0, 1, 1, 1, 0, 3, 0, 0 ]
-                ]
+                ],
+                isHyperspace: true
             },
             "T-70 X-Wing": {
                 name: "T-70 X-Wing",
@@ -1204,7 +1227,8 @@ exportObj.basicCardData = () =>
                   [ 1, 2, 2, 2, 1, 0, 0, 0, 0, 0],
                   [ 1, 1, 2, 1, 1, 0, 0, 0, 3, 3],
                   [ 0, 0, 1, 0, 0, 3, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "RZ-2 A-Wing": {
                 name: "RZ-2 A-Wing",
@@ -1230,7 +1254,8 @@ exportObj.basicCardData = () =>
                   [ 1, 2, 2, 2, 1, 0, 3, 3],
                   [ 0, 0, 2, 0, 0, 0, 0, 0],
                   [ 0, 0, 2, 0, 0, 3, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "TIE/FO Fighter": {
                 name: "TIE/FO Fighter",
@@ -1255,11 +1280,12 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 0, 0],
                   [ 0, 0, 1, 0, 0, 3, 0, 0],
                   [ 0, 0, 1, 0, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
-            "TIE Silencer": {
-                name: "TIE Silencer",
-                xws: "TIE Silencer".canonicalize(),
+            "TIE/VN Silencer": {
+                name: "TIE/VN Silencer",
+                xws: "TIE/VN Silencer".canonicalize(),
                 factions: ["First Order"],
                 attack: 3,
                 agility: 3,
@@ -1280,7 +1306,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 0, 0, 3, 3],
                   [ 0, 0, 2, 0, 0, 3, 0, 0, 0, 0],
                   [ 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "TIE/SF Fighter": {
                 name: "TIE/SF Fighter",
@@ -1310,7 +1337,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 0, 3, 3, 0, 0],
                   [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
                   [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "Upsilon-Class Shuttle": {
                 name: "Upsilon-Class Shuttle",
@@ -1337,7 +1365,8 @@ exportObj.basicCardData = () =>
                   [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                   [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 ],
-                large: true
+                large: true,
+                isHyperspace: true
             },
             "MG-100 StarFortress": {
                 name: "MG-100 StarFortress",
@@ -1364,7 +1393,8 @@ exportObj.basicCardData = () =>
                   [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                   [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 ],
-                large: true
+                large: true,
+                isHyperspace: true
             },
             "Scavenged YT-1300": {
                 name: "Scavenged YT-1300",
@@ -1390,7 +1420,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 1, 1, 1, 0, 3, 3],
                   [ 0, 0, 3, 0, 0, 0, 0, 0]
                 ],
-                large: true
+                large: true,
+                isHyperspace: true
             },
             "Mining Guild TIE Fighter": {
                 name: "Mining Guild TIE Fighter",
@@ -1414,7 +1445,8 @@ exportObj.basicCardData = () =>
                   [ 1, 1, 2, 1, 1, 3],
                   [ 0, 0, 1, 0, 0, 0],
                   [ 0, 0, 3, 0, 0, 0]
-                ]
+                ],
+                isHyperspace: true
             },
             "V-19 Torrent": {
                 name: "V-19 Torrent",
@@ -1532,7 +1564,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Blue Squadron Escort",
@@ -1546,7 +1579,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Red Squadron Veteran",
@@ -1561,7 +1595,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Jek Porkins",
@@ -1577,7 +1612,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Luke Skywalker",
@@ -1594,7 +1630,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Wedge Antilles",
@@ -1610,7 +1647,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Garven Dreis (X-Wing)",
@@ -1628,7 +1666,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Biggs Darklighter",
@@ -1643,7 +1682,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Edrio Two-Tubes",
@@ -1659,7 +1699,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Thane Kyrell",
@@ -1675,7 +1716,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Leevan Tenza",
@@ -1692,7 +1734,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "whoops",
@@ -1714,7 +1757,8 @@ exportObj.basicCardData = () =>
                     "Astromech",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Sabine Wren (TIE Fighter)",
@@ -1914,7 +1958,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Device",
                     "Gunner"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Horton Salm",
@@ -1932,7 +1977,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Device",
                     "Gunner"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Dutch" Vander',
@@ -1950,7 +1996,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Device",
                     "Gunner"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Evaan Verlaine",
@@ -1968,7 +2015,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Device",
                     "Gunner"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Gold Squadron Veteran",
@@ -1985,7 +2033,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Device",
                     "Gunner"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Gray Squadron Bomber",
@@ -2001,7 +2050,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Device",
                     "Gunner"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Bodhi Rook",
@@ -2018,7 +2068,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: false
             },
             {
                 name: "Cassian Andor",
@@ -2035,7 +2086,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: false
             },
             {
                 name: "Heff Tobber",
@@ -2052,7 +2104,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: false
             },
             {
                 name: "Magva Yarro",
@@ -2070,7 +2123,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Configuration",
                     "Illicit"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Saw Gerrera",
@@ -2088,7 +2142,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Configuration",
                     "Illicit"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Benthic Two-Tubes",
@@ -2105,7 +2160,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Blue Squadron Scout",
@@ -2120,7 +2176,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: false
             },
             {
                 name: "Partisan Renegade",
@@ -2136,7 +2193,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Modification",
                     "Configuration"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Dash Rendar",
@@ -2214,7 +2272,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Title",
                     "Illicit"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lando Calrissian",
@@ -2234,7 +2293,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Title",
                     "Illicit"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Chewbacca",
@@ -2255,7 +2315,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Title",
                     "Illicit"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Outer Rim Smuggler",
@@ -2272,7 +2333,8 @@ exportObj.basicCardData = () =>
                     "Modification",
                     "Title",
                     "Illicit"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Jan Ors",
@@ -2711,7 +2773,7 @@ exportObj.basicCardData = () =>
                 }
             },
             {
-                 name: "Braylen Stramm",
+                name: "Braylen Stramm",
                 id: 73,
                 unique: true,
                 faction: "Rebel Alliance",
@@ -3010,7 +3072,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lando Calrissian (Scum)",
@@ -3030,7 +3093,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "L3-37",
@@ -3055,7 +3119,8 @@ exportObj.basicCardData = () =>
                         "Lock",
                         "Rotate Arc"
                     ]
-                }
+                },
+                isHyperspace: true
             },
             {
                 name: "Freighter Captain",
@@ -3072,7 +3137,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lando Calrissian (Scum) (Escape Craft)",
@@ -3088,7 +3154,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Crew",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Outer Rim Pioneer",
@@ -3102,7 +3169,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Crew",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "L3-37 (Escape Craft)",
@@ -3124,7 +3192,8 @@ exportObj.basicCardData = () =>
                         "Calculate",
                         "Barrel Roll"
                     ]
-                }
+                },
+                isHyperspace: true
             },
             {
                 name: "Autopilot Drone",
@@ -3142,8 +3211,8 @@ exportObj.basicCardData = () =>
                         "Calculate",
                         "Barrel Roll"
                     ]
-                }
-
+                },
+                isHyperspace: true
             },
             {
                 name: "Fenn Rau",
@@ -3156,7 +3225,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Torpedo"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Old Teroch",
@@ -3169,7 +3239,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Torpedo"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Kad Solus",
@@ -3182,7 +3253,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Torpedo"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Joy Rekkoff",
@@ -3195,7 +3267,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Torpedo"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Skull Squadron Pilot",
@@ -3207,7 +3280,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Torpedo"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Zealous Recruit",
@@ -3218,7 +3292,8 @@ exportObj.basicCardData = () =>
                 points: 44,
                 slots: [
                     "Torpedo"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Boba Fett",
@@ -3237,7 +3312,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Emon Azzameen",
@@ -3256,7 +3332,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Kath Scarlet",
@@ -3275,7 +3352,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Koshka Frost",
@@ -3294,7 +3372,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Krassis Trelix",
@@ -3313,7 +3392,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Bounty Hunter",
@@ -3330,7 +3410,8 @@ exportObj.basicCardData = () =>
                     "Illicit",
                     "Modification",
                     "Title"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "4-LOM",
@@ -4398,7 +4479,8 @@ exportObj.basicCardData = () =>
                     "Sensor",
                     "Missile",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Maarek Stele",
@@ -4413,7 +4495,8 @@ exportObj.basicCardData = () =>
                     "Sensor",
                     "Missile",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Ved Foslo",
@@ -4428,7 +4511,8 @@ exportObj.basicCardData = () =>
                     "Sensor",
                     "Missile",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Zertik Strom",
@@ -4442,7 +4526,8 @@ exportObj.basicCardData = () =>
                     "Sensor",
                     "Missile",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Storm Squadron Ace",
@@ -4456,7 +4541,8 @@ exportObj.basicCardData = () =>
                     "Sensor",
                     "Missile",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Tempest Squadron Pilot",
@@ -4469,7 +4555,8 @@ exportObj.basicCardData = () =>
                     "Sensor",
                     "Missile",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Soontir Fel",
@@ -4537,7 +4624,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Crew",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Captain Feroph",
@@ -4552,7 +4640,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Crew",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Vizier"',
@@ -4566,7 +4655,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Crew",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Scarif Base Pilot",
@@ -4579,7 +4669,8 @@ exportObj.basicCardData = () =>
                     "Crew",
                     "Crew",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Lieutenant Kestal",
@@ -4954,7 +5045,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Device",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Pure Sabacc"',
@@ -4969,7 +5061,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Device",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Duchess"',
@@ -4984,7 +5077,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Device",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Black Squadron Scout",
@@ -4998,7 +5092,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Device",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Planetary Sentinel",
@@ -5011,7 +5106,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Device",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Rear Admiral Chiraneau",
@@ -5079,7 +5175,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Iden Versio",
@@ -5093,7 +5190,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Mauler" Mithel',
@@ -5106,7 +5204,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Scourge" Skutu',
@@ -5119,7 +5218,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Wampa"',
@@ -5133,7 +5233,8 @@ exportObj.basicCardData = () =>
                 points: 30,
                 slots: [       
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Del Meeko",
@@ -5146,7 +5247,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Gideon Hask",
@@ -5159,7 +5261,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Seyn Marana",
@@ -5172,7 +5275,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Valen Rudor",
@@ -5185,7 +5289,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: '"Night Beast"',
@@ -5197,7 +5302,8 @@ exportObj.basicCardData = () =>
                 points: 26,
                 slots: [       
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Black Squadron Ace",
@@ -5209,7 +5315,8 @@ exportObj.basicCardData = () =>
                 slots: [       
                     "Talent",
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Obsidian Squadron Pilot",
@@ -5220,7 +5327,8 @@ exportObj.basicCardData = () =>
                 points: 24,
                 slots: [       
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Academy Pilot",
@@ -5231,7 +5339,8 @@ exportObj.basicCardData = () =>
                 points: 23,
                 slots: [       
                     "Modification"
-                  ]
+                  ],
+                isHyperspace: true
             },
             {
                 name: "Spice Runner",
@@ -5267,7 +5376,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lieutenant Bastian",
@@ -5283,7 +5393,8 @@ exportObj.basicCardData = () =>
                     "Configuration",
                     "Tech",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Midnight"',
@@ -5297,7 +5408,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Longshot"',
@@ -5311,7 +5423,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Muse"',
@@ -5325,14 +5438,15 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Kylo Ren",
                 id: 236,
                 unique: true,
                 faction: "First Order",
-                ship: "TIE Silencer",
+                ship: "TIE/VN Silencer",
                 skill: 5,
                 force: 2,
                 points: 82,
@@ -5343,14 +5457,15 @@ exportObj.basicCardData = () =>
                     "Torpedo",
                     "Missile",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Blackout"',
                 id: 237,
                 unique: true,
                 faction: "First Order",
-                ship: "TIE Silencer",
+                ship: "TIE/VN Silencer",
                 skill: 5,
                 points: 70,
                 slots: [
@@ -5359,7 +5474,8 @@ exportObj.basicCardData = () =>
                     "Torpedo",
                     "Missile",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lieutenant Dormitz",
@@ -5378,7 +5494,8 @@ exportObj.basicCardData = () =>
                     "Cannon",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "L'ulo L'ampar",
@@ -5393,7 +5510,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Missile",
                     "Tech"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Tallissan Lintra",
@@ -5410,7 +5528,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Missile",
                     "Tech"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "blanks",
@@ -5432,7 +5551,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Quickdraw"',
@@ -5451,7 +5571,8 @@ exportObj.basicCardData = () =>
                     "Gunner",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Rey",
@@ -5464,49 +5585,57 @@ exportObj.basicCardData = () =>
                 force: 2,
                 slots: [
                     "Force",
+                    "Missile",
                     "Crew",
                     "Crew",
                     "Gunner",
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Han Solo (Resistance)",
                 id: 245,
                 unique: true,
+                xws: "hansolo-scavengedyt1300",
                 faction: "Resistance",
                 ship: "Scavenged YT-1300",
                 skill: 6,
                 points: 76,
                 slots: [
                     "Talent",
+                    "Missile",
                     "Crew",
                     "Crew",
                     "Gunner",
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Chewbacca (Resistance)",
                 id: 246,
                 unique: true,
                 faction: "Resistance",
+                xws: "chewbacca-scavengedyt1300",
                 ship: "Scavenged YT-1300",
                 skill: 4,
                 points: 72,
                 slots: [
                     "Talent",
+                    "Missile",
                     "Crew",
                     "Crew",
                     "Gunner",
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Captain Seevor",
@@ -5521,7 +5650,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Mining Guild Surveyor",
@@ -5533,7 +5663,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Ahhav",
@@ -5546,7 +5677,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Finch Dallow",
@@ -5565,7 +5697,8 @@ exportObj.basicCardData = () =>
                     "Device",
                     "Device",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Major Stridan",
@@ -5584,7 +5717,8 @@ exportObj.basicCardData = () =>
                     "Cannon",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Kare Kun",
@@ -5602,7 +5736,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Joph Seastriker",
@@ -5620,7 +5755,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lieutenant Bastian",
@@ -5637,7 +5773,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Jaycris Tubbs",
@@ -5654,12 +5791,14 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Black Squadron Ace (T-70)",
                 id: 256,
                 faction: "Resistance",
+                xws: "blacksquadronace-t70xwing", 
                 ship: "T-70 X-Wing",
                 skill: 4,
                 points: 50,
@@ -5671,7 +5810,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Red Squadron Expert",
@@ -5688,7 +5828,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Blue Squadron Rookie",
@@ -5704,7 +5845,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Zeta Squadron Survivor",
@@ -5719,7 +5861,8 @@ exportObj.basicCardData = () =>
                     "Missile",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Cobalt Squadron Bomber",
@@ -5737,7 +5880,8 @@ exportObj.basicCardData = () =>
                     "Device",
                     "Device",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "TN-3465",
@@ -5764,7 +5908,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Longshot"',
@@ -5778,7 +5923,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Static"',
@@ -5792,7 +5938,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lieutenant Rivas",
@@ -5805,7 +5952,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Commander Malarus",
@@ -5820,7 +5968,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Omega Squadron Ace",
@@ -5833,7 +5982,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Zeta Squadron Pilot",
@@ -5845,7 +5995,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Epsilon Squadron Cadet",
@@ -5857,7 +6008,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Greer Sonnel",
@@ -5872,7 +6024,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Missile",
                     "Tech"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Zari Bangel",
@@ -5887,7 +6040,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Missile",
                     "Tech"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Darth Maul",
@@ -6038,7 +6192,8 @@ exportObj.basicCardData = () =>
                     "Cannon",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Captain Cardinal",
@@ -6058,14 +6213,15 @@ exportObj.basicCardData = () =>
                     "Cannon",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Avenger"',
                 id: 283,
                 unique: true,
                 faction: "First Order",
-                ship: "TIE Silencer",
+                ship: "TIE/VN Silencer",
                 skill: 3,
                 points: 62,
                 slots: [
@@ -6074,14 +6230,15 @@ exportObj.basicCardData = () =>
                     "Torpedo",
                     "Missile",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Recoil"',
                 id: 284,
                 unique: true,
                 faction: "First Order",
-                ship: "TIE Silencer",
+                ship: "TIE/VN Silencer",
                 skill: 4,
                 points: 63,
                 slots: [
@@ -6090,7 +6247,8 @@ exportObj.basicCardData = () =>
                     "Torpedo",
                     "Missile",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Omega Squadron Expert",
@@ -6106,13 +6264,14 @@ exportObj.basicCardData = () =>
                     "Missile",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Sienar-Jaemus Engineer",
                 id: 286,
                 faction: "First Order",
-                ship: "TIE Silencer",
+                ship: "TIE/VN Silencer",
                 skill: 1,
                 points: 56,
                 slots: [
@@ -6120,13 +6279,14 @@ exportObj.basicCardData = () =>
                     "Torpedo",
                     "Missile",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "First Order Test Pilot",
                 id: 287,
                 faction: "First Order",
-                ship: "TIE Silencer",
+                ship: "TIE/VN Silencer",
                 skill: 4,
                 points: 62,
                 slots: [
@@ -6135,7 +6295,8 @@ exportObj.basicCardData = () =>
                     "Torpedo",
                     "Missile",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Starkiller Base Pilot",
@@ -6153,7 +6314,8 @@ exportObj.basicCardData = () =>
                     "Cannon",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Lieutenant Tavson",
@@ -6161,7 +6323,7 @@ exportObj.basicCardData = () =>
                 unique: true,
                 faction: "First Order",
                 ship: "Upsilon-Class Shuttle",
-                skill: 2,
+                skill: 3,
                 charge: 2,
                 recurring: true,
                 points: 62,
@@ -6174,7 +6336,8 @@ exportObj.basicCardData = () =>
                     "Cannon",
                     "Sensor",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: '"Null"',
@@ -6188,7 +6351,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Tech",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Cat",
@@ -6207,7 +6371,8 @@ exportObj.basicCardData = () =>
                     "Device",
                     "Device",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Ben Teene",
@@ -6226,7 +6391,9 @@ exportObj.basicCardData = () =>
                     "Device",
                     "Device",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true,
+                applies_condition: 'Rattled'.canonicalize()
             },
             {
                 name: "Edon Kappehl",
@@ -6245,7 +6412,8 @@ exportObj.basicCardData = () =>
                     "Device",
                     "Device",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Vennie",
@@ -6264,7 +6432,8 @@ exportObj.basicCardData = () =>
                     "Device",
                     "Device",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Resistance Sympathizer",
@@ -6274,13 +6443,15 @@ exportObj.basicCardData = () =>
                 skill: 2,
                 points: 68,
                 slots: [
+                    "Missile",
                     "Crew",
                     "Crew",
                     "Gunner",
                     "Illicit",
                     "Modification",
                     "Title"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Jessika Pava",
@@ -6299,7 +6470,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Temmin Wexley",
@@ -6309,8 +6481,6 @@ exportObj.basicCardData = () =>
                 ship: "T-70 X-Wing",
                 skill: 4,
                 points: 54,
-                charge: 1,
-                recurring: true, 
                 slots: [
                     "Talent",
                     "Astromech",
@@ -6319,10 +6489,11 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
-                name: "Nien Numb",
+                name: "Nien Nunb",
                 id: 298,
                 unique: true,
                 faction: "Resistance",
@@ -6337,7 +6508,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Ello Asty",
@@ -6355,7 +6527,8 @@ exportObj.basicCardData = () =>
                     "Tech",
                     "Title",
                     "Hardpoint"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Green Squadron Expert",
@@ -6369,7 +6542,8 @@ exportObj.basicCardData = () =>
                     "Talent",
                     "Missile",
                     "Tech"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Blue Squadron Recruit",
@@ -6381,7 +6555,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Missile",
                     "Tech"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Foreman Proach",
@@ -6394,7 +6569,8 @@ exportObj.basicCardData = () =>
                 slots: [
                     "Talent",
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Overseer Yushyn",
@@ -6408,7 +6584,8 @@ exportObj.basicCardData = () =>
                 points: 26,
                 slots: [
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             },
             {
                 name: "Mining Guild Sentry",
@@ -6419,7 +6596,8 @@ exportObj.basicCardData = () =>
                 points: 24,
                 slots: [
                     "Modification"
-                ]
+                ],
+                isHyperspace: true
             }
         ],
 
@@ -6447,7 +6625,8 @@ exportObj.basicCardData = () =>
                id: 2,
                slot: "Astromech",
                points: 6,
-               charge: 2
+               charge: 2,
+               isHyperspace: true
            },
            {
                name: "R2-D2",
@@ -6456,13 +6635,15 @@ exportObj.basicCardData = () =>
                slot: "Astromech",
                points: 8,
                charge: 3,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "R3 Astromech",
                id: 4,
                slot: "Astromech",
-               points: 3
+               points: 3,
+               isHyperspace: true
            },
            {
                name: "R4 Astromech",
@@ -6498,14 +6679,16 @@ exportObj.basicCardData = () =>
                         }
                         return result;
                     })();
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "R5 Astromech",
                id: 6,
                slot: "Astromech",
                points: 5,
-               charge: 2
+               charge: 2,
+               isHyperspace: true
            },
            {
                name: "R5-D8",
@@ -6514,7 +6697,8 @@ exportObj.basicCardData = () =>
                slot: "Astromech",
                points: 7,
                charge: 3,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "R5-P8",
@@ -6539,7 +6723,8 @@ exportObj.basicCardData = () =>
                slot: "Cannon",
                points: 4,
                attackbull: 4,
-               range: "2-3"
+               range: "2-3",
+               isHyperspace: true
            },
            {
                name: "Ion Cannon",
@@ -6547,7 +6732,8 @@ exportObj.basicCardData = () =>
                slot: "Cannon",
                points: 5,
                attack: 3,
-               range: "1-3"
+               range: "1-3",
+               isHyperspace: false
            },
            {
                name: "Jamming Beam",
@@ -6555,7 +6741,8 @@ exportObj.basicCardData = () =>
                slot: "Cannon",
                points: 2,
                attack: 3,
-               range: "1-2"
+               range: "1-2",
+               isHyperspace: false
            },
            {
                name: "Tractor Beam",
@@ -6563,7 +6750,8 @@ exportObj.basicCardData = () =>
                slot: "Cannon",
                points: 3,
                attack: 3,
-               range: "1-3"
+               range: "1-3",
+               isHyperspace: false
            },
            {
                name: "Admiral Sloane",
@@ -6588,7 +6776,8 @@ exportObj.basicCardData = () =>
                slot: "Crew",
                points: 4,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "Baze Malbus",
@@ -6607,7 +6796,8 @@ exportObj.basicCardData = () =>
                faction: "Rebel Alliance",
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Calculate')) { return stats.actions.push('Calculate'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Cassian Andor",
@@ -6633,7 +6823,8 @@ exportObj.basicCardData = () =>
                unique: true,
                faction: "Rebel Alliance",
                charge: 2,
-               recurring: true 
+               recurring: true,
+               isHyperspace: true
            },
            {
                name: "Chewbacca (Scum)",
@@ -6642,7 +6833,8 @@ exportObj.basicCardData = () =>
                xws: "chewbacca-crew", 
                points: 4,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: '"Chopper" (Crew)',
@@ -6699,7 +6891,8 @@ exportObj.basicCardData = () =>
                validation_func(ship, upgrade_obj) {
                     return upgrade_obj.occupiesAnotherUpgradeSlot();
                 },
-               also_occupies_upgrades: [ "Crew" ]
+               also_occupies_upgrades: [ "Crew" ],
+               isHyperspace: true
            },
            {
                name: "Director Krennic",
@@ -6711,7 +6904,8 @@ exportObj.basicCardData = () =>
                applies_condition: 'Optimized Prototype'.canonicalize(),
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Lock')) { return stats.actions.push('Lock'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Emperor Palpatine",
@@ -6736,7 +6930,8 @@ exportObj.basicCardData = () =>
                name: "Freelance Slicer",
                id: 30,
                slot: "Crew",
-               points: 3
+               points: 3,
+               isHyperspace: false
            },
            {
                name: "4-LOM",
@@ -6751,7 +6946,8 @@ exportObj.basicCardData = () =>
                id: 32,
                slot: "Crew",
                points: 10,
-               charge: 1
+               charge: 1,
+               isHyperspace: false
            },
            {
                name: "Grand Inquisitor",
@@ -6805,14 +7001,16 @@ exportObj.basicCardData = () =>
                slot: "Crew",
                points: 5,
                unique: true,
-               applies_condition: 'Listening Device'.canonicalize()
+               applies_condition: 'Listening Device'.canonicalize(),
+               isHyperspace: true
            },
            {
                name: "ISB Slicer",
                id: 38,
                slot: "Crew",
                points: 3,
-               faction: "Galactic Empire"
+               faction: "Galactic Empire",
+               isHyperspace: true
            },
            {
                name: "Jabba the Hutt",
@@ -6864,7 +7062,8 @@ exportObj.basicCardData = () =>
                slot: "Crew",
                points: 4,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "Lando Calrissian",
@@ -6873,7 +7072,8 @@ exportObj.basicCardData = () =>
                xws: "landocalrissian", 
                points: 5,
                unique: true,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "Lando Calrissian (Scum)",
@@ -6882,7 +7082,8 @@ exportObj.basicCardData = () =>
                xws: "landocalrissian-crew", 
                points: 8,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "Leia Organa",
@@ -6892,7 +7093,8 @@ exportObj.basicCardData = () =>
                unique: true,
                faction: "Rebel Alliance",
                charge: 3,
-               recurring: true 
+               recurring: true,
+               isHyperspace: true
            },
            {
                name: "Latts Razzi",
@@ -6988,19 +7190,22 @@ exportObj.basicCardData = () =>
                         }
                         return result;
                     })();
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Novice Technician",
                id: 53,
                slot: "Crew",
-               points: 4
+               points: 4,
+               isHyperspace: false
            },
            {
                name: "Perceptive Copilot",
                id: 54,
                slot: "Crew",
-               points: 10
+               points: 10,
+               isHyperspace: true
            },
            {
                name: "Qi'ra",
@@ -7008,7 +7213,8 @@ exportObj.basicCardData = () =>
                slot: "Crew",
                points: 2,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "R2-D2 (Crew)",
@@ -7018,7 +7224,8 @@ exportObj.basicCardData = () =>
                xws: "r2d2-crew",
                points: 8,
                unique: true,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "Sabine Wren",
@@ -7034,13 +7241,15 @@ exportObj.basicCardData = () =>
                slot: "Crew",
                points: 8,
                unique: true,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "Seasoned Navigator",
                id: 59,
                slot: "Crew",
-               points: 5
+               points: 5,
+               isHyperspace: true
            },
            {
                name: "Seventh Sister",
@@ -7065,7 +7274,8 @@ exportObj.basicCardData = () =>
                 },
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Coordinate')) { return stats.actions.push('Coordinate'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Tobias Beckett",
@@ -7073,7 +7283,8 @@ exportObj.basicCardData = () =>
                slot: "Crew",
                points: 2,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "0-0-0",
@@ -7129,7 +7340,8 @@ exportObj.basicCardData = () =>
                validation_func(ship, upgrade_obj) {
                     return upgrade_obj.occupiesAnotherUpgradeSlot();
                 },
-               also_occupies_upgrades: [ "Device" ]
+               also_occupies_upgrades: [ "Device" ],
+               isHyperspace: false
            },
            {
                name: "Conner Nets",
@@ -7137,7 +7349,8 @@ exportObj.basicCardData = () =>
                slot: "Device",
                points: 6,
                charge: 1,
-               applies_condition: 'Conner Net'.canonicalize()
+               applies_condition: 'Conner Net'.canonicalize(),
+               isHyperspace: true
            },
            {
                name: "Proton Bombs",
@@ -7145,7 +7358,8 @@ exportObj.basicCardData = () =>
                slot: "Device",
                points: 5,
                charge: 2,
-               applies_condition: 'Proton Bomb'.canonicalize()
+               applies_condition: 'Proton Bomb'.canonicalize(),
+               isHyperspace: true
            },
            {
                name: "Proximity Mines",
@@ -7153,7 +7367,8 @@ exportObj.basicCardData = () =>
                slot: "Device",
                points: 6,
                charge: 2,
-               applies_condition: 'Proximity Mine'.canonicalize()
+               applies_condition: 'Proximity Mine'.canonicalize(),
+               isHyperspace: true
            },
            {
                name: "Seismic Charges",
@@ -7161,19 +7376,22 @@ exportObj.basicCardData = () =>
                slot: "Device",
                points: 3,
                charge: 2,
-               applies_condition: 'Seismic Charge'.canonicalize()
+               applies_condition: 'Seismic Charge'.canonicalize(),
+               isHyperspace: true
            },
            {
                name: "Heightened Perception",
                id: 72,
                slot: "Force",
-               points: 3
+               points: 3,
+               isHyperspace: true
            },
            {
                name: "Instinctive Aim",
                id: 73,
                slot: "Force",
-               points: 2
+               points: 2,
+               isHyperspace: true
            },
            {
                name: "Supernatural Reflexes",
@@ -7182,19 +7400,22 @@ exportObj.basicCardData = () =>
                points: 12,
                restriction_func(ship) {
                     return !((ship.data.large != null) || (ship.data.medium != null));
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Sense",
                id: 75,
                slot: "Force",
-               points: 6
+               points: 6,
+               isHyperspace: true
            },
            {
                name: "Agile Gunner",
                id: 76,
                slot: "Gunner",
-               points: 10
+               points: 10,
+               isHyperspace: true
            },
            {
                name: "Bistan",
@@ -7281,7 +7502,8 @@ exportObj.basicCardData = () =>
                xws: "hansolo", 
                points: 12,
                unique: true,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "Han Solo (Scum)",
@@ -7290,13 +7512,15 @@ exportObj.basicCardData = () =>
                xws: "hansolo-gunner",
                points: 4,
                unique: true,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "Hotshot Gunner",
                id: 86,
                slot: "Gunner",
-               points: 7
+               points: 7,
+               isHyperspace: true
            },
            {
                name: "Luke Skywalker",
@@ -7306,6 +7530,7 @@ exportObj.basicCardData = () =>
                force: 1,
                unique: true,
                faction: "Rebel Alliance",
+               isHyperspace: true,
                modifier_func(stats) {
                     return stats.force += 1;
                 }
@@ -7314,7 +7539,8 @@ exportObj.basicCardData = () =>
                name: "Skilled Bombardier",
                id: 88,
                slot: "Gunner",
-               points: 2
+               points: 2,
+               isHyperspace: true
            },
            {
                name: "Veteran Tail Gunner",
@@ -7323,7 +7549,8 @@ exportObj.basicCardData = () =>
                points: 4,
                restriction_func(ship) {
                     return (ship.data.attackb != null);
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Veteran Turret Gunner",
@@ -7333,7 +7560,8 @@ exportObj.basicCardData = () =>
                restriction_func(ship) {
                     let needle, needle1;
                     return (needle = "Rotate Arc", Array.from(ship.effectiveStats().actions).includes(needle)) || (needle1 = "Rotate Arc", Array.from(ship.effectiveStats().actionsred).includes(needle1));
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Cloaking Device",
@@ -7344,32 +7572,37 @@ exportObj.basicCardData = () =>
                charge: 2,
                restriction_func(ship) {
                     return (ship.data.large == null);
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Contraband Cybernetics",
                id: 92,
                slot: "Illicit",
                points: 5,
-               charge: 1
+               charge: 1,
+               isHyperspace: false
            },
            {
                name: "Deadman's Switch",
                id: 93,
                slot: "Illicit",
-               points: 2
+               points: 2,
+               isHyperspace: true
            },
            {
                name: "Feedback Array",
                id: 94,
                slot: "Illicit",
-               points: 4
+               points: 4,
+               isHyperspace: false
            },
            {
                name: "Inertial Dampeners",
                id: 95,
                slot: "Illicit",
-               points: 1
+               points: 1,
+               isHyperspace: true
            },
            {
                name: "Rigged Cargo Chute",
@@ -7379,7 +7612,8 @@ exportObj.basicCardData = () =>
                charge: 1,
                restriction_func(ship) {
                     return (ship.data.medium != null)  || (ship.data.large != null);
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Barrage Rockets",
@@ -7396,7 +7630,8 @@ exportObj.basicCardData = () =>
                validation_func(ship, upgrade_obj) {
                    return upgrade_obj.occupiesAnotherUpgradeSlot();
                },
-               also_occupies_upgrades: [ 'Missile' ]
+               also_occupies_upgrades: [ 'Missile' ],
+               isHyperspace: false
            },
            {
                name: "Cluster Missiles",
@@ -7406,7 +7641,8 @@ exportObj.basicCardData = () =>
                attack: 3,
                range: "1-2",
                rangebonus: true, 
-               charge: 4
+               charge: 4,
+               isHyperspace: true
            },
            {
                name: "Concussion Missiles",
@@ -7416,7 +7652,8 @@ exportObj.basicCardData = () =>
                attack: 3,
                range: "2-3",
                rangebonus: true, 
-               charge: 3
+               charge: 3,
+               isHyperspace: true
            },
            {
                name: "Homing Missiles",
@@ -7426,7 +7663,8 @@ exportObj.basicCardData = () =>
                attack: 4,
                range: "2-3",
                rangebonus: true, 
-               charge: 2
+               charge: 2,
+               isHyperspace: true
            },
            {
                name: "Ion Missiles",
@@ -7436,7 +7674,8 @@ exportObj.basicCardData = () =>
                attack: 3,
                range: "2-3",
                rangebonus: true, 
-               charge: 3
+               charge: 3,
+               isHyperspace: true
            },
            {
                name: "Proton Rockets",
@@ -7446,7 +7685,8 @@ exportObj.basicCardData = () =>
                attackbull: 5,
                range: "1-2",
                rangebonus: true, 
-               charge: 1
+               charge: 1,
+               isHyperspace: true
            },
            {
                name: "Ablative Plating",
@@ -7456,7 +7696,8 @@ exportObj.basicCardData = () =>
                charge: 2,
                restriction_func(ship) {
                     return (ship.data.medium != null)  || (ship.data.large != null);
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Advanced SLAM",
@@ -7466,7 +7707,8 @@ exportObj.basicCardData = () =>
                restriction_func(ship) { 
                     let needle, needle1;
                     return (needle = "Slam", Array.from(ship.effectiveStats().actions).includes(needle)) || (needle1 = "Slam", Array.from(ship.effectiveStats().actionsred).includes(needle1));
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Afterburners",
@@ -7476,13 +7718,15 @@ exportObj.basicCardData = () =>
                charge: 2,
                restriction_func(ship) {
                     return !((ship.data.large != null ? ship.data.large : false) || (ship.data.medium != null ? ship.data.medium : false));
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Electronic Baffle",
                id: 106,
                slot: "Modification",
-               points: 2
+               points: 2,
+               isHyperspace: false
            },
            {
                name: "Engine Upgrade",
@@ -7497,19 +7741,22 @@ exportObj.basicCardData = () =>
                 },
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Boost')) { return stats.actions.push('Boost'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Munitions Failsafe",
                id: 108,
                slot: "Modification",
-               points: 2
+               points: 2,
+               isHyperspace: true
            },
            {
                name: "Static Discharge Vanes",
                id: 109,
                slot: "Modification",
-               points: 6
+               points: 6,
+               isHyperspace: true
            },
            {
                name: "Tactical Scrambler",
@@ -7518,32 +7765,37 @@ exportObj.basicCardData = () =>
                points: 2,
                restriction_func(ship) {
                     return (ship.data.medium != null)  || (ship.data.large != null);
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Advanced Sensors",
                id: 111,
                slot: "Sensor",
-               points: 8
+               points: 8,
+               isHyperspace: true
            },
            {
                name: "Collision Detector",
                id: 112,
                slot: "Sensor",
                points: 5,
-               charge: 2
+               charge: 2,
+               isHyperspace: true
            },
            {
                name: "Fire-Control System",
                id: 113,
                slot: "Sensor",
-               points: 3
+               points: 3,
+               isHyperspace: true
            },
            {
                name: "Trajectory Simulator",
                id: 114,
                slot: "Sensor",
-               points: 3
+               points: 3,
+               isHyperspace: true
            },
            {
                name: "Composure",
@@ -7553,14 +7805,16 @@ exportObj.basicCardData = () =>
                restriction_func(ship) {
                     let needle, needle1;
                     return (needle = "Focus", Array.from(ship.effectiveStats().actions).includes(needle)) || (needle1 = "Focus", Array.from(ship.effectiveStats().actionsred).includes(needle1));
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Crack Shot",
                id: 116,
                slot: "Talent",
                points: 1,
-               charge: 1
+               charge: 1,
+               isHyperspace: true
            },
            {
                name: "Daredevil",
@@ -7570,7 +7824,8 @@ exportObj.basicCardData = () =>
                restriction_func(ship) {
                     let needle;
                     return (needle = "Boost", Array.from(ship.effectiveStats().actions).includes(needle)) && !((ship.data.large != null) || (ship.data.medium != null));
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Debris Gambit",
@@ -7582,7 +7837,8 @@ exportObj.basicCardData = () =>
                 },
                modifier_func(stats) {
                     if (!Array.from(stats.actionsred).includes('Evade')) { return stats.actionsred.push('Evade'); }
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Elusive",
@@ -7592,7 +7848,8 @@ exportObj.basicCardData = () =>
                charge: 1,
                restriction_func(ship) {
                     return (ship.data.large == null);
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Expert Handling",
@@ -7607,20 +7864,23 @@ exportObj.basicCardData = () =>
                 },
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Barrel Roll')) { return stats.actions.push('Barrel Roll'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Fearless",
                id: 121,
                slot: "Talent",
                points: 3,
-               faction: "Scum and Villainy"
+               faction: "Scum and Villainy",
+               isHyperspace: true
            },
            {
                name: "Intimidation",
                id: 122,
                slot: "Talent",
-               points: 3
+               points: 3,
+               isHyperspace: true
            },
            {
                name: "Juke",
@@ -7629,7 +7889,8 @@ exportObj.basicCardData = () =>
                points: 4,
                restriction_func(ship) {
                     return (ship.data.large == null);
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Lone Wolf",
@@ -7638,32 +7899,37 @@ exportObj.basicCardData = () =>
                points: 4,
                unique: true,
                recurring: true,
-               charge: 1
+               charge: 1,
+               isHyperspace: true
            },
            {
                name: "Marksmanship",
                id: 125,
                slot: "Talent",
-               points: 1
+               points: 1,
+               isHyperspace: true
            },
            {
                name: "Outmaneuver",
                id: 126,
                slot: "Talent",
-               points: 6
+               points: 6,
+               isHyperspace: true
            },
            {
                name: "Predator",
                id: 127,
                slot: "Talent",
-               points: 2
+               points: 2,
+               isHyperspace: true
            },
            {
                name: "Ruthless",
                id: 128,
                slot: "Talent",
                points: 1,
-               faction: "Galactic Empire"
+               faction: "Galactic Empire",
+               isHyperspace: true
            },
            {
                name: "Saturation Salvo",
@@ -7673,14 +7939,16 @@ exportObj.basicCardData = () =>
                restriction_func(ship) {
                     let needle, needle1;
                     return (needle = "Reload", Array.from(ship.effectiveStats().actions).includes(needle)) || (needle1 = "Reload", Array.from(ship.effectiveStats().actionsred).includes(needle1));
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Selfless",
                id: 130,
                slot: "Talent",
                points: 3,
-               faction: "Rebel Alliance"
+               faction: "Rebel Alliance",
+               isHyperspace: true
            },
            {
                name: "Squad Leader",
@@ -7692,19 +7960,22 @@ exportObj.basicCardData = () =>
                     if (stats.actionsred != null) {
                         if (!Array.from(stats.actionsred).includes('Coordinate')) { return stats.actionsred.push('Coordinate'); }
                     }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Swarm Tactics",
                id: 132,
                slot: "Talent",
-               points: 3
+               points: 3,
+               isHyperspace: true
            },
            {
                name: "Trick Shot",
                id: 133,
                slot: "Talent",
-               points: 1
+               points: 1,
+               isHyperspace: true
            },
            {
                name: "Adv. Proton Torpedoes",
@@ -7714,7 +7985,8 @@ exportObj.basicCardData = () =>
                attack: 5,
                range: "1",
                rangebonus: true, 
-               charge: 1
+               charge: 1,
+               isHyperspace: false
            },
            {
                name: "Ion Torpedoes",
@@ -7724,7 +7996,8 @@ exportObj.basicCardData = () =>
                attack: 4,
                range: "2-3",
                rangebonus: true, 
-               charge: 2
+               charge: 2,
+               isHyperspace: true
            },
            {
                name: "Proton Torpedoes",
@@ -7734,7 +8007,8 @@ exportObj.basicCardData = () =>
                attack: 4,
                range: "2-3",
                rangebonus: true, 
-               charge: 2
+               charge: 2,
+               isHyperspace: true
            },
            {
                name: "Dorsal Turret",
@@ -7745,7 +8019,8 @@ exportObj.basicCardData = () =>
                range: "1-2",
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Rotate Arc')) { return stats.actions.push('Rotate Arc'); }
-                }
+                },
+               isHyperspace: false
            },
            {
                name: "Ion Cannon Turret",
@@ -7756,7 +8031,8 @@ exportObj.basicCardData = () =>
                range: "1-2",
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Rotate Arc')) { return stats.actions.push('Rotate Arc'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Os-1 Arsenal Loadout",
@@ -7780,20 +8056,22 @@ exportObj.basicCardData = () =>
                id: 140,
                points: 0,
                slot: "Configuration",
-               ship: "U-Wing"
+               ship: "U-Wing",
+               isHyperspace: true
            },
            {
                name: "Pivot Wing (Open)",
                id: 141,
                points: 0,
-               skip: true 
+               skip: true
            },
            {
                name: "Servomotor S-Foils",
                id: 142,
                points: 0,
                slot: "Configuration",
-               ship: "X-Wing"
+               ship: "X-Wing",
+               isHyperspace: true
            },
            {
                name: "Blank",
@@ -7837,7 +8115,8 @@ exportObj.basicCardData = () =>
                 ],
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Reload')) { return stats.actions.push('Reload'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Dauntless",
@@ -7906,7 +8185,8 @@ exportObj.basicCardData = () =>
                points: 6,
                unique: true,
                faction: "Scum and Villainy",
-               ship: "Customized YT-1300"
+               ship: "Customized YT-1300",
+               isHyperspace: true
            },
            {
                name: "Marauder",
@@ -7921,7 +8201,9 @@ exportObj.basicCardData = () =>
                       type: exportObj.Upgrade,
                       slot: "Gunner"
                   }
-                ]       },
+                ],
+               isHyperspace: true
+           },
            {
                name: "Millennium Falcon",
                id: 154,
@@ -7930,9 +8212,11 @@ exportObj.basicCardData = () =>
                unique: true,
                faction: "Rebel Alliance",
                ship: "YT-1300",
+               isHyperspace: true,
                modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Evade')) { return stats.actions.push('Evade'); }
-                }
+                },
+               isHyperspace: true
            },
            {
                name: "Mist Hunter",
@@ -8025,7 +8309,9 @@ exportObj.basicCardData = () =>
                       type: exportObj.Upgrade,
                       slot: "Torpedo"
                   }
-                ]       },
+                ],
+               isHyperspace: true
+           },
            {
                name: "ST-321",
                id: 162,
@@ -8062,7 +8348,8 @@ exportObj.basicCardData = () =>
                variableagility: true,
                modifier_func(stats) {
                     return stats.hull += 1;
-                }       
+                },
+               isHyperspace: true
            },
            {
                name: "Shield Upgrade",
@@ -8073,7 +8360,8 @@ exportObj.basicCardData = () =>
                variableagility: true,
                modifier_func(stats) {
                     return stats.shields += 1;
-                }       
+                },
+               isHyperspace: true
            },
            {
                name: "Stealth Device",
@@ -8085,7 +8373,8 @@ exportObj.basicCardData = () =>
                charge: 1,
                modifier_func(stats) {
                     return stats.agility += 1;
-                }       
+                },
+               isHyperspace: true
            },
            {
                name: "Phantom",
@@ -8107,7 +8396,8 @@ exportObj.basicCardData = () =>
                         type: exportObj.Upgrade,
                         slot: "Cannon"
                     }
-                ]
+                ],
+                isHyperspace: true
            },
            {
                 name: "Hardpoint: Torpedo",
@@ -8120,7 +8410,8 @@ exportObj.basicCardData = () =>
                         type: exportObj.Upgrade,
                         slot: "Torpedo"
                     }
-                ]
+                ],
+                isHyperspace: true
            },
            {
                 name: "Hardpoint: Missile",
@@ -8133,7 +8424,8 @@ exportObj.basicCardData = () =>
                         type: exportObj.Upgrade,
                         slot: "Missile"
                     }
-                ]
+                ],
+                isHyperspace: true
            },
            {
                 name: "Black One",
@@ -8146,14 +8438,16 @@ exportObj.basicCardData = () =>
                 ship: "T-70 X-Wing",
                 modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Slam')) { return stats.actions.push('Slam'); }
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Heroic",
                 id: 172,
                 slot: "Talent",
                 points: 1,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Rose Tico",
@@ -8161,7 +8455,8 @@ exportObj.basicCardData = () =>
                 slot: "Crew",
                 points: 9,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Finn",
@@ -8169,7 +8464,8 @@ exportObj.basicCardData = () =>
                 slot: "Gunner",
                 points: 10,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Integrated S-Foils",
@@ -8177,7 +8473,8 @@ exportObj.basicCardData = () =>
                 slot: "Configuration",
                 points: 0,
                 faction: "Resistance",
-                ship: "T-70 X-Wing"
+                ship: "T-70 X-Wing",
+                isHyperspace: true
            },
            {
                 name: "Integrated S-Foils (Open)",
@@ -8192,7 +8489,8 @@ exportObj.basicCardData = () =>
                 restriction_func(ship) {
                     let needle, needle1;
                     return (needle = "Lock", Array.from(ship.effectiveStats().actions).includes(needle)) || (needle1 = "Lock", Array.from(ship.effectiveStats().actionsred).includes(needle1));
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Primed Thrusters",
@@ -8201,7 +8499,8 @@ exportObj.basicCardData = () =>
                 points: 8,
                 restriction_func(ship) {
                     return !((ship.data.large != null) || (ship.data.medium != null));
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Kylo Ren",
@@ -8214,7 +8513,8 @@ exportObj.basicCardData = () =>
                 applies_condition: 'I\'ll Show You the Dark Side'.canonicalize(),
                 modifier_func(stats) {
                     return stats.force += 1;
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "General Hux",
@@ -8226,14 +8526,16 @@ exportObj.basicCardData = () =>
                 restriction_func(ship) {
                     let needle;
                     return (needle = "Coordinate", Array.from(ship.effectiveStats().actions).includes(needle));
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Fanatical",
                 id: 181,
                 slot: "Talent",
                 points: 2,
-                faction: "First Order"
+                faction: "First Order",
+                isHyperspace: true
            },
            {
                 name: "Special Forces Gunner",
@@ -8241,15 +8543,16 @@ exportObj.basicCardData = () =>
                 slot: "Gunner",
                 points: 10,
                 faction: "First Order",
-                ship: "TIE/SF Fighter"
-           },
+                ship: "TIE/SF Fighter",
+                isHyperspace: true       },
            {
                 name: "Captain Phasma",
                 id: 183,
                 slot: "Crew",
                 unique: true,
                 points: 5,
-                faction: "First Order"
+                faction: "First Order",
+                isHyperspace: true
            },
            {
                 name: "Supreme Leader Snoke",
@@ -8268,7 +8571,8 @@ exportObj.basicCardData = () =>
                 also_occupies_upgrades: [ "Crew" ],
                 modifier_func(stats) {
                     return stats.force += 1;
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Hyperspace Tracking Data",
@@ -8278,13 +8582,15 @@ exportObj.basicCardData = () =>
                 points: 2,
                 restriction_func(ship) {
                     return (ship.data.large != null);
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Advanced Optics",
                 id: 186,
                 slot: "Tech",
-                points: 4
+                points: 4,
+                isHyperspace: true
            },
            {
                 name: "Rey",
@@ -8296,7 +8602,8 @@ exportObj.basicCardData = () =>
                 faction: "Resistance",
                 modifier_func(stats) {
                     return stats.force += 1;
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Chewbacca (Resistance)",
@@ -8305,7 +8612,8 @@ exportObj.basicCardData = () =>
                 points: 5,
                 charge: 2,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Paige Tico",
@@ -8313,7 +8621,8 @@ exportObj.basicCardData = () =>
                 slot: "Gunner",
                 points: 7,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "R2-HA",
@@ -8321,7 +8630,8 @@ exportObj.basicCardData = () =>
                 slot: "Astromech",
                 points: 4,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "C-3PO (Resistance)",
@@ -8333,7 +8643,8 @@ exportObj.basicCardData = () =>
                 modifier_func(stats) {
                     if (!Array.from(stats.actions).includes('Calculate')) { stats.actions.push('Calculate'); }
                     if (!Array.from(stats.actionsred).includes('Coordinate')) { return stats.actionsred.push('Coordinate'); }
-                }
+                },
+                isHyperspace: true
            },
            {
                 name: "Han Solo (Resistance)",
@@ -8344,16 +8655,18 @@ exportObj.basicCardData = () =>
                 faction: "Resistance",
                 modifier_func(stats) {
                     if (!Array.from(stats.actionsred).includes('Evade')) { return stats.actionsred.push('Evade'); }
-                }
+                },
+                isHyperspace: true
            },
            {
-                name: "Rey's Millenium Falcon",
+                name: "Rey's Millennium Falcon",
                 id: 193,
                 slot: "Title",
                 points: 5,
                 unique: true,
                 ship: "Scavenged YT-1300",
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Petty Officer Thanisson",
@@ -8361,7 +8674,8 @@ exportObj.basicCardData = () =>
                 slot: "Crew",
                 points: 4,
                 unique: true,
-                faction: "First Order"
+                faction: "First Order",
+                isHyperspace: true
            },
            {
                 name: "BB-8",
@@ -8370,7 +8684,8 @@ exportObj.basicCardData = () =>
                 points: 8,
                 charge: 2,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "BB Astromech",
@@ -8378,7 +8693,8 @@ exportObj.basicCardData = () =>
                 slot: "Astromech",
                 points: 5,
                 charge: 2,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "M9-G8",
@@ -8386,14 +8702,16 @@ exportObj.basicCardData = () =>
                 slot: "Astromech",
                 points: 7,
                 unique: true,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Ferrosphere Paint",
                 id: 198,
                 slot: "Tech",
                 points: 6,
-                faction: "Resistance"
+                faction: "Resistance",
+                isHyperspace: true
            },
            {
                 name: "Brilliant Evasion",
@@ -8431,19 +8749,22 @@ exportObj.basicCardData = () =>
                 restriction_func(ship) {
                     let needle, needle1;
                     return (needle = "Lock", Array.from(ship.effectiveStats().actions).includes(needle)) || (needle1 = "Lock", Array.from(ship.effectiveStats().actionsred).includes(needle1));
-                }
+                },
+                isHyperspace: false
            },
            {
                 name: "Predictive Shot",
                 id: 203,
                 slot: "Force",
-                points: 4
+                points: 4,
+                isHyperspace: true
            },
            {
                 name: "Hate",
                 id: 204,
                 slot: "Force",
-                points: 3
+                points: 3,
+                isHyperspace: true
            },
            {
                 name: "R5-X3",
@@ -8451,13 +8772,15 @@ exportObj.basicCardData = () =>
                 slot: "Astromech",
                 faction: "Resistance",
                 charge: 2,
-                points: 5
+                points: 5,
+                isHyperspace: true
            },
            {
                 name: "Pattern Analyzer",
                 id: 206,
                 slot: "Tech",
-                points: 5
+                points: 5,
+                isHyperspace: true
            }
 
 
@@ -8517,6 +8840,10 @@ exportObj.basicCardData = () =>
             {
                 name: 'Proximity Mine',
                 id: 11
+            },
+            {
+                name: 'Rattled',
+                id: 12
             }
         ]
     })

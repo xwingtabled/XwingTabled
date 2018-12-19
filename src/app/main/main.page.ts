@@ -162,12 +162,12 @@ export class MainPage implements OnInit {
   retryDownload() {
     this.retry_button_disabled = true;
     this.retry_button = false;
-    this.dataService.check_manifest();
+    this.dataService.load_data();
   }
 
   downloadData() {
     this.data_button_disabled = true;
-    this.dataService.download_data();
+    this.dataService.load_data();
   }
 
   downloadArtwork() {
@@ -423,6 +423,7 @@ export class MainPage implements OnInit {
 
   injectShipData(pilot: any, faction: string) {
     // Inject ship data into pilot
+    let xwsShip = pilot.ship;
     pilot.ship = this.dataService.getShip(faction, pilot.ship);
     if (pilot.ship != null) {
       // Inject stats array in pilot root
@@ -439,7 +440,7 @@ export class MainPage implements OnInit {
         }
       )
     } else {
-      this.toastNotFound(pilot.ship, "ship");
+      this.toastNotFound(xwsShip, "ship");
     }
   }
 
