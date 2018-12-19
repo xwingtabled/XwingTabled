@@ -8,9 +8,6 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ng
 import { DomSanitizer } from '@angular/platform-browser';
 import { Platform } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
-import { gunzip, gzip } from 'zlib';
-import * as JSZip from 'jszip';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +29,7 @@ export class XwingDataService {
   // base64urls for native, hotlinks for mobile
 
   image_urls: any = { };
-  static manifest_url = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
+  manifest_url: string = "https://raw.githubusercontent.com/jychuah/XwingTabled/unified_data/scripts/manifest.json";
 
   // Json Data
   data: any = { };
@@ -44,37 +41,12 @@ export class XwingDataService {
     this.hotlink = !(platform.is('ios') || platform.is('android'));
     this.transfer = fileTransfer.create();
     
-    this.load_data();
-  }
-
-  load_data() {
-    this.http.get("../../assets/data/manifest.json.zip", {}, { responseType: "arraybuffer" }).subscribe(
-      (data) => {
-        console.log("Loaded manifest.json.zip");
-        let read_zip = new JSZip();
-        read_zip.loadAsync(data).then(
-          (result) => {
-            read_zip.file("manifest.json").async("string").then(
-              (contents) => {
-                console.log("manifest.json bytes", contents.length);
-                this.data = JSON.parse(contents);
-                console.log("manifest.json", this.data);
-                this.load_images(this.data);
-              },
-              (error) => {
-                console.log("error in zip", error);
-              }
-            )
-          }
-        );
-      },
-      (error) => {
-        console.log("Error downloading manifest.gz", error);
-      },
+    this.storage.ready().then(
       () => {
-        console.log("Download finished");
+        this.status("service_ready", "X-Wing Data Service Ready");
+        this.check_manifest();
       }
-    );
+    )
   }
 
   status(status: string, message: string = "", progress: number = this.progress) {
@@ -90,7 +62,48 @@ export class XwingDataService {
     this.image_urls = { };
     this.data = { };
     await this.storage.clear();
-    this.load_data();
+    this.check_manifest();
+  }
+
+  check_manifest() {
+    // Start of data verification/download sequence
+    // Loads cached data structure containing all xwing-data2 data.
+    // If none is stored, then this.data will be null
+    // Followed by download_manifest()
+    this.status("manifest_loading", "Loading cached manifest... ");
+    this.storage.get('manifest').then(
+      (data) => {
+        this.status("manifest_loading", "Loading cached manifest... found!");
+        this.data = data;
+        this.download_manifest();
+      },
+      (error) => {
+        this.status("manifest_loading", "Loading cached manifest... none found");
+        this.download_manifest();
+      }
+    );
+  }
+
+  download_manifest() {
+    // Download the current manifest from xwing-data2
+    this.status("manifest_downloading", "Downloading current manifest...");
+    console.log("Downloading from", this.manifest_url)
+    this.http.get(this.manifest_url).subscribe(
+      (manifest) => {
+        if (manifest) {
+          this.status("manifest_downloading", "Downloading current manifest... received!");
+          let new_manifest = manifest;
+          if (!this.data || this.data["version"] != new_manifest["version"]) {
+            this.storage.set('manifest', new_manifest);
+            this.data = new_manifest;
+          }
+          // Our manifest is good to go.
+          this.status("manifest_current", "Manifest is current.");
+          console.log("X-Wing Json Data", this.data);
+          this.load_images(this.data);
+        }
+      },
+    );
   }
 
 

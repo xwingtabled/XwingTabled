@@ -18,12 +18,6 @@
  * BROWSER POLYFILLS
  */
 
-//(window as any).Buffer = require('buffer');
-//(window as any).global = require('global');
-(window as any).global = window;
-global.Buffer = global.Buffer || require('buffer').Buffer;
-(window as any).process = require('process/browser');
-
 /** IE9, IE10 and IE11 requires all of the following polyfills. **/
 // import 'core-js/es6/symbol';
 // import 'core-js/es6/object';

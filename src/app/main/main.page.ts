@@ -162,12 +162,12 @@ export class MainPage implements OnInit {
   retryDownload() {
     this.retry_button_disabled = true;
     this.retry_button = false;
-    this.dataService.load_data();
+    this.dataService.check_manifest();
   }
 
   downloadData() {
     this.data_button_disabled = true;
-    this.dataService.load_data();
+    this.dataService.check_manifest();
   }
 
   downloadArtwork() {

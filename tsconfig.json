@@ -12,9 +12,5 @@
       "es2017",
       "dom"
     ],
-    "paths" : {
-      "stream" : [ "./node_modules/stream-browserify/index.js" ],
-      "jszip" : [ "./node_modules/jszip/dist/jszip.min.js" ]
-    }
   }
 }

@@ -4,10 +4,6 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "paths" : {
-      "stream" : ["../node_modules/stream-browserify/index.js" ],
-      "jszip" : [ "../node_modules/jszip/dist/jszip.min.js" ]
-    }
   },
   "exclude": [
     "test.ts",
