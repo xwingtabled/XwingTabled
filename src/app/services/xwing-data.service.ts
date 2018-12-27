@@ -342,6 +342,9 @@ export class XwingDataService {
     if (xwsShip == "upsilonclassshuttle") {
       xwsShip = "upsilonclasscommandshuttle";
     }
+    if (xwsShip == "tiesilencer") {
+      xwsShip = "tievnsilencer";
+    }
     try {
       let factionData = this.data.pilots.find((pilotsEntry) => pilotsEntry.faction == faction);
       let ships = factionData.ships;
