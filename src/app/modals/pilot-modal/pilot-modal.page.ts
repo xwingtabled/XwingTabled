@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { Events } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { ConditionMenuComponent } from '../../popovers/condition-menu/condition-menu.component';
 import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-popover.component';
+import { DamageCardSelectComponent } from '../../popovers/damage-card-select/damage-card-select.component';
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',
@@ -27,6 +29,7 @@ export class PilotModalPage implements OnInit {
               private popoverController: PopoverController,
               private dataService: XwingDataService,
               private alertController: AlertController,
+              private events: Events,
               private ngZone: NgZone) { }
 
   async postDamage() {
@@ -150,6 +153,46 @@ export class PilotModalPage implements OnInit {
       ]
     });
     return await alert.present(); 
+  }
+
+  async thaneKyrell() {
+    const popover = await this.popoverController.create({
+      component: DamageCardSelectComponent,
+      componentProps: {
+        title: "Thane Kyrell",
+        cards: this.pilot.damagecards.filter((card) => !card.exposed),
+        callback: (card) => {
+          card.exposed = true;
+        }
+      }
+    });
+    await popover.present(); 
+  }
+
+  async maarekStele() {
+    let cards = [ ];
+    for (let i = 0; i < 3 && this.squadron.damagedeck.length; i++) {
+      cards.push(this.squadron.damagedeck.shift());
+    }
+    const popover = await this.popoverController.create({
+      component: DamageCardSelectComponent,
+      componentProps: {
+        title: "Maarek Stele",
+        cards: cards,
+        callback: (card) => {
+          card.exposed = true;
+          this.pilot.damagecards.push(card);
+          cards.forEach(
+            (remaining) => {
+              if (remaining != card) {
+                this.squadron.damagediscard.push(remaining);
+              }
+            }
+          );
+        }
+      }
+    });
+    await popover.present(); 
   }
 
   async showConditionMenu() {

@@ -57,6 +57,13 @@ export class MainPage implements OnInit {
       (event) => {
         this.snapshot();
       }
+    );
+
+    this.events.subscribe(
+      "damagedeck",
+      (event) => {
+        this.shuffleDamageDeck(this.squadrons[0]);
+      }
     )
 
   }
@@ -630,7 +637,7 @@ export class MainPage implements OnInit {
     pilot.points = pilotCost + upgradeCost;
   }
 
-  shuffleDamageDeck(squadron: any) {
+  async shuffleDamageDeck(squadron: any) {
     let newDeck = [ ];
     while (squadron.damagedeck.length > 0) {
       let index = Math.floor(Math.random() * Math.floor(squadron.damagedeck.length));
@@ -639,7 +646,13 @@ export class MainPage implements OnInit {
       newDeck.push(card);
     }
     squadron.damagedeck = newDeck;
-
+    const toast = await this.toastController.create({
+      message: 'Damage Deck Shuffled',
+      duration: 2000,
+      position: 'top'
+    });
+    toast.present();
+    this.events.publish("snapshot", "Shuffled Damage Deck");
   }
 
   xwsAddButton() {

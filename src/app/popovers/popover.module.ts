@@ -11,6 +11,7 @@ import { ConditionMenuComponent } from './condition-menu/condition-menu.componen
 import { ConditionPopoverComponent } from './condition-popover/condition-popover.component';
 import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-actions.component';
 import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
+import { DamageCardSelectComponent } from './damage-card-select/damage-card-select.component';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { DamagePopoverComponent } from './damage-popover/damage-popover.componen
     ConditionPopoverComponent,
     DamageDeckActionsComponent,
     DamagePopoverComponent,
+    DamageCardSelectComponent
   ],
   exports: [
   ],
@@ -32,6 +34,7 @@ import { DamagePopoverComponent } from './damage-popover/damage-popover.componen
     ConditionPopoverComponent,
     DamageDeckActionsComponent,
     DamagePopoverComponent,
+    DamageCardSelectComponent
   ]
 })
 export class PopoverModule {}

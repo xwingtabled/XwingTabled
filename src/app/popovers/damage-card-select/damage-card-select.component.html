@@ -1,0 +1,9 @@
+<div class="damage-card-select">
+  <strong>{{ title }}</strong>
+  <br />
+  <br />
+  <ion-select placeholder="Select One" (ionChange)="changeEvent($event)">
+    <ion-select-option *ngFor="let card of cards" [value]="card">{{ card.title }}</ion-select-option>
+  </ion-select>
+  <ion-button [disabled]="!selected_card" expand="full" (click)="selectCard()">Select Card</ion-button>
+</div>

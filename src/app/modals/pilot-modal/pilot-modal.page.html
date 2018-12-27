@@ -29,6 +29,12 @@
           <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">
             Expose Random <xwing-icon [name]="'hit'"></xwing-icon>
           </ion-button>
+          <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="thaneKyrell()">
+            Thane Kyrell&nbsp;<xwing-ship [name]="'t65xwing'" class="ship-icon"></xwing-ship>
+          </ion-button>
+          <ion-button expand="full" (click)="maarekStele()">
+              Maarek Stele&nbsp;<xwing-ship [name]="'tieadvancedx1'" class="ship-icon"></xwing-ship>
+            </ion-button>
           <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
           <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
           <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>

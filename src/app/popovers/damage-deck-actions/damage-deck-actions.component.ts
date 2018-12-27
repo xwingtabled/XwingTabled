@@ -35,22 +35,13 @@ export class DamageDeckActionsComponent implements OnInit {
       }
     )
     this.squadron.damagediscard = [ ];
-    await this.toastDamageDeck("Discard pile shuffled into draw pile");
+    this.events.publish("damagedeck", "shuffle");
     this.events.publish("snapshot", "Shuffled discarded Damage Cards");
   }
 
   async shuffleDeck() {
     await this.popoverController.dismiss();
-    let newDeck = [ ];
-    while (this.squadron.damagedeck.length > 0) {
-      let index = Math.floor(Math.random() * Math.floor(this.squadron.damagedeck.length));
-      let card = this.squadron.damagedeck[index];
-      this.squadron.damagedeck.splice(index, 1);
-      newDeck.push(card);
-    }
-    this.squadron.damagedeck = newDeck;
-    await this.toastDamageDeck("Shuffled Damage Deck");
-    this.events.publish("snapshot", "Shuffled Damage Deck");
+    this.events.publish("damagedeck", "shuffle");
   }
 
 }
