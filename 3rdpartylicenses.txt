@@ -28,7 +28,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 MIT
 MIT
 
-@ionic-native/core@5.0.0-beta.21
+@ionic-native/core@5.0.0-beta.22
 MIT
 MIT
 
@@ -302,15 +302,15 @@ MIT
 MIT
 MIT
 
-@ionic-native/http@5.0.0-beta.21
+@ionic-native/http@5.0.0-beta.22
 MIT
 MIT
 
-@ionic-native/file-transfer@5.0.0-beta.21
+@ionic-native/file-transfer@5.0.0-beta.22
 MIT
 MIT
 
-@ionic-native/file@5.0.0-beta.21
+@ionic-native/file@5.0.0-beta.22
 MIT
 MIT
 
@@ -366,7 +366,7 @@ MIT
 MIT
 MIT
 
-core-js@2.5.7
+core-js@2.6.1
 MIT
 Copyright (c) 2014-2018 Denis Pushkarev
 
