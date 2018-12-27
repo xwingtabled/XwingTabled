@@ -12,6 +12,12 @@
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
     font-size: 2vh;
+    height: 4vh;
+    vertical-align: text-bottom;
+}
+.pilot-header-text {
+    display: inline-block;
+    vertical-align: text-bottom;
 }
 .pilot-initiative {
     color: orange;
@@ -108,7 +114,7 @@
     display: inline-block;
     text-align: center;
     width: 3vw;
-    font-size: 2vw;
+    font-size: 3vh;
 }
 .ship-status {
     background: $xws-background;
