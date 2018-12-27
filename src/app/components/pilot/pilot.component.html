@@ -27,8 +27,10 @@
     </div>
     <div class="damage-cards">
       <div *ngFor="let damagecard of pilot.damagecards">
-        <div *ngIf="damagecard.exposed"><xwing-icon [name]="'crit'" class="damage-facedown"></xwing-icon>{{damagecard.title}}</div>
-        <div *ngIf="!damagecard.exposed" class="damage-facedown"><xwing-icon [name]="'hit'"></xwing-icon>Damage Card</div>
+        <div *ngIf="damagecard.exposed"><xwing-icon [name]="'crit'"></xwing-icon>{{damagecard.title}}</div>
+      </div>
+      <div class="damage-facedown" *ngIf="numFacedown() > 0">
+         <xwing-icon [name]="'hit'"></xwing-icon>Damage Cards x{{ numFacedown() }}
       </div>
     </div>
   </div>

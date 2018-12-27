@@ -25,9 +25,14 @@
             {{ squadron.name }} ( {{ squadron.pointsDestroyed }} / {{ squadron.points}} )
           </span>
           <ion-buttons slot="end">
-            <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)">
-              <span class="damage-deck-summary"><xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
-                <span class="damage-deck-summary-text">{{ squadron.damagedeck.length}}</span></span>
+            <ion-button (click)="askRechargeRecurring()">
+              Recover&nbsp;<xwing-icon [name]="'charge'"></xwing-icon><xwing-icon [name]="'recurring'"></xwing-icon>
+            </ion-button>
+            <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)" class="damage-deck-button">
+              <span class="damage-deck-summary">
+                <xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
+                <span class="damage-deck-summary-text">{{ squadron.damagedeck.length}}</span>
+              </span>
             </ion-button>
             <ion-button (click)="removeSquadron(squadron)">
               <ion-icon name="close"></ion-icon>
@@ -56,9 +61,6 @@
       </ion-fab-button>
       <ion-fab-button *ngIf="snapshots.length > 1" (click)="askUndo()">
         <ion-icon name="undo"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button *ngIf="squadrons.length > 0" (click)="askRechargeRecurring()">
-        <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadrons.length < 2" (click)="xwsAddButton()">
         <ion-icon name="add"></ion-icon>

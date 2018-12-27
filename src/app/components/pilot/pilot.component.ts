@@ -65,6 +65,16 @@ export class PilotComponent implements OnInit {
     }
   }
 
+  numFacedown() {
+    if (this.pilot.damagecards) {
+      let facedown = this.pilot.damagecards.filter(card => !card.exposed);
+      if (facedown) {
+        return facedown.length;
+      }
+    }
+    return 0;
+  }
+
   async presentPilotModal() {
     let stateString = JSON.stringify(this.pilot);
     const modal = await this.modalController.create({

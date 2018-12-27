@@ -55,7 +55,7 @@
     display: block;
 }
 .pilot-card {
-    width: 24vh;
+    width: 30vh;
     height: 40vh;
     display: inline-block;
     vertical-align: top;
@@ -86,11 +86,11 @@
 }
 .action-bar {
     text-align: center;
-    font-size: 2vh;
+    font-size: 3vh;
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
-    padding-right: 1em;
-    padding-left: 1em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
     max-width: 100%;
     overflow: wrap;
 }
@@ -102,6 +102,7 @@
     width: 100%;
     text-align: center;
     margin-bottom: 0.5vh;
+    font-size: 3vh;
 }
 .ship-fw {
     display: inline-block;
@@ -131,7 +132,7 @@
 }
 .item-pilotart {
     vertical-align: top;
-    height: 10vh;
+    height: 13vh;
 }
 .item-pilotart-portrait {
     display: block;
@@ -142,13 +143,13 @@
     vertical-align: top;
 }
 .damage-cards {
-    font-size: 1.5vh;
+    font-size: 2vh;
     padding-left: 0.5em;
 }
 .damage-facedown {
     color: red;
 }
 .conditions {
-    font-size: 1.5vh;
+    font-size: 2vh;
     padding-left: 0.5em;
 }

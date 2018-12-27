@@ -17,18 +17,14 @@ import { HttpProvider } from './providers/http.provider';
 import { HttpAngularProvider } from './providers/http-angular.provider';
 import { HttpNativeProvider } from './providers/http-native.provider';
 import { HTTP } from '@ionic-native/http/ngx';
-//import { XwsModalPage } from './xws-modal/xws-modal.page';
-//import { UpgradeModalPage } from './upgrade-modal/upgrade-modal.page';
 import { XwingModule } from './components/xwing.module';
 import { PopoverModule } from './popovers/popover.module';
-//import { PilotModalPage } from './pilot-modal/pilot-modal.page';
 import { ToastController } from '@ionic/angular';
 import { ModalModule } from './modals/modal.module';
 import { AboutPageModule } from './about/about.module';
 @NgModule({
   declarations: [
     AppComponent,
-
   ],
   entryComponents: [ 
 

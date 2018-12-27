@@ -31,23 +31,27 @@
 .squadron-info {
     display: inline-block;
 }
+.damage-deck-button {
+    vertical-align: center;
+}
 .damage-deck-summary {
     padding-left: 0.5vw;
     padding-right: 0.5vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    background-color: black;
+    vertical-align: center;
 }
 .damage-deck-summary-text {
     line-height: 1.5vh;
+    color: white;
     display: inline-block;
-    vertical-align: middle;
 }
 .damage-deck-icon {
     display: inline-block;
     text-align: center;
-    width: 3vw;
-    font-size: 2vw;
+    font-size: 2vh;
     color: red;
-    background-color: black;
-    margin-right: 0.5vw;
 }
 .pilotlist {
     display: block;
