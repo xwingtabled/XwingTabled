@@ -5123,15 +5123,9 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var HttpProvider = /** @class */ (function () {
     function HttpProvider(platform, angularHttp, nativeHttp) {
-        var _this = this;
         this.platform = platform;
         this.angularHttp = angularHttp;
         this.nativeHttp = nativeHttp;
-        var platforms = ['android', 'capacitor', 'cordova', 'desktop', 'electron', 'hybrid',
-            'ios', 'ipad', 'iphone', 'mobile', 'phablet', 'pwa', 'tablet'];
-        platforms.forEach(function (platform) {
-            console.log(platform, _this.platform.is(platform));
-        });
         var isMobile = this.platform.is('cordova');
         if (isMobile) {
             console.log("HttpProvider using nativeHttp");
@@ -5254,7 +5248,7 @@ var XwingDataService = /** @class */ (function () {
         this.manifest_url = "https://raw.githubusercontent.com/jychuah/XwingTabled/master/scripts/manifest.json";
         // Json Data
         this.data = {};
-        this.hotlink = !(platform.is('ios') || platform.is('android'));
+        this.hotlink = !platform.is('cordova');
         this.transfer = fileTransfer.create();
         this.storage.ready().then(function () {
             _this.status("service_ready", "X-Wing Data Service Ready");
