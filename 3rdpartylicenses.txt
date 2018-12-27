@@ -28,6 +28,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 MIT
 MIT
 
+@ionic-native/core@5.0.0-beta.21
+MIT
+MIT
+
 rxjs@6.2.2
 Apache-2.0
 Apache License
@@ -231,10 +235,6 @@ Apache License
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
-@ionic-native/core@5.0.0-beta.21
-MIT
-MIT
 
 tslib@1.9.3
 Apache-2.0
