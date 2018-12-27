@@ -210,6 +210,9 @@ function injectConditionArtwork(data, xwsCondition, artwork) {
             if (condition.xws == xwsCondition && artwork) {
                 condition.artwork = artwork;
             }
+            if (condition.xws == "rattled") {
+                condition.artwork = "https://sb-cdn.fantasyflightgames.com/card_art/74ca7444aec38cb0034b67b04f6aaa76.jpg";
+            }
         }
     )
 }
