@@ -24,9 +24,13 @@ export class ConditionMenuComponent implements OnInit {
   async assignCondition() {
     let existing = this.pilot.conditions.find((condition) => condition.xws == this.selected_condition.xws);
     if (!existing) {
-      if (this.selected_condition.xws == this.darksideXws && this.selected_condition.pilotDamageCard != null) {
-        let index = this.squadron.damage_deck.indexOf(this.selected_condition.pilotDamageCard);
-        this.squadron.damage_deck.splice(index, 1);
+      if (this.selected_condition.xws == this.darksideXws && this.selected_condition.pilotDamageCardTitle) {
+        this.selected_condition.pilotDamageCard = this.squadron.damagedeck.find(
+          (card) => card.title == this.selected_condition.pilotDamageCardTitle
+        );
+        this.selected_condition.pilotDamageCard.exposed = true;
+        let index = this.squadron.damagedeck.indexOf(this.selected_condition.pilotDamageCard);
+        this.squadron.damagedeck.splice(index, 1);
       }
       this.pilot.conditions.push(this.selected_condition);
       return this.popoverController.dismiss();
@@ -42,15 +46,17 @@ export class ConditionMenuComponent implements OnInit {
 
   getPilotDamageCards() {
     this.pilotDamageCards = [ ];
-    this.squadron.damage_deck.forEach(
-      (damagecard) => {
-        if (!this.pilotDamageCards.find((card) => card.name == card.name) && damagecard.type == 'Pilot') {
-          this.pilotDamageCards.push(damagecard);
+    let pilotCards = this.squadron.damagedeck.filter(
+      (card) => card['type'] == 'Pilot'
+    );
+    pilotCards.forEach(
+      (card) => {
+        if (!this.pilotDamageCards.find((existing) => existing.title == card.title)) {
+          this.pilotDamageCards.push(card);
         }
       }
     )
   }
-
   changeEvent(event) {
     this.selected_condition = this.conditions.find((condition) => condition.xws == event.detail.value);
     if (this.selected_condition.xws == this.darksideXws) {
@@ -59,8 +65,7 @@ export class ConditionMenuComponent implements OnInit {
   }
 
   changeDamageCard(event) {
-    this.selected_condition.pilotDamageCard = event.detail.value;
-    this.selected_condition.pilotDamageCard.exposed = true;
+    this.selected_condition.pilotDamageCardTitle = event.detail.value;
   }
 
   ngOnInit() {

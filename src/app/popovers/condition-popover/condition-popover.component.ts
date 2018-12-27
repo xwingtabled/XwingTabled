@@ -16,7 +16,7 @@ export class ConditionPopoverComponent implements OnInit {
 
   async assignPilotDamage() {
     await this.popoverController.dismiss();
-    this.pilot.damage_cards.push(this.condition.pilotDamageCard);
+    this.pilot.damagecards.push(this.condition.pilotDamageCard);
     this.condition.pilotDamageCard = null;
   }
 

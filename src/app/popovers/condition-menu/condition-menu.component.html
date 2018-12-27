@@ -3,11 +3,15 @@
   <br />
   <br />
   <ion-select placeholder="Select One" (ionChange)="changeEvent($event)">
-      <ion-select-option *ngFor="let condition of conditions" value="{{condition.xws}}">{{ condition.name }}</ion-select-option>
+    <ion-select-option *ngFor="let condition of conditions" value="{{condition.xws}}">{{ condition.name }}</ion-select-option>
   </ion-select>
-  <img *ngIf="selected_condition" [src]="img_urls[selected_condition.xws]">
-  <ion-select *ngIf="selected_condition.xws == darksideXws" placeHolder="Pilot Damage Card" (ionChange)="changeDamageCard($event)">
-    <ion-select-option *ngFor="let pilotCard of pilotDamageCards" value="{{pilotCard}}">{{ pilotCard.title }}</ion-select-option>
-  </ion-select>
+  <div *ngIf="selected_condition && selected_condition.xws">
+    <img [src]="img_urls[selected_condition.xws]">
+  </div>
+  <div *ngIf="selected_condition && selected_condition.xws == darksideXws">
+    <ion-select placeHolder="Pilot Damage Card" (ionChange)="changeDamageCard($event)">
+      <ion-select-option *ngFor="let pilotCard of pilotDamageCards" value="{{ pilotCard.title }}">{{ pilotCard.title }}</ion-select-option>
+    </ion-select>
+  </div>
   <ion-button [disabled]="!selected_condition" expand="full" (click)="assignCondition()">Assign Condition</ion-button>
 </div>

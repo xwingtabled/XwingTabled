@@ -29,7 +29,7 @@ export class XwingDataService {
   // base64urls for native, hotlinks for mobile
 
   image_urls: any = { };
-  manifest_url: string = "https://raw.githubusercontent.com/jychuah/XwingTabled/unified_data/scripts/manifest.json";
+  manifest_url: string = "https://raw.githubusercontent.com/jychuah/XwingTabled/master/scripts/manifest.json";
 
   // Json Data
   data: any = { };

@@ -6,6 +6,6 @@
   <div class="condition-text">
     <xwing-text [text]="condition.ability"></xwing-text>
   </div>
-  <ion-button *ngIf="condition.pilotDamageCard" expand="full" (click)="assignPilotDamage()">Assign {{ condition.pilotDamageCard.name }}</ion-button>
+  <ion-button *ngIf="condition.pilotDamageCard" expand="full" (click)="assignPilotDamage()">Assign {{ condition.pilotDamageCard.title }}</ion-button>
   <ion-button expand="full" (click)="removeCondition()">Remove</ion-button>
 </div>
