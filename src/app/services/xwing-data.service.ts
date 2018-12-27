@@ -38,7 +38,7 @@ export class XwingDataService {
               private platform: Platform, private file: File, private fileTransfer: FileTransfer,
               private sanitizer: DomSanitizer) { 
     
-    this.hotlink = !(platform.is('ios') || platform.is('android'));
+    this.hotlink = !platform.is('cordova');
     this.transfer = fileTransfer.create();
     
     this.storage.ready().then(
@@ -483,7 +483,7 @@ export class XwingDataService {
         if (item.status) {
           // If a file is present, record its filename in our image_map
           this.image_map[key] = item.filename;
-          this.status("image_loaded", "Found image " + item.filename);
+          //this.status("image_loaded", "Found image " + item.filename);
         } else {
           // If it's missing, mark it as missing
           this.status("image_loaded", "Missing image " + item.filename);
