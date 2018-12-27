@@ -288,6 +288,9 @@ export class XwingDataService {
     // or return null if it can't be retrieved
     let ship = this.getShip(faction, xwsShip);
     let pilot = null;
+    if (xwsPilot == "niennumb-t70xwing") {
+      xwsPilot = "niennunb";
+    }
     ship.pilots.forEach(
       (pilotData) => {
         if (pilotData.xws == xwsPilot) {
@@ -344,9 +347,6 @@ export class XwingDataService {
     }
     if (xwsShip == "tiesilencer") {
       xwsShip = "tievnsilencer";
-    }
-    if (xwsShip == "niennumb-t70xwing") {
-      xwsShip = "niennunb";
     }
     try {
       let factionData = this.data.pilots.find((pilotsEntry) => pilotsEntry.faction == faction);
