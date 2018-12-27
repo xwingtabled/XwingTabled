@@ -50,6 +50,4 @@ your game state.
 This app uses artwork from Fantasy Flight's image CDN, open source card
 and text data from [Guido Kessel's Xwing Data 2 project](https://github.com/guidokessels/xwing-data2),
 and [GeordanR's X-Wing Miniatures Font](https://github.com/geordanr/xwing-miniatures-font).
-This app is not distributed with copyright artwork or card data on its own. Data is downloaded and cached
-upon first use. Artwork is hotlinked from Fantasy Flight for web versions of this application,
-and downloaded and cached for mobile versions.
+Data is downloaded and cached upon first use. Artwork is hotlinked from Fantasy Flight for web versions of this application, and downloaded and cached for mobile versions.
