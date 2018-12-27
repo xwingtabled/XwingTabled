@@ -5123,10 +5123,16 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var HttpProvider = /** @class */ (function () {
     function HttpProvider(platform, angularHttp, nativeHttp) {
+        var _this = this;
         this.platform = platform;
         this.angularHttp = angularHttp;
         this.nativeHttp = nativeHttp;
-        var isMobile = this.platform.is('hybrid');
+        var platforms = ['android', 'capacitor', 'cordova', 'desktop', 'electron', 'hybrid',
+            'ios', 'ipad', 'iphone', 'mobile', 'phablet', 'pwa', 'tablet'];
+        platforms.forEach(function (platform) {
+            console.log(platform, _this.platform.is(platform));
+        });
+        var isMobile = this.platform.is('cordova');
         if (isMobile) {
             console.log("HttpProvider using nativeHttp");
         }
@@ -5646,7 +5652,7 @@ var XwingDataService = /** @class */ (function () {
             if (item.status) {
                 // If a file is present, record its filename in our image_map
                 _this.image_map[key] = item.filename;
-                _this.status("image_loaded", "Found image " + item.filename);
+                //this.status("image_loaded", "Found image " + item.filename);
             }
             else {
                 // If it's missing, mark it as missing
