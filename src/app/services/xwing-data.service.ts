@@ -331,11 +331,19 @@ export class XwingDataService {
   }
 
   getYasbUpgrade(id: number) {
-    return JSON.parse(JSON.stringify(this.data.yasb.upgrades[id]));
+    let upgrade = this.data.yasb.upgrades[id];
+    if (!upgrade) {
+      return null;
+    }
+    return JSON.parse(JSON.stringify(upgrade));
   }
 
   getYasbPilot(id: number) {
-    return JSON.parse(JSON.stringify(this.data.yasb.pilots[id]));
+    let pilot = this.data.yasb.pilots[id];
+    if (!pilot) {
+      return null;
+    }
+    return JSON.parse(JSON.stringify(pilot));
   }
   
   getShip(faction: string, xwsShip: string) {
@@ -356,6 +364,9 @@ export class XwingDataService {
   }
 
   getUpgrade(upgradeType: string, xwsUpgrade: string) {
+    if (this.data.shims.xwsUpgrade[xwsUpgrade]) {
+      xwsUpgrade = this.data.shims.xwsUpgrade[xwsUpgrade];
+    }
     try {
       let foundUpgrade = null;
       this.data.upgrades[upgradeType].forEach(
