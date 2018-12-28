@@ -10,6 +10,17 @@ let baseUrl = "https://raw.githubusercontent.com/jychuah/xwing-data2/ffgscraper/
 
 let urls = [ ];
 let data = { };
+let shims = {
+    xwsShip: {
+        "mg100starfortress": "mg100starfortresssf17",
+        "upsilonclassshuttle": "upsilonclasscommandshuttle",
+        "tiesilencer": "tievnsilencer",
+        "scavengedyt1300lightfreighter": "scavengedyt1300"
+    },
+    xwsPilot: {
+        "niennumb-t70xwing": "niennunb"
+    }
+}
 
 function mangle_name(name) {
     // Canonicalizes names: T-65 X-Wing => t65xwing
@@ -289,30 +300,10 @@ get(baseUrl + "data/manifest.json").then(
             () => {
                 stripText(manifest);
                 manifest.yasb = getYasbData();
+                manifest.shims = shims;
                 searchConditions(manifest);
                 console.log("Writing to manifest.json");
                 fs.writeFileSync("./manifest.json", JSON.stringify(manifest));
-                /*
-
-                // Zipping doesn't work great right now
-                console.log("Compressing...");
-                var zip = new JSZip();
-                zip.file("manifest.json", JSON.stringify(manifest));
-                // Generate the zip file asynchronously
-                zip.generateAsync({
-                    type: "string",
-                    compression: "DEFLATE",
-                    compressionOptions: {
-                        level: 9
-                    }
-                }).then(
-                    (data) => {
-                        console.log("Writing to ../src/assets/data/manifest.zip");
-                        fs.writeFileSync("../src/assets/data/manifest.zip", data);
-                        console.log("...Done!");
-                    }
-                )
-                */
             }
         );
     }
