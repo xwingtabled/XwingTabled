@@ -7,6 +7,13 @@
     margin-right: 0.2vh;
     margin-bottom: 0.2vh;
 }
+.upgrade-tablet {
+    @extend .upgrade;
+}
+.upgrade-tablet-portrait {
+    font-size: 2vw;
+    @extend .upgrade;
+}
 .upgrade-img-container {
     display: block;
 }
@@ -31,7 +38,17 @@
 }
 
 .upgrade-img {
+    display: block;
+}
+
+.upgrade-img-tablet {
+    @extend .upgrade-img;
     height: 12.5vh;
+}
+
+.upgrade-img-tablet-portrait {
+    @extend .upgrade-img;
+    width: 26vw;
 }
 
 .upgrade-name {

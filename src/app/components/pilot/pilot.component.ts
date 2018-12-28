@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
+import { LayoutService } from '../../services/layout.service';
 import { PilotModalPage } from '../../modals/pilot-modal/pilot-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
@@ -13,7 +14,7 @@ export class PilotComponent implements OnInit {
   @Input() squadron: any;
   @Input() pilot: any;
   @Input() faction: string;
-  columns: any[][] = [];
+  groups: any[][] = [];
   img_url: string = null;
   shipData: any;
   pilotData: any;
@@ -21,7 +22,8 @@ export class PilotComponent implements OnInit {
   constructor(public dataService: XwingDataService, 
               public modalController: ModalController, 
               public platform: Platform,
-              public events: Events) { }
+              public events: Events,
+              public layout: LayoutService) { }
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
@@ -39,19 +41,20 @@ export class PilotComponent implements OnInit {
   }
 
   ngOnInit() {
-    let column: any[] = [];
-    this.pilot.upgrades.forEach(
-      (upgrade) => {
-        column.push(upgrade);
-        if (column.length == 2) {
-          this.columns.push(column);
-          column = [];
+    let numGroups = this.pilot.upgrades >= 9 ? 3 : 2;
+    let groupSize = Math.ceil(this.pilot.upgrades.length / numGroups);
+    for (let i = 0; i < numGroups; i++) {
+      let group: any[] = [];
+      for (let j = 0; j < groupSize; j++) {
+        let index = i * groupSize + j;
+        if (this.pilot.upgrades[index]) {
+          group.push(this.pilot.upgrades[index]);
         }
       }
-    )
-    if (column.length > 0) {
-      this.columns.push(column);
+      this.groups.push(group);
     }
+    let group: any[] = [];
+
     let get_url = this.pilot.pilot.artwork;
     if (!get_url) {
       get_url = this.pilot.pilot.image;

@@ -6,7 +6,13 @@
     background: #282828;
     color: white;
     position: relative;
-
+}
+.pilot-tablet {
+    @extend .pilot;
+}
+.pilot-tablet-portrait {
+    @extend.pilot;
+    padding-left: 1vw;
 }
 .pilot-header {
     padding-top: 0.5vh;
@@ -48,12 +54,21 @@
     vertical-align: top;
 }
 
-.upgrade-column {
+.upgrade-group-tablet {
+    display: block;
+}
+
+.upgrade-tablet {
     display: inline-block;
     vertical-align: top;
 }
 
-.upgrade {
+.upgrade-group-tablet-portrait {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.upgrade-tablet-portrait {
     display: block;
 }
 
@@ -61,11 +76,18 @@
     display: block;
 }
 .pilot-card {
-    width: 29.5vh;
-    height: 40vh;
     display: inline-block;
     vertical-align: top;
     overflow-y: scroll;
+}
+.pilot-card-tablet {
+    @extend .pilot-card;
+    width: 29.5vh;
+    height: 40vh;
+}
+.pilot-card-tablet-portrait {
+    @extend .pilot-card;
+    width: 40vw;
 }
 .pilot-card::-webkit-scrollbar-track
 {
@@ -100,6 +122,15 @@
     max-width: 100%;
     overflow: wrap;
 }
+.action-bar-tablet {
+    @extend .action-bar;
+}
+.action-bar-tablet-portrait {
+    @extend .action-bar;
+    font-size: 3vw;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+}
 .stat {
     display: inline-block;
 }
@@ -109,6 +140,13 @@
     text-align: center;
     margin-bottom: 0.5vh;
     font-size: 3vh;
+}
+.stat-block-tablet {
+    @extend .stat-block;
+}
+.stat-block-tablet-portrait {
+    @extend .stat-block;
+    font-size: 3vw;
 }
 .ship-fw {
     display: inline-block;
@@ -138,11 +176,14 @@
 }
 .item-pilotart {
     vertical-align: top;
+}
+.item-pilotart-tablet {
+    @extend .item-pilotart;
     height: 12.5vh;
 }
-.item-pilotart-portrait {
-    display: block;
-    width: 100%; 
+.item-pilotart-tablet-portrait {
+    @extend .item-pilotart;
+    width: 100%;
 }
 .item-status {
     display: inline-block;

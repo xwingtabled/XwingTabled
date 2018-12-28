@@ -1,4 +1,4 @@
-<div class="pilot">
+<div [class]="'pilot' + layout.getClass()">
   <div class="pilot-header">
     <xwing-ship [name]="pilot.ship.keyname" class="ship-fw"></xwing-ship>
     <div class="pilot-header-text">
@@ -8,18 +8,18 @@
         ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
   </div>
-  <div class="pilot-card" (click)="showPilot()">
-    <img *ngIf="pilot.pilot.artwork" [src]="img_url" [class]="platform.isPortrait() ? 'item-pilotart-portrait' : 'item-pilotart'" />
+  <div [class]="'pilot-card' + layout.getClass()" (click)="showPilot()">
+    <img *ngIf="pilot.pilot.artwork" [src]="img_url" [class]="'item-pilotart' + layout.getClass()" />
     <div *ngIf="!pilot.pilot.artwork" class="image-container">
       <img *ngIf="img_url" [src]="img_url" class="image-constrained" />
       <div *ngIf="!img_url" class="card-text">
         <xwing-text [text]="pilot.card_text"></xwing-text>
       </div>
     </div>
-    <div class="action-bar">
+    <div [class]="'action-bar' + layout.getClass()">
       <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>
     </div>
-    <div class="stat-block">
+    <div [class]="'stat-block' + layout.getClass()">
       <xws-stat *ngFor="let stat of pilot.stats" [stat]="stat" [orientation]="'vertical'"></xws-stat>
     </div>
     <div class="conditions">
@@ -36,12 +36,12 @@
       </div>
     </div>
   </div>
-  <div class="upgrade-container">
-    <div class="upgrade-column" *ngFor="let column of columns">
+  <div *ngIf="!layout.isPhone()" class="upgrade-container">
+    <div [class]="'upgrade-group' + layout.getClass()" *ngFor="let group of groups">
       <xws-upgrade 
-        *ngFor="let upgrade of column" 
+        *ngFor="let upgrade of group" 
         [upgrade]="upgrade" 
-        [class]="platform.isPortrait() ? 'upgrade-portrait' : 'upgrade'"></xws-upgrade>
+        [class]="'upgrade' + layout.getClass()"></xws-upgrade>
     </div>
   </div>
   <div class="pilot-destroyed-overlay" *ngIf="pilot.points == pilot.pointsDestroyed">

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
+import { LayoutService } from '../../services/layout.service';
 import { UpgradeModalPage } from '../../modals/upgrade-modal/upgrade-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
@@ -16,7 +17,8 @@ export class UpgradeComponent implements OnInit {
 
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
-              private events: Events) { }
+              private events: Events,
+              public layout: LayoutService) { }
 
   async presentUpgradeModal() {
     let stateString = JSON.stringify(this.upgrade);
