@@ -288,8 +288,8 @@ export class XwingDataService {
     // or return null if it can't be retrieved
     let ship = this.getShip(faction, xwsShip);
     let pilot = null;
-    if (xwsPilot == "niennumb-t70xwing") {
-      xwsPilot = "niennunb";
+    if (this.data.shims.xwsPilot[xwsPilot]) {
+      xwsPilot = this.data.shims.xwsPilot[xwsPilot];
     }
     ship.pilots.forEach(
       (pilotData) => {
@@ -339,17 +339,8 @@ export class XwingDataService {
   }
   
   getShip(faction: string, xwsShip: string) {
-    if (xwsShip == "mg100starfortress") {
-      xwsShip = "mg100starfortresssf17";
-    }
-    if (xwsShip == "upsilonclassshuttle") {
-      xwsShip = "upsilonclasscommandshuttle";
-    }
-    if (xwsShip == "tiesilencer") {
-      xwsShip = "tievnsilencer";
-    }
-    if (xwsShip == "scavengedyt1300lightfreighter") {
-      xwsShip = "scavengedyt1300";
+    if (this.data.shims.xwsShip[xwsShip]) {
+      xwsShip = this.data.shims.xwsShip[xwsShip];
     }
     try {
       let factionData = this.data.pilots.find((pilotsEntry) => pilotsEntry.faction == faction);
