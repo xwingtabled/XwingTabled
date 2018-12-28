@@ -12,8 +12,8 @@ export class UpgradeModalPage implements OnInit {
   img_urls: string[] = [ null, null ];
 
   constructor(private dataService: XwingDataService,
-              private modalController: ModalController,
-              private layout: LayoutService) { }
+              public modalController: ModalController,
+              public layout: LayoutService) { }
 
   ngOnInit() {
     console.log("upgrade modal", this.upgrade);

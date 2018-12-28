@@ -34,8 +34,8 @@ export class PilotModalPage implements OnInit {
               private alertController: AlertController,
               private events: Events,
               private ngZone: NgZone,
-              private modalController: ModalController,
-              private layout: LayoutService) { }
+              public modalController: ModalController,
+              public layout: LayoutService) { }
 
   async postDamage() {
     // Get the hull stat
