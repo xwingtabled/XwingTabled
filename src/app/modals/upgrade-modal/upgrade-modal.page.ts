@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
-
+import { ModalController } from '@ionic/angular';
+import { LayoutService } from '../../services/layout.service';
 @Component({
   selector: 'app-upgrade-modal',
   templateUrl: './upgrade-modal.page.html',
@@ -10,7 +11,9 @@ export class UpgradeModalPage implements OnInit {
   upgrade;
   img_urls: string[] = [ null, null ];
 
-  constructor(private dataService: XwingDataService) { }
+  constructor(private dataService: XwingDataService,
+              private modalController: ModalController,
+              private layout: LayoutService) { }
 
   ngOnInit() {
     console.log("upgrade modal", this.upgrade);

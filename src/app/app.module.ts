@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { XwingDataService } from './services/xwing-data.service';
+import { LayoutService } from './services/layout.service';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { HttpProvider } from './providers/http.provider';
 import { HttpAngularProvider } from './providers/http-angular.provider';
@@ -46,6 +47,7 @@ import { AboutPageModule } from './about/about.module';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     File,
     IonicStorageModule,
+    LayoutService,
     XwingDataService,
     HttpProvider,
     HttpAngularProvider,

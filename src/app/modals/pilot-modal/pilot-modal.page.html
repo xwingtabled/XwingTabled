@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="primary">
+    <ion-buttons *ngIf="layout.isPhone()" slot="start">
+      <ion-button (click)="modalController.dismiss()">Close</ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="!layout.isPhone()" slot="primary">
       <ion-button (click)="assignIdNumber()">Assign ID Number</ion-button>
     </ion-buttons>
     <ion-title>{{ pilot.pilot.name }}&nbsp;<span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span></ion-title>
@@ -19,6 +22,7 @@
             <xws-token-display *ngIf="charges" [name]="'charge'" [data]="charges" class="token-set"></xws-token-display>
             <xws-token-display *ngIf="force" [name]="'force'" [data]="force" class="token-set"></xws-token-display>
         </div>
+        <ion-button *ngIf="layout.isPhone()" expand="full" (click)="assignIdNumber()">Assign ID Number</ion-button>
       </div>
     </ion-tab>
     <ion-tab tab="cards">

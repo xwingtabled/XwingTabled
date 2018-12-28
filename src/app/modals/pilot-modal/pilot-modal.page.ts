@@ -8,6 +8,9 @@ import { XwingDataService } from '../../services/xwing-data.service';
 import { ConditionMenuComponent } from '../../popovers/condition-menu/condition-menu.component';
 import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-popover.component';
 import { DamageCardSelectComponent } from '../../popovers/damage-card-select/damage-card-select.component';
+import { ModalController } from '@ionic/angular';
+import { LayoutService } from '../../services/layout.service';
+
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',
@@ -30,7 +33,9 @@ export class PilotModalPage implements OnInit {
               private dataService: XwingDataService,
               private alertController: AlertController,
               private events: Events,
-              private ngZone: NgZone) { }
+              private ngZone: NgZone,
+              private modalController: ModalController,
+              private layout: LayoutService) { }
 
   async postDamage() {
     // Get the hull stat

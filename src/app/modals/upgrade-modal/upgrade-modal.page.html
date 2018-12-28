@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="primary">
+    <ion-buttons *ngIf="layout.isPhone()" slot="start">
+      <ion-button (click)="modalController.dismiss()">Close</ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="!layout.isPhone()" slot="primary">
       <ion-button color="primary" *ngIf="upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>
     </ion-buttons> 
     <ion-title>{{ upgrade.name }}</ion-title>
@@ -16,6 +19,9 @@
     </div>
     <div *ngIf="upgrade.sides[upgrade.side].charges" class="token-set">
       <xws-token-display [name]="'charge'" [data]="upgrade.sides[upgrade.side].charges"></xws-token-display>
+    </div>
+    <div *ngIf="layout.isPhone()">
+      <ion-button expand="full" color="primary" *ngIf="upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>
     </div>
   </div>
 </ion-content>
