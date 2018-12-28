@@ -581,8 +581,17 @@ export class MainPage implements OnInit {
           if (grant) {
             // Find the granted bonus stat on the pilot and add it
             let stat = pilot.stats.find((element) => element.type == grant.value);
-            stat.value += grant.amount;
-            stat.remaining = stat.value; 
+            if (!stat) {
+              stat = {
+                "type": grant.value,
+                "remaining": grant.amount,
+                "value": grant.amount
+              };
+              pilot.stats.push(stat);
+            } else {
+              stat.value += grant.amount;
+              stat.remaining = stat.value; 
+            }
           }
         }
       }
