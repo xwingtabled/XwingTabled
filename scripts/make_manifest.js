@@ -19,6 +19,9 @@ let shims = {
     },
     xwsPilot: {
         "niennumb-t70xwing": "niennunb"
+    },
+    xwsUpgrade: {
+        "hansoloscum" : "hansolo-gunner"
     }
 }
 
