@@ -21,7 +21,8 @@ let shims = {
         "niennumb-t70xwing": "niennunb"
     },
     xwsUpgrade: {
-        "hansoloscum" : "hansolo-gunner"
+        "hansoloscum" : "hansolo-gunner",
+        "rey" : "rey-gunner"
     }
 }
 
