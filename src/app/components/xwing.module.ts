@@ -13,6 +13,7 @@ import { DamageCardComponent } from './damage-card/damage-card.component';
 import { ConditionComponent } from './condition/condition.component';
 import { StatComponent } from './stat/stat.component';
 import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
+import { PhoneUpgradeComponent } from './phone-upgrade/phone-upgrade.component';
 @NgModule({
   entryComponents: [
   ],
@@ -31,7 +32,8 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
     DamageCardComponent,
     ConditionComponent,
     StatComponent,
-    BonusStatsComponent
+    BonusStatsComponent,
+    PhoneUpgradeComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -44,7 +46,8 @@ import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
     DamageCardComponent,
     ConditionComponent,
     StatComponent,
-    BonusStatsComponent
+    BonusStatsComponent,
+    PhoneUpgradeComponent
   ]
 })
 export class XwingModule {}

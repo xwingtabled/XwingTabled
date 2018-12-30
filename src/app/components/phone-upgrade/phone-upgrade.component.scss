@@ -1,0 +1,12 @@
+@import '../component.scss';
+
+ion-item {
+    --ion-item-background: #282828 !important;
+    --ion-item-color: white !important;
+}
+
+.stat-avatar {
+    min-width: 3.5em;
+    vertical-align: bottom;
+    text-align: center;
+}
