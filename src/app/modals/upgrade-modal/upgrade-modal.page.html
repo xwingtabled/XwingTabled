@@ -17,7 +17,7 @@
     <div *ngIf="!img_urls[upgrade.side]" class="card-text">
       <xwing-text [text]="upgrade.sides[upgrade.side].ability"></xwing-text>
     </div>
-    <div *ngIf="upgrade.sides[upgrade.side].charges" class="token-set">
+    <div *ngIf="upgrade.sides[upgrade.side].charges" [class]="'token-set' + layout.getClass()">
       <xws-token-display [name]="'charge'" [data]="upgrade.sides[upgrade.side].charges"></xws-token-display>
     </div>
     <div *ngIf="layout.isPhone()">

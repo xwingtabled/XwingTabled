@@ -9,6 +9,7 @@
 }
 .pilot-tablet {
     @extend .pilot;
+    font-size: 2.25vh;
 }
 .pilot-tablet-portrait {
     @extend .pilot;

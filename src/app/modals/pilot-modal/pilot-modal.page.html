@@ -13,11 +13,11 @@
   <ion-tabs>
     <ion-tab tab="tokens">  
       <div class="pilot-modal">
-        <div class="pilot-art-container">
+        <div [class]="'pilot-art-container' + layout.getClass()">
           <img *ngIf="img_url" [src]="img_url" class="pilot-art"/>
           <xwing-text *ngIf="!img_url" [text]="pilot.card_text" class="card-text"></xwing-text>
         </div>
-        <div class="token-box">
+        <div [class]="'token-box' + layout.getClass()">
             <xws-token-display *ngIf="shields" [name]="'shield'" [data]="shields" (change)="postDamage()" class="token-set"></xws-token-display>
             <xws-token-display *ngIf="charges" [name]="'charge'" [data]="charges" class="token-set"></xws-token-display>
             <xws-token-display *ngIf="force" [name]="'force'" [data]="force" class="token-set"></xws-token-display>

@@ -4,6 +4,7 @@
     @extend .modal-content;
     overflow: scroll;
     height: 100%;
+    font-size: 8vh;
 }
 .pilot-art {
     display: inline-block;
@@ -12,6 +13,20 @@
     display: inline-block;
     width: 58%;
 }
+.pilot-art-container-tablet {
+    @extend .pilot-art-container;
+}
+.pilot-art-container-tablet-portrait {
+    @extend .pilot-art-container;
+}
+.pilot-art-container-phone-portrait {
+    @extend .pilot-art-container;
+    display: block;
+    width: 100%;
+}
+.pilot-art-container-phone-landscape {
+    @extend .pilot-art-container;
+}
 .token-box {
     display: inline-block;
     padding-left: 1vw;
@@ -19,10 +34,25 @@
     width: 42%;
     font-size: 6vh;
 }
+.token-box-tablet {
+    @extend .token-box;
+}
+.token-box-tablet-portrait {
+    @extend .token-box;
+}
+.token-box-phone-portrait {
+    @extend .token-box;
+    width: 100%;
+    font-size: 8vh;
+}
+.token-box-phone-landscape {
+    @extend .token-box;
+    font-size: 8vw;
+}
 .token-set {
     display: block;
     width: 100%;
-    font-size: 8vh;
+    font-size: 1em;
     overflow: wrap;
 }
 .damage-cards {

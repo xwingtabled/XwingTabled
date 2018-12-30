@@ -5,6 +5,19 @@
     font-size: 8vh;
     text-align: center;
 }
+.token-set-tablet {
+    @extend .token-set;
+}
+.token-set-tablet-portrait {
+    @extend .token-set;
+}
+.token-set-phone-portrait {
+    @extend .token-set;
+}
+.token-set-phone-landscape {
+    @extend .token-set;
+    font-size: 10vw;
+}
 
 .card-text {
     font-size: 2vh;
