@@ -4,6 +4,7 @@ import { LayoutService } from '../../services/layout.service';
 import { UpgradeModalPage } from '../../modals/upgrade-modal/upgrade-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
+import { XwingStateService } from '../../services/xwing-state.service';
 @Component({
   selector: 'xws-upgrade',
   templateUrl: './upgrade.component.html',
@@ -18,7 +19,8 @@ export class UpgradeComponent implements OnInit {
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
               private events: Events,
-              public layout: LayoutService) { }
+              public layout: LayoutService,
+              public state: XwingStateService) { }
 
   async presentUpgradeModal() {
     let stateString = JSON.stringify(this.upgrade);
@@ -31,7 +33,7 @@ export class UpgradeComponent implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (stateString != JSON.stringify(this.upgrade)) {
-      this.events.publish("snapshot", "create snapshot");
+      this.state.snapshot();
     }
   }
 

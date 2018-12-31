@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
+import { XwingStateService } from '../../services/xwing-state.service';
 import { PopoverController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 
@@ -10,7 +11,6 @@ import { ToastController } from '@ionic/angular';
 })
 export class ConditionMenuComponent implements OnInit {
   pilot;
-  squadron;
   conditions: any[] = [];
   img_urls: any = { };
   selected_condition: any;
@@ -18,6 +18,7 @@ export class ConditionMenuComponent implements OnInit {
   darksideXws: string = "illshowyouthedarkside"
 
   constructor(private dataService: XwingDataService, 
+              public state: XwingStateService,
               private popoverController: PopoverController,
               private toastController: ToastController) { }
 
@@ -26,8 +27,8 @@ export class ConditionMenuComponent implements OnInit {
     if (!existing) {
       if (this.selected_condition.xws == this.darksideXws && this.selected_condition.pilotDamageCard) {
         this.selected_condition.pilotDamageCard.exposed = true;
-        let index = this.squadron.damagedeck.indexOf(this.selected_condition.pilotDamageCard);
-        this.squadron.damagedeck.splice(index, 1);
+        let index = this.state.damagedeck.indexOf(this.selected_condition.pilotDamageCard);
+        this.state.damagedeck.splice(index, 1);
       }
       this.pilot.conditions.push(this.selected_condition);
       return this.popoverController.dismiss();
@@ -43,7 +44,7 @@ export class ConditionMenuComponent implements OnInit {
 
   getPilotDamageCards() {
     this.pilotDamageCards = [ ];
-    let pilotCards = this.squadron.damagedeck.filter(
+    let pilotCards = this.state.damagedeck.filter(
       (card) => card['type'] == 'Pilot'
     );
     pilotCards.forEach(

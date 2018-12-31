@@ -5,15 +5,14 @@ import { PilotModalPage } from '../../modals/pilot-modal/pilot-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
 import { Events } from '@ionic/angular';
+import { XwingStateService } from '../../services/xwing-state.service';
 @Component({
   selector: 'xws-pilot',
   templateUrl: './pilot.component.html',
   styleUrls: ['./pilot.component.scss']
 })
 export class PilotComponent implements OnInit {
-  @Input() squadron: any;
   @Input() pilot: any;
-  @Input() faction: string;
   groups: any[][] = [];
   img_url: string = null;
   shipData: any;
@@ -23,7 +22,8 @@ export class PilotComponent implements OnInit {
               public modalController: ModalController, 
               public platform: Platform,
               public events: Events,
-              public layout: LayoutService) { }
+              public layout: LayoutService,
+              public state: XwingStateService) { }
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
@@ -84,13 +84,12 @@ export class PilotComponent implements OnInit {
       component: PilotModalPage,
       componentProps: {
         pilot: this.pilot,
-        squadron: this.squadron
       }
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (stateString != JSON.stringify(this.pilot)) {
-      this.events.publish("snapshot", "create snapshot");
+      this.state.snapshot();
     }
   }
 

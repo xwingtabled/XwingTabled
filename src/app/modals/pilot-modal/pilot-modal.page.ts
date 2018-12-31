@@ -5,6 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
+import { XwingStateService } from '../../services/xwing-state.service';
 import { ConditionMenuComponent } from '../../popovers/condition-menu/condition-menu.component';
 import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-popover.component';
 import { DamageCardSelectComponent } from '../../popovers/damage-card-select/damage-card-select.component';
@@ -18,7 +19,6 @@ import { LayoutService } from '../../services/layout.service';
 })
 export class PilotModalPage implements OnInit {
   pilot;
-  squadron;
   img_url: string = null;
   card_text: string = null;
 
@@ -31,75 +31,22 @@ export class PilotModalPage implements OnInit {
   constructor(public toastController: ToastController, 
               private popoverController: PopoverController,
               private dataService: XwingDataService,
+              public state: XwingStateService,
               private alertController: AlertController,
               private events: Events,
               private ngZone: NgZone,
               public modalController: ModalController,
               public layout: LayoutService) { }
 
-  async postDamage() {
-    // Get the hull stat
-    let hull = this.pilot.stats.find((stat) => stat.type == 'hull');
-    // Compute hull remaining based on number of damage cards
-    hull.remaining = hull.value - this.pilot.damagecards.length;
-    // Calculate points destroyed
-    if (hull.remaining <= 0) {
-      this.pilot.pointsDestroyed = this.pilot.points;
-      const toast = await this.toastController.create({
-        message: this.pilot.pilot.name + " destroyed",
-        duration: 2000,
-        position: 'middle'
-      });
-      toast.present();
-    } else {
-      let totalPoints = hull.value;
-      let remainingPoints = hull.remaining;
-      let shields = this.pilot.stats.find((stat) => stat.type == 'shields');
-      if (shields) {
-        totalPoints += shields.value;
-        remainingPoints += shields.remaining;
-      }
-      let threshold = Math.floor(totalPoints / 2);
-      if (remainingPoints == threshold ||
-          remainingPoints == threshold - 1) {
-        this.pilot.pointsDestroyed = Math.ceil(this.pilot.points / 2);
-        const toast = await this.toastController.create({
-          message: this.pilot.pilot.name + " at half points",
-          duration: 2000,
-          position: 'middle'
-        });
-        toast.present();
-      }
-    }
-    this.squadron.pointsDestroyed = 0;
-    this.squadron.pilots.forEach(
-      (pilot) => {
-        this.squadron.pointsDestroyed += pilot.pointsDestroyed;
-      }
-    )
-    if (this.squadron.pointsDestroyed == this.squadron.points) {
-      this.squadron.pointsDestroyed = 200;
-    }
-  }
 
   drawHit() {
-    let card = this.squadron.damagedeck.shift();
-    if (card) {
-      card.exposed = false;
-      this.pilot.damagecards.push(card);
-      this.postDamage();
-    } else {
+    if (!this.state.drawHit(this.pilot)) {
       this.presentDamageDeckEmpty();
     }
   }
 
   drawCrit() {
-    let card = this.squadron.damagedeck.shift();
-    if (card) {
-      card.exposed = true;
-      this.pilot.damagecards.push(card);
-      this.postDamage();
-    } else {
+    if (!this.state.drawCrit(this.pilot)) {
       this.presentDamageDeckEmpty();
     }
   }
@@ -122,9 +69,9 @@ export class PilotModalPage implements OnInit {
     this.pilot.damagecards.forEach(
       (card) => {
         card.exposed = false;
+        this.state.discard(card);
       }
     )
-    this.squadron.damagediscard = this.squadron.damagediscard.concat(this.pilot.damagecards);
     this.pilot.damagecards = [ ];
   }
 
@@ -176,8 +123,8 @@ export class PilotModalPage implements OnInit {
 
   async maarekStele() {
     let cards = [ ];
-    for (let i = 0; i < 3 && this.squadron.damagedeck.length; i++) {
-      cards.push(this.squadron.damagedeck.shift());
+    for (let i = 0; i < 3 && this.state.damagedeck.length; i++) {
+      cards.push(this.state.draw());
     }
     const popover = await this.popoverController.create({
       component: DamageCardSelectComponent,
@@ -190,7 +137,7 @@ export class PilotModalPage implements OnInit {
           cards.forEach(
             (remaining) => {
               if (remaining != card) {
-                this.squadron.damagediscard.push(remaining);
+                this.state.discard(remaining);
               }
             }
           );
@@ -204,8 +151,7 @@ export class PilotModalPage implements OnInit {
     const popover = await this.popoverController.create({
       component: ConditionMenuComponent,
       componentProps: {
-        pilot: this.pilot,
-        squadron: this.squadron
+        pilot: this.pilot
       }
     });
     await popover.present();
@@ -213,14 +159,14 @@ export class PilotModalPage implements OnInit {
 
   fleeShip() {
     this.pilot.pointsDestroyed = this.pilot.points;
-    this.squadron.pointsDestroyed = 0;
-    this.squadron.pilots.forEach(
+    this.state.squadron.pointsDestroyed = 0;
+    this.state.squadron.pilots.forEach(
       (pilot) => {
-        this.squadron.pointsDestroyed += pilot.pointsDestroyed;
+        this.state.squadron.pointsDestroyed += pilot.pointsDestroyed;
       }
     )
-    if (this.squadron.pointsDestroyed == this.squadron.points) {
-      this.squadron.pointsDestroyed = 200;
+    if (this.state.squadron.pointsDestroyed == this.state.squadron.points) {
+      this.state.squadron.pointsDestroyed = 200;
     }
   }
 
@@ -261,8 +207,7 @@ export class PilotModalPage implements OnInit {
         const popover = await this.popoverController.create({
           component: DamagePopoverComponent,
           componentProps: {
-            card: card,
-            squadron: this.squadron
+            card: card
           }
         });
         await popover.present();

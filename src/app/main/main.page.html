@@ -17,12 +17,12 @@
 <ion-content padding>
   <div class="squadron-container">
     <div class="squadron-header"></div>
-    <div [class]="squadronCss()" *ngFor="let squadron of squadrons">
+    <div class="squadron-fullwidth" *ngIf="state.squadron">
       <div class="squadron-header">
         <ion-toolbar>
           <span class="squadron-name">
-            <xwing-icon [name]="squadron.faction"></xwing-icon>&nbsp;
-            {{ squadron.name }} ( {{ squadron.pointsDestroyed }} / {{ squadron.points}} )
+            <xwing-icon *ngIf="state.squadron.faction" [name]="state.squadron.faction"></xwing-icon>&nbsp;
+            {{ state.squadron.name }} ( {{ state.squadron.pointsDestroyed }} / {{ state.squadron.points}} )
           </span>
           <ion-buttons slot="end">
             <ion-button (click)="askRechargeRecurring()">
@@ -31,18 +31,16 @@
             <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)" class="damage-deck-button">
               <span class="damage-deck-summary">
                 <xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
-                <span class="damage-deck-summary-text">{{ squadron.damagedeck.length}}</span>
+                <span class="damage-deck-summary-text">{{ state.damagedeck.length}}</span>
               </span>
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </div>
       <xws-pilot 
-        *ngFor="let pilot of squadron.pilots" 
+        *ngFor="let pilot of state.squadron.pilots" 
         [pilot]="pilot" 
-        [faction]="squadron.faction"
-        [squadron]="squadron"
-        [class]="pilotCss()"></xws-pilot>
+        class="pilot-minwidth"></xws-pilot>
     </div>
   </div>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed">
@@ -53,13 +51,13 @@
       <ion-fab-button (click)="resetData()">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadrons.length > 0" (click)="askReset()">
+      <ion-fab-button *ngIf="state.squadron" (click)="askReset()">
         <xwing-icon [name]="'reload'"></xwing-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="snapshots.length > 1" (click)="askUndo()">
+      <ion-fab-button *ngIf="state.snapshots.length > 1" (click)="askUndo()">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadrons.length < 2" (click)="xwsAddButton()">
+      <ion-fab-button (click)="xwsAddButton()">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>

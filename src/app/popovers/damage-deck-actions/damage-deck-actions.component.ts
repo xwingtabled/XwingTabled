@@ -2,18 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Events } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
-
+import { XwingStateService } from '../../services/xwing-state.service';
 @Component({
   selector: 'xws-damage-deck-actions',
   templateUrl: './damage-deck-actions.component.html',
   styleUrls: ['./damage-deck-actions.component.scss']
 })
 export class DamageDeckActionsComponent implements OnInit {
-  squadron;
-
   constructor(private events: Events, 
               private toastController: ToastController,
-              private popoverController: PopoverController) { }
+              private popoverController: PopoverController,
+              public state: XwingStateService) { }
 
   ngOnInit() {
   }
@@ -29,14 +28,7 @@ export class DamageDeckActionsComponent implements OnInit {
 
   async shuffleDiscarded() {
     await this.popoverController.dismiss();
-    this.squadron.damagediscard.forEach(
-      (card) => {
-        this.squadron.damagedeck.push(card);
-      }
-    )
-    this.squadron.damagediscard = [ ];
-    this.events.publish("damagedeck", "shuffle");
-    this.events.publish("snapshot", "Shuffled discarded Damage Cards");
+    this.state.shuffleDamageDiscard();
   }
 
   async shuffleDeck() {

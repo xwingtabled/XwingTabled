@@ -11,6 +11,8 @@ import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
+import { XwingStateService } from '../services/xwing-state.service';
+import { XwingImportService } from '../services/xwing-import.service';
 
 @Component({
   selector: 'app-main',
@@ -18,10 +20,6 @@ import { HttpProvider } from '../providers/http.provider';
   styleUrls: ['./main.page.scss'],
 })
 export class MainPage implements OnInit {
-
-  snapshots = [ ];
-  squadrons: any = [ ];
-
   data_progress: number = 0;
   data_message: string = "X-Wing Tabled";
   retry_button: boolean = false;
@@ -42,60 +40,17 @@ export class MainPage implements OnInit {
               private toastController: ToastController,
               private storage: Storage,
               private http: HttpProvider,
-              private loadingCtrl: LoadingController) { }
+              private loadingCtrl: LoadingController,
+              public state: XwingStateService,
+              private importService: XwingImportService) { }
 
   ngOnInit() {
     this.events.subscribe(
       this.dataService.topic,
-      (event) => {
-        this.data_event_handler(event);
+      async (event) => {
+        await this.data_event_handler(event);
       }
     );
-
-    this.events.subscribe(
-      "snapshot",
-      (event) => {
-        this.snapshot();
-      }
-    );
-
-    this.events.subscribe(
-      "damagedeck",
-      (event) => {
-        this.shuffleDamageDeck(this.squadrons[0]);
-      }
-    )
-
-  }
-
-  async restoreFromDisk() {
-    await this.storage.ready();
-    let snapshots = await this.storage.get("snapshots");
-    this.ngZone.run(
-      () => {
-        if (snapshots) {
-          this.snapshots = snapshots;
-          let lastSnapshot = JSON.parse(JSON.stringify(this.snapshots[this.snapshots.length - 1]));
-          this.squadrons = lastSnapshot.squadrons;
-          console.log(this.squadrons);
-          this.toastUndo(lastSnapshot.time);
-          if (this.squadrons && this.squadrons.length == 0) {
-            this.presentXwsModal();
-          }
-        } else {
-          this.presentXwsModal();
-        }
-      }
-    )
-  }
-
-  snapshot() {
-    if(this.snapshots.length >= 5) {
-      this.snapshots.shift();
-    }
-    this.snapshots.push({ time: new Date().toISOString(), squadrons: JSON.parse(JSON.stringify(this.squadrons)) } );
-    this.storage.set("snapshots", this.snapshots);
-    console.log("snapshot created", this.snapshots);
   }
 
   async data_event_handler(event: any) {
@@ -156,13 +111,23 @@ export class MainPage implements OnInit {
     }
     if (event.status == "images_complete") {
       this.image_button = false;
-      this.restoreFromDisk();
+      await this.loadState();
     }
     if (event.status == "image_download_incomplete") {
       this.image_button = true;
     }
     if (event.status == "image_download_complete") {
-      this.restoreFromDisk();
+      await this.loadState();
+    }
+  }
+
+  async loadState() {
+    console.log("Restoring...");
+    await this.state.restoreFromDisk();
+    console.log("Restored!");
+    this.toastUndo(this.state.getLastSnapshotTime());
+    if (!this.state.squadron) {
+      this.presentXwsModal();
     }
   }
 
@@ -193,49 +158,6 @@ export class MainPage implements OnInit {
     return await popover.present();
   }
 
-  squadronCss() {
-    if (this.platform.isPortrait()) {
-      return 'squadron-fullwidth';
-    }
-    if (this.squadrons.length > 1) { 
-      return 'squadron-halfwidth';
-    } else {
-      return 'squadron-fullwidth';
-    }
-  }
-
-  pilotCss() {
-    if (this.platform.isPortrait()) {
-      return 'pilot-fullwidth';
-    } else {
-      return 'pilot-minwidth';
-    }
-  }
-
-  async removeSquadron(squadron: any) {
-    const alert = await this.alertController.create({
-      header: 'Remove squadron?',
-      message: 'You are about to remove ' + squadron.name,
-      buttons: [
-        { text: 'OK',
-          handler: () => {
-            this.ngZone.run(
-              () => {
-                let index = this.squadrons.indexOf(squadron);
-                this.squadrons.splice(index, 1);
-                this.events.publish("snapshot", "create snapshot");
-              }
-            )
-          }
-        },
-        { text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary' }
-      ]
-    });
-    return await alert.present();
-  }
-
   async resetData(squadron: any) {
     const alert = await this.alertController.create({
       header: 'Clear data cache?',
@@ -245,8 +167,6 @@ export class MainPage implements OnInit {
           handler: () => {
             this.ngZone.run(
               () => {
-                this.squadrons = [ ];
-                this.snapshots = [ ];
                 this.data_progress = 0;
                 this.data_message = "X-Wing Tabled";
                 this.data_button = false;
@@ -277,7 +197,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.rechargeAllRecurring();
+                this.state.rechargeAllRecurring();
               }
             )
           }
@@ -302,17 +222,14 @@ export class MainPage implements OnInit {
   async askUndo() {
     const alert = await this.alertController.create({
       header: 'Rewind Time?',
-      message: 'This will rewind time to ' + this.snapshots[this.snapshots.length - 2].time,
+      message: 'This will rewind time to ' + this.state.snapshots[this.state.snapshots.length - 2].time,
       buttons: [
         { text: 'OK',
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.snapshots.pop();
-                let snapshot = this.snapshots.pop();
-                this.squadrons = snapshot.squadrons;
-                this.events.publish("snapshot", "create snapshot");
-                this.toastUndo(snapshot.time);
+                let time = this.state.undo();
+                this.toastUndo(time);
               }
             )
           }
@@ -325,44 +242,7 @@ export class MainPage implements OnInit {
     return await alert.present(); 
   }
 
-  async resetSquadrons() {
-    this.squadrons.forEach(
-      (squadron) => {
-        squadron.pointsDestroyed = 0;
-        squadron.damagediscard = [ ];
-        squadron.damagedeck = this.dataService.getDamageDeck();
-        this.shuffleDamageDeck(squadron);
-        squadron.pilots.forEach(
-          (pilot) => {
-            pilot.damagecards = [ ];
-            pilot.conditions = [ ];
-            pilot.pointsDestroyed = 0;
-            pilot.stats.forEach(
-              (stat) => {
-                stat.remaining = stat.value;
-              }
-            )
-            pilot.upgrades.forEach(
-              (upgrade) => {
-                upgrade.side = 0;
-                if (upgrade.sides[0].charges) {
-                  upgrade.sides[0].charges.remaining = upgrade.sides[0].charges.value;
-                }
-              }
-            )
-          }
-        )
-      }
-    )
-    this.events.publish("snapshot", "create snapshot");
-    const toast = await this.toastController.create({
-      message: 'Squadrons reset',
-      duration: 2000,
-      position: 'bottom'
-    });
-    toast.present();
-  }
-
+ 
   async askReset() {
     const alert = await this.alertController.create({
       header: 'Reset all squadrons?',
@@ -371,8 +251,14 @@ export class MainPage implements OnInit {
         { text: 'OK',
           handler: () => { 
             this.ngZone.run(
-              () => {
-                this.resetSquadrons();
+              async () => {
+                this.state.resetSquadron();
+                const toast = await this.toastController.create({
+                  message: 'Squadrons reset',
+                  duration: 2000,
+                  position: 'bottom'
+                });
+                toast.present();
               }
             )
           }
@@ -383,40 +269,6 @@ export class MainPage implements OnInit {
       ]
     });
     return await alert.present(); 
-  }
-
-  rechargeAllRecurring() {
-    let recover = (stat) => {
-      stat.remaining += stat.recovers;
-      if (stat.remaining > stat.value) {
-        stat.remaining = stat.value;
-      }
-    }
-    this.squadrons.forEach(
-      (squadron) => {
-        squadron.pilots.forEach(
-          (pilot) => {
-            for (let i = 0; i < pilot.stats.length; i++) {
-              let stat = pilot.stats[i];
-              if (stat.recovers) {
-                recover(stat);
-                pilot.stats.splice(i, 1, JSON.parse(JSON.stringify(stat)));
-              }
-            }
-            pilot.upgrades.forEach(
-              (upgrade) => {
-                let side = upgrade.sides[0];
-                if (side.charges && side.charges.recovers) {
-                  recover(side.charges);
-                  side.charges = JSON.parse(JSON.stringify(side.charges));
-                }
-              }
-            )
-          }
-        )
-      }
-    )
-    this.events.publish("snapshot", "create snapshot");
   }
 
   async toastNotFound(xws: string, xwsType: string) {
@@ -428,372 +280,8 @@ export class MainPage implements OnInit {
     toast.present();
   }
 
-  injectShipData(pilot: any, faction: string) {
-    // Inject ship data into pilot
-    let xwsShip = pilot.ship;
-    pilot.ship = this.dataService.getShip(faction, pilot.ship);
-    if (pilot.ship != null) {
-      // Inject stats array in pilot root
-      pilot.stats = [ ];
-      pilot.ship.stats.forEach(
-        (stat) => {
-          let statCopy = JSON.parse(JSON.stringify(stat));
-          // Future proofing - in case a chassis ever has baked in recurring charge stats
-          statCopy.remaining = stat.value;
-          if (stat.recovers) {
-            statCopy.numbers = new Array(stat.recovers);
-          }
-          pilot.stats.push(statCopy);
-        }
-      )
-    } else {
-      this.toastNotFound(xwsShip, "ship");
-    }
-  }
-
-  injectPilotData(pilot: any, faction: string) {
-    // Get pilot data and insert it into pilot object
-    pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.id);
-    if (pilot.pilot != null) {
-      // Creates a stat of { type: statType, remaining: 2, numbers: Array() }
-      // for display compatibility
-      let pushStat = (stat, statType) => {
-        let statCopy = JSON.parse(JSON.stringify(stat));
-        statCopy.type = statType;
-        statCopy.remaining = stat.value;
-        statCopy.numbers = Array(stat.numbers);
-        pilot.stats.push(statCopy);
-      }
-      // If the pilot has charges, insert it as a stat
-      if (pilot.pilot.charges) {
-        pushStat(pilot.pilot.charges, 'charges');
-      }
-      // If the pilot has force, insert it as a stat
-      if (pilot.pilot.force) {
-        pushStat(pilot.pilot.force, 'force');
-      }
-
-      pilot.card_text = "";
-      if (pilot.pilot.ability) {
-        pilot.card_text += pilot.pilot.ability + "<br /><br />";
-      }
-      if (pilot.pilot.text) {
-        pilot.card_text += pilot.pilot.text + "<br /><br />";
-      }
-      if (pilot.pilot.shipAbility && pilot.pilot.shipAbility.text) {
-        pilot.card_text += "<i>" + pilot.pilot.shipAbility.name + "</i>: " +
-                          pilot.pilot.shipAbility.text;
-      }
-
-      // Add additional game state variables
-      pilot.damagecards = []; 
-      pilot.conditions = [];
-      pilot.pointsDestroyed = 0;
-    } else {
-      this.toastNotFound(pilot.id, "pilot");
-    }
-  }
-
-  mangleUpgradeArray(pilot: any) {
-    // Take xws upgrade list {'astromech': ['r2d2']} and mangle it to
-    // [ { type: 'astromech', name: 'r2d2', etc... } ]
-    let mangledUpgrades = [ ];
-    if (pilot.upgrades) {
-      Object.entries(pilot.upgrades).forEach(
-        ( [upgradeType, upgradeArray ] ) => {
-          if (Array.isArray(upgradeArray)) {
-            upgradeArray.forEach(
-              (upgradeName) => {
-                if (upgradeType == "force") {
-                  upgradeType = "forcepower";
-                }
-                // Skip hardpoints on T70s for xws exports from raithos.github.io
-                if (upgradeType == "hardpoint") {
-                  return;
-                }
-                let upgradeData = this.dataService.getUpgrade(upgradeType, upgradeName);
-                if (upgradeData != null) {
-                  upgradeData['type'] = upgradeType;
-                  mangledUpgrades.push(upgradeData);
-                } else {
-                  this.toastNotFound(upgradeName, "upgrade");
-                }
-              }
-            )
-          }
-        }
-      );
-    }
-    pilot.upgrades = mangledUpgrades;
-  }
-
-  injectUpgradeData(pilot: any, upgrade: any) {
-    // Set default "side" of upgrade card to side 0
-    upgrade.side = 0;
-
-    // Process each side
-    upgrade.sides.forEach(
-      (side) => {
-        // Mangle charges stats
-        if (side.charges) {
-          side.charges.type = "charges"
-          side.charges.remaining = side.charges.value;
-          side.charges.numbers = Array(side.charges.recovers);
-        }
-        // Mangle force stats
-        if (side.force) {
-          side.force.numbers = Array(side.force.recovers);
-          side.force.type = "force";
-        } 
-        // Mangle attack stats
-        if (side.attack) {
-          side.attack.type = "attack";
-          // Displayed icon should be the attack's icon
-          side.attack.icon = side.attack.arc;
-        }
-
-        // If side has granted actions that aren't listed as actions, 
-        // inject those
-        if (!side.actions) {
-          side.actions = [ ];
-          if (side.grants) {
-            side.grants.forEach(
-              (grant) => {
-                if (grant['type'] == "action") {
-                  side.actions.push(grant.value);
-                }
-              }
-            )
-          }
-        }
-      }
-    )
-  }
-
-  injectShipBonuses(pilot: any) {
-    // Search upgrades for any upgrade that has a 'grant'
-    pilot.upgrades.forEach(
-      (upgrade) => {
-        let side = upgrade.sides[0];
-        if (side.grants) {
-          // Find shield or hull bonuses
-          let grant = side.grants.find((grant) => grant.value == "shields" || grant.value == "hull");
-          if (grant) {
-            // Find the granted bonus stat on the pilot and add it
-            let stat = pilot.stats.find((element) => element.type == grant.value);
-            if (!stat) {
-              stat = {
-                "type": grant.value,
-                "remaining": grant.amount,
-                "value": grant.amount
-              };
-              pilot.stats.push(stat);
-            } else {
-              stat.value += grant.amount;
-              stat.remaining = stat.value; 
-            }
-          }
-        }
-      }
-    )
-  }
-
-  injectForceBonuses(pilot: any) {
-    // Add any force bonuses to the pilot, creating a force stat if necessary
-    pilot.upgrades.forEach(
-      (upgrade) => {
-        let side = upgrade.sides[0];
-        // Find upgrades that have a force bonus
-        if (side.force) {
-          // Get the pilot's force stat
-          let forceStat = pilot.stats.find((element) => element.type == 'force');
-          // If no force stat exists, create one
-          if (!forceStat) {
-            forceStat = { value: 0, recovers: 0, type: 'force', numbers: [] };
-            pilot.stats.push(forceStat);
-          }
-          // Add force bonuses
-          forceStat.value += side.force.value;
-          forceStat.recovers += side.force.recovers;
-          forceStat.numbers = Array(forceStat.recovers);
-          forceStat.remaining = forceStat.value;
-        }
-      }
-    )
-  }
-
-  calculatePoints(pilot: any) {
-    let pilotCost = pilot.pilot.cost;
-    let upgradeCost = 0;
-    pilot.upgrades.forEach(
-      (upgrade) => {
-        if (upgrade.cost) {
-          if ("value" in upgrade.cost) {
-            upgradeCost += upgrade.cost.value;
-          }
-          if ("variable" in upgrade.cost) {
-            let statValue = "";
-            if (upgrade.cost.variable == "size") {
-              statValue = pilot.ship.size;
-            } else {
-              statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
-            }
-            upgradeCost += upgrade.cost.values[statValue];
-          }
-        }
-      }
-    );
-    pilot.points = pilotCost + upgradeCost;
-  }
-
-  async shuffleDamageDeck(squadron: any) {
-    let newDeck = [ ];
-    while (squadron.damagedeck.length > 0) {
-      let index = Math.floor(Math.random() * Math.floor(squadron.damagedeck.length));
-      let card = squadron.damagedeck[index];
-      squadron.damagedeck.splice(index, 1);
-      newDeck.push(card);
-    }
-    squadron.damagedeck = newDeck;
-    const toast = await this.toastController.create({
-      message: 'Damage Deck Shuffled',
-      duration: 2000,
-      position: 'top'
-    });
-    toast.present();
-    this.events.publish("snapshot", "Shuffled Damage Deck");
-  }
-
   xwsAddButton() {
     this.presentXwsModal();
-  }
-
-  async processFFG(uuid: string) {
-    let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + uuid + "/";
-    
-    this.http.get(url).subscribe(
-      (data) => {
-
-        let cost = data.cost;
-        let name = data.name;
-        let faction = data.faction.name;
-        let pilots = [ ];
-        data.deck.forEach(
-          (pilot) => {
-            let xwsPilot = this.dataService.getXwsFromFFG(pilot.pilot_card.id);
-            xwsPilot.points = pilot.cost;
-            let upgrades = { };
-            pilot.slots.forEach(
-              (upgrade) => {
-                let upgradeData = this.dataService.getXwsFromFFG(upgrade.id);
-                if (upgrades[upgradeData.type] == undefined) {
-                  upgrades[upgradeData.type] = [ ];
-                }
-                upgrades[upgradeData.type].push(upgradeData.xws);
-              }
-            )
-            xwsPilot.upgrades = upgrades;
-            pilots.push(xwsPilot);
-          }
-        );
-        let squadron = {
-          description: data.description,
-          faction: data.faction.name.replace(/ /g, '').toLowerCase(),
-          name: data.name,
-          points: data.cost,
-          pilots: pilots
-        }
-        console.log("FFG SquadBuilder response", data);
-        console.log("FFG -> XWS", squadron);
-        this.processXws(squadron);
-      },
-      (error) => {
-        console.log("Unable to get FFG SquadBuilder data", error);
-      }
-    )
-  }
-
-  async processYasb(data: any) {
-    let pilots = [ ];
-    data.pilots.forEach(
-      (pilot) => {
-        let yasbPilot = this.dataService.getYasbPilot(pilot.id);
-        let xwsPilot = { id: yasbPilot.xws, ship: yasbPilot.ship, upgrades: { } };
-        let upgrades = { };
-        for (let i = 0; i < pilot.upgrades.length; i++) {
-          let upgrade = pilot.upgrades[i];
-          let hardpointRegex = /\d{3}(\:U\.\-?\d+)/g
-          let hardpoints = upgrade.match(hardpointRegex);
-          let upgradeNum = -1;
-          if (hardpoints && hardpoints[0]) {
-            upgradeNum = parseInt(hardpoints[0].split('.')[1]);
-            // Upgrade number that grants another slot - push to the end
-            let baseUpgradeNum = hardpoints[0].split(':')[0];
-            pilot.upgrades.push(baseUpgradeNum)
-          } else {
-            upgradeNum = parseInt(upgrade);
-          }
-          let yasbUpgrade = this.dataService.getYasbUpgrade(upgradeNum);
-          if (yasbUpgrade) {
-            if (upgrades[yasbUpgrade.slot] == undefined) {
-              upgrades[yasbUpgrade.slot] = [ ];
-            }
-            upgrades[yasbUpgrade.slot].push(yasbUpgrade.xws);
-          }
-        }
-        xwsPilot.upgrades = upgrades;
-        pilots.push(xwsPilot);
-      }
-    )
-    let squadron = {
-      name: data.name,
-      faction: data.faction,
-      pilots: pilots
-    };
-    console.log("YASB squadron", squadron);
-    return await this.processXws(squadron);
-  }
-
-  async processXws(squadron: any) {
-    this.ngZone.run(
-      () => {
-        let squadPoints = 0;
-        squadron.damagediscard = [ ];
-        squadron.damagedeck = this.dataService.getDamageDeck();
-        squadron.pilots.forEach(
-          (pilot) => {
-            this.injectShipData(pilot, squadron.faction);
-            this.injectPilotData(pilot, squadron.faction);
-            this.mangleUpgradeArray(pilot);
-        
-            // Process each upgrade card
-            pilot.upgrades.forEach(
-              (upgrade) => {
-                this.injectUpgradeData(pilot, upgrade);
-              }
-            );
-
-            this.calculatePoints(pilot);
-            squadPoints += pilot.points;
-
-            this.injectShipBonuses(pilot);
-            this.injectForceBonuses(pilot);
-          }
-        )
-        squadron.points = squadPoints;
-        squadron.pointsDestroyed = 0;
-        this.shuffleDamageDeck(squadron);
-        console.log("xws loaded and data injected", squadron);
-        this.squadrons = [ squadron ];
-        this.events.publish("snapshot", "Squadron " + squadron.name + " added");
-      }
-    )
-    const toast = await this.toastController.create({
-      message: 'Squadron added, Damage Deck shuffled',
-      duration: 2000,
-      position: 'bottom'
-    });
-    return await toast.present();
   }
 
   async presentXwsModal() {
@@ -803,15 +291,35 @@ export class MainPage implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (!data) return;
-    if (data.ffg) {
-      return this.processFFG(data.ffg);
-    }
-    if (data.yasb) {
-      return this.processYasb(data.yasb);
-    }
-    if (data.xws) {
-      let squadron = data.xws;
-      return this.processXws(squadron);
+    try {
+      if (data.ffg) {
+        let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + data.ffg + "/";
+    
+        this.http.get(url).subscribe(
+          (data) => {
+            this.state.setSquadron(this.importService.processFFG(data))
+          },
+          (error) => {
+            console.log("Unable to get FFG SquadBuilder data", error);
+          }
+        );
+
+        this.state.setSquadron(this.importService.processFFG(data.ffg));
+      }
+      if (data.yasb) {
+        this.state.setSquadron(this.importService.processYasb(data.yasb));
+      }
+      if (data.xws) {
+        let squadron = data.xws;
+        this.state.setSquadron(this.importService.processXws(squadron));
+      }
+    } catch (e) {
+      const toast = await this.toastController.create({
+        message: e,
+        duration: 2000,
+        position: 'bottom'
+      });
+      toast.present();
     }
   }
 }

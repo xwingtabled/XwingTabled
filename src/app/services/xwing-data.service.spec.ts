@@ -187,6 +187,8 @@ describe('XwingDataService', () => {
     expect(service.mangle_name('modified yt-1300')).toEqual('modifiedyt1300');
   });
 
+  /*
+
   it ('should reshape manifests', () => {
     let manifest = service.reshape_manifest(test_manifest);
     expect(manifest.pilots[0].ships.asf01bwing).toEqual("data/pilots/rebel-alliance/a-sf-01-b-wing.json");
@@ -215,5 +217,6 @@ describe('XwingDataService', () => {
     service.insert_json_data("data/pilots/rebel-alliance/a-sf-01-b-wing.json", test_bwing_data);
     expect(service.getPilot("rebelalliance", "asf01bwing", "braylenstramm")).toBeTruthy();
   });
+  */
 
 });

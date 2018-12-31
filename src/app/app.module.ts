@@ -23,6 +23,8 @@ import { PopoverModule } from './popovers/popover.module';
 import { ToastController } from '@ionic/angular';
 import { ModalModule } from './modals/modal.module';
 import { AboutPageModule } from './about/about.module';
+import { XwingStateService } from './services/xwing-state.service';
+import { XwingImportService } from './services/xwing-import.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,6 +51,8 @@ import { AboutPageModule } from './about/about.module';
     IonicStorageModule,
     LayoutService,
     XwingDataService,
+    XwingStateService,
+    XwingImportService,
     HttpProvider,
     HttpAngularProvider,
     HttpNativeProvider,

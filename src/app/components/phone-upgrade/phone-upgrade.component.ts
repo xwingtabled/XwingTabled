@@ -3,6 +3,7 @@ import { XwingDataService } from '../../services/xwing-data.service';
 import { UpgradeModalPage } from '../../modals/upgrade-modal/upgrade-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
+import { XwingStateService } from '../../services/xwing-state.service';
 @Component({
   selector: 'xws-phone-upgrade',
   templateUrl: './phone-upgrade.component.html',
@@ -13,7 +14,8 @@ export class PhoneUpgradeComponent implements OnInit {
 
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
-              private events: Events) { }
+              private events: Events,
+              public state: XwingStateService) { }
 
   async presentUpgradeModal() {
     let stateString = JSON.stringify(this.upgrade);
@@ -26,7 +28,7 @@ export class PhoneUpgradeComponent implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (stateString != JSON.stringify(this.upgrade)) {
-      this.events.publish("snapshot", "create snapshot");
+      this.state.snapshot();
     }
   }
 

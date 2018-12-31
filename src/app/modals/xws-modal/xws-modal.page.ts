@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-
 @Component({
   selector: 'app-xws-modal',
   templateUrl: './xws-modal.page.html',
