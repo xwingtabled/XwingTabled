@@ -33,7 +33,7 @@ export class DamageDeckActionsComponent implements OnInit {
 
   async shuffleDeck() {
     await this.popoverController.dismiss();
-    this.events.publish("damagedeck", "shuffle");
+    this.state.shuffleDamageDeck();
   }
 
 }

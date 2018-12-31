@@ -32,6 +32,13 @@ export class XwingStateService {
     if (snapshots) {
       this.snapshots = snapshots;
       let lastSnapshot = JSON.parse(JSON.stringify(this.snapshots[this.snapshots.length - 1]));
+      if (lastSnapshot.squadrons) {
+        console.log("Legacy snapshot found");
+        lastSnapshot.squadron = lastSnapshot.squadrons[0];
+        lastSnapshot.damagedeck = lastSnapshot.squadrons[0].damagedeck;
+        lastSnapshot.damagediscard = lastSnapshot.squadrons[0].damagediscard;
+        this.snapshots = [ lastSnapshot ];
+      }
       this.squadron = lastSnapshot.squadron;
       this.damagedeck = lastSnapshot.damagedeck;
       this.damagediscard = lastSnapshot.damagediscard;
