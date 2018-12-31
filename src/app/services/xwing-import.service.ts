@@ -87,7 +87,7 @@ export class XwingImportService {
           if (Array.isArray(upgradeArray)) {
             upgradeArray.forEach(
               (upgradeName) => {
-                if (upgradeType == "force") {
+                if (upgradeType == "force" || upgradeType == "force-power") {
                   upgradeType = "forcepower";
                 }
                 // Skip hardpoints on T70s for xws exports from raithos.github.io
@@ -311,22 +311,22 @@ export class XwingImportService {
     squadron.damagedeck = this.dataService.getDamageDeck();
     squadron.pilots.forEach(
         (pilot) => {
-        this.injectShipData(pilot, squadron.faction);
-        this.injectPilotData(pilot, squadron.faction);
-        this.mangleUpgradeArray(pilot);
-    
-        // Process each upgrade card
-        pilot.upgrades.forEach(
+          this.injectShipData(pilot, squadron.faction);
+          this.injectPilotData(pilot, squadron.faction);
+          this.mangleUpgradeArray(pilot);
+      
+          // Process each upgrade card
+          pilot.upgrades.forEach(
             (upgrade) => {
-            this.injectUpgradeData(pilot, upgrade);
+              this.injectUpgradeData(pilot, upgrade);
             }
-        );
+          );
 
-        this.calculatePoints(pilot);
-        squadPoints += pilot.points;
+          this.calculatePoints(pilot);
+          squadPoints += pilot.points;
 
-        this.injectShipBonuses(pilot);
-        this.injectForceBonuses(pilot);
+          this.injectShipBonuses(pilot);
+          this.injectForceBonuses(pilot);
         }
     )
     squadron.points = squadPoints;
