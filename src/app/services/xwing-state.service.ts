@@ -229,7 +229,7 @@ export class XwingStateService {
   }
 
   drawHit(pilot: any) {
-    let card = this.squadron.damagedeck.shift();
+    let card = this.damagedeck.shift();
     if (card) {
       card.exposed = false;
       pilot.damagecards.push(card);
