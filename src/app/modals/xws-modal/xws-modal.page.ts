@@ -28,7 +28,7 @@ export class XwsModalPage implements OnInit {
     if (!value || value.length == 0) {
       return false;
     }
-    let isSquadBuilder = value.startsWith("https://squadbuilder.fantasyflightgames.com");
+    let isSquadBuilder = value.includes("https://squadbuilder.fantasyflightgames.com");
     let matchArray = value.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
     let uuid = null;
     if (matchArray && matchArray.length) {

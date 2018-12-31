@@ -299,8 +299,14 @@ export class MainPage implements OnInit {
           (data) => {
             this.state.setSquadron(this.importService.processFFG(data))
           },
-          (error) => {
+          async (error) => {
             console.log("Unable to get FFG SquadBuilder data", error);
+            const toast = await this.toastController.create({
+              message: "ERROR: Unable to load FFG Squad",
+              duration: 5000,
+              position: 'bottom'
+            });
+            toast.present();
           }
         );
 
