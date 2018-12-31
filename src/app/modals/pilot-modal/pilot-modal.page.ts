@@ -11,7 +11,7 @@ import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-pop
 import { DamageCardSelectComponent } from '../../popovers/damage-card-select/damage-card-select.component';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
-
+import { ActivatedRoute } from "@angular/router";
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',
@@ -36,7 +36,8 @@ export class PilotModalPage implements OnInit {
               private events: Events,
               private ngZone: NgZone,
               public modalController: ModalController,
-              public layout: LayoutService) { }
+              public layout: LayoutService,
+              private route: ActivatedRoute) { }
 
 
   drawHit() {
@@ -216,6 +217,10 @@ export class PilotModalPage implements OnInit {
   }
 
   ngOnInit() {
+    let pilotNum = this.route.snapshot.paramMap.get("pilotNum");
+    if (pilotNum) {
+      this.pilot = this.state.squadron.pilots.find(pilot => pilot.num == pilotNum);
+    }
     console.log("pilot modal", this.pilot);
     // Find stats with tokens to display
     this.shields = this.pilot.stats.find((stat) => stat.type == 'shields');

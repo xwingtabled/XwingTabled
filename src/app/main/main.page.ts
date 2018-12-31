@@ -53,6 +53,11 @@ export class MainPage implements OnInit {
     );
   }
 
+  ionViewDidEnter() {
+    console.log("Snapshot check");
+    this.state.snapshotCheck();
+  }
+
   async data_event_handler(event: any) {
     this.data_message = event.message;
     this.data_progress = event.progress;

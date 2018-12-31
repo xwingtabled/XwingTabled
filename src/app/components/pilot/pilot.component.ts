@@ -6,6 +6,8 @@ import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
 import { Events } from '@ionic/angular';
 import { XwingStateService } from '../../services/xwing-state.service';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'xws-pilot',
   templateUrl: './pilot.component.html',
@@ -23,7 +25,8 @@ export class PilotComponent implements OnInit {
               public platform: Platform,
               public events: Events,
               public layout: LayoutService,
-              public state: XwingStateService) { }
+              public state: XwingStateService,
+              private router: Router) { }
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
@@ -94,7 +97,10 @@ export class PilotComponent implements OnInit {
   }
 
   showPilot() {
-    this.presentPilotModal();
+    if (this.layout.isPhone()) {
+      this.router.navigateByUrl('pilot/' + this.pilot.num);
+    } else {
+      this.presentPilotModal();
+    }
   }
-
 }

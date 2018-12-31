@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons *ngIf="layout.isPhone()" slot="start">
-      <ion-button (click)="modalController.dismiss()">Close</ion-button>
+      <ion-button href="/"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
     <ion-buttons *ngIf="!layout.isPhone()" slot="primary">
       <ion-button color="primary" *ngIf="upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>

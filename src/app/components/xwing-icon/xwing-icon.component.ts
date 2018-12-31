@@ -28,7 +28,8 @@ export class XwingIconComponent implements OnInit {
     "Unique Outline": "unique-outline",
     "rebelalliance" : "rebel",
     "galacticempire" : "empire",
-    "scumandvillainy" : "scum"
+    "scumandvillainy" : "scum",
+    "configuration" : "config"
   };
 
   static icon_class_template = "xwing-miniatures-font xwing-miniatures-font-TEMPLATE";

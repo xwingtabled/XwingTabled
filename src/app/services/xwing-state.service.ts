@@ -8,6 +8,7 @@ import { ToastController } from '@ionic/angular';
   providedIn: 'root'
 })
 export class XwingStateService {
+  public initialized: boolean = false;
   public squadron: any = { };
   public snapshots: any[ ] = [ ];
   public damagedeck: any[ ] = [ ];
@@ -23,6 +24,7 @@ export class XwingStateService {
   reset() {
     this.squadron = { };
     this.snapshots = [ ];
+    this.initialized = false;
   }
 
   async restoreFromDisk() {
@@ -42,9 +44,12 @@ export class XwingStateService {
       this.squadron = lastSnapshot.squadron;
       this.damagedeck = lastSnapshot.damagedeck;
       this.damagediscard = lastSnapshot.damagediscard;
+      this.injectNums();
       console.log("Squadron restored", this.squadron);
+      this.initialized = true;
     } else {
       this.squadron = null;
+      this.initialized = false;
     }
   }
 
@@ -129,6 +134,17 @@ export class XwingStateService {
     return toast.present();
   }
 
+  snapshotCheck() {
+    if (this.snapshots.length) {
+      let lastSnapshot = this.snapshots[this.snapshots.length - 1];
+      if (JSON.stringify(lastSnapshot.squadron) != JSON.stringify(this.squadron) ||
+          JSON.stringify(lastSnapshot.damagedeck) != JSON.stringify(this.damagedeck) ||
+          JSON.stringify(lastSnapshot.damagediscard) != JSON.stringify(this.damagediscard)) {
+        this.snapshot();
+      }
+    }
+  }  
+
   undo() {
     this.snapshots.pop();
     let snapshot = this.snapshots.pop();
@@ -139,11 +155,23 @@ export class XwingStateService {
     return snapshot.time;
   }
 
+  injectNums() {
+    for (let pilotNum = 0; pilotNum < this.squadron.pilots.length; pilotNum++) {
+      let pilot = this.squadron.pilots[pilotNum];
+      pilot.num = pilotNum;
+      for (let upgradeNum = 0; upgradeNum < pilot.upgrades.length; upgradeNum++) {
+        pilot.upgrades[upgradeNum].num = upgradeNum;
+      }
+    }
+  }
+
   setSquadron(squadron: any) {
     this.squadron = squadron;
     this.damagedeck = this.dataService.getDamageDeck();
     this.damagediscard = [ ];
+    this.injectNums();
     this.shuffleDamageDeck();
+    this.initialized = true;
     this.snapshot();
   }
 

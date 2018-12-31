@@ -46,7 +46,7 @@
   </div>
   <div *ngIf="layout.isPhone()" [class]="'phone-upgrades' + layout.getClass()">
     <ion-list>
-      <xws-phone-upgrade *ngFor="let upgrade of pilot.upgrades" [upgrade]="upgrade">
+      <xws-phone-upgrade *ngFor="let upgrade of pilot.upgrades" [upgrade]="upgrade" [pilotNum]="pilot.num">
       </xws-phone-upgrade>
     </ion-list>
   </div>

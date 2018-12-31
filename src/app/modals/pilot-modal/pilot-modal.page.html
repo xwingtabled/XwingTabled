@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons *ngIf="layout.isPhone()" slot="start">
-      <ion-button (click)="modalController.dismiss()">Close</ion-button>
+      <ion-button href="/"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
     <ion-buttons *ngIf="!layout.isPhone()" slot="primary">
       <ion-button (click)="assignIdNumber()">Assign ID Number</ion-button>
