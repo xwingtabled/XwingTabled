@@ -199,7 +199,7 @@ export class XwingStateService {
         this.damagedeck.push(card);
       }
     )
-    this.squadron.damagediscard = [ ];
+    this.damagediscard = [ ];
     this.shuffleDamageDeck();
   }
 

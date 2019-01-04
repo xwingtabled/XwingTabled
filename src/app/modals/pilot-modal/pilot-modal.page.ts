@@ -148,6 +148,36 @@ export class PilotModalPage implements OnInit {
     await popover.present(); 
   }
 
+  async assignCrit() {
+    let cards = [ ];
+    // Fill cards with unique titles from damage deck
+    this.state.damagedeck.forEach(
+      (draw) => {
+        let found = cards.find(card => draw.title == card.title);
+        if (!found) {
+          cards.push(draw);
+        }
+      }
+    );
+
+    cards.sort((a, b) => { return a.title.localeCompare(b.title) });
+
+    const popover = await this.popoverController.create({
+      component: DamageCardSelectComponent,
+      componentProps: {
+        title: "Assign Crit",
+        cards: cards,
+        callback: (card) => {
+          card.exposed = true;
+          this.pilot.damagecards.push(card);
+          let index = this.state.damagedeck.indexOf(card);
+          this.state.damagedeck.splice(index, 1);
+       }
+      }
+    });
+    await popover.present();  
+  }
+
   async showConditionMenu() {
     const popover = await this.popoverController.create({
       component: ConditionMenuComponent,

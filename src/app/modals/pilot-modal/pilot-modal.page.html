@@ -48,6 +48,8 @@
         <div class="damage-buttons">
           <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
           <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+          <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
+          <ion-button expand="full" (click)="assignCrit()">Assign <xwing-icon [name]="'crit'"></xwing-icon></ion-button>
           <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">
             Expose Random <xwing-icon [name]="'hit'"></xwing-icon>
           </ion-button>
@@ -57,7 +59,6 @@
           <ion-button expand="full" (click)="maarekStele()">
               Maarek Stele&nbsp;<xwing-ship [name]="'tieadvancedx1'" class="ship-icon"></xwing-ship>
             </ion-button>
-          <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
           <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
           <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>
         </div>
