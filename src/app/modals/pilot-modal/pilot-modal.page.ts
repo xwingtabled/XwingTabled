@@ -12,6 +12,8 @@ import { DamageCardSelectComponent } from '../../popovers/damage-card-select/dam
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute } from "@angular/router";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './pilot-modal.page.html',
@@ -25,6 +27,8 @@ export class PilotModalPage implements OnInit {
   shields: any = null;
   charges: any = null;
   force: any = null;
+  faBars = faBars;
+  expanded: boolean = false;
 
   maneuverChart: any[] = new Array(7);
 
@@ -186,6 +190,10 @@ export class PilotModalPage implements OnInit {
       }
     });
     await popover.present();
+  }
+
+  expandToggle() {
+    this.expanded = !this.expanded;
   }
 
   fleeShip() {

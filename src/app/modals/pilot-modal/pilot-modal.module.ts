@@ -5,6 +5,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { PilotModalPage } from './pilot-modal.page';
 import { XwingModule } from '../../components/xwing.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 const routes: Routes = [
   {
     path: '',
@@ -18,7 +20,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    XwingModule
+    XwingModule,
+    FontAwesomeModule
   ],
   declarations: [
     PilotModalPage

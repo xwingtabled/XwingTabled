@@ -45,7 +45,7 @@
     </ion-tab>
     <ion-tab tab="cards">
       <div class="pilot-modal">
-        <div class="damage-buttons">
+        <div [class]="'damage-buttons' + layout.getClass()">
           <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
           <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
           <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
@@ -62,9 +62,31 @@
           <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
           <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>
         </div>
-        <div class="damage-cards">
+        <div [class]="'damage-cards' + layout.getClass()">
           <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
           <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
+        </div>
+        <div class="card-expander" *ngIf="layout.getClass() === '-phone-portrait'">
+          <ion-toolbar>
+            <div class="card-expander-more" (click)="expandToggle()"><fa-icon [icon]="faBars"></fa-icon></div>
+            <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
+            <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+            <div *ngIf="this.expanded">
+              <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
+              <ion-button expand="full" (click)="assignCrit()">Assign <xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+              <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">
+                Expose Random <xwing-icon [name]="'hit'"></xwing-icon>
+              </ion-button>
+              <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="thaneKyrell()">
+                Thane Kyrell&nbsp;<xwing-ship [name]="'t65xwing'" class="ship-icon"></xwing-ship>
+              </ion-button>
+              <ion-button expand="full" (click)="maarekStele()">
+                  Maarek Stele&nbsp;<xwing-ship [name]="'tieadvancedx1'" class="ship-icon"></xwing-ship>
+                </ion-button>
+              <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
+              <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>
+            </div>
+        </ion-toolbar>
         </div>
       </div>
     </ion-tab>

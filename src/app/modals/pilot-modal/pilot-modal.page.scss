@@ -2,7 +2,7 @@
 
 .pilot-modal {
     @extend .modal-content;
-    overflow: scroll;
+    overflow-y: scroll;
     height: 100%;
     font-size: 8vh;
 }
@@ -72,13 +72,49 @@
     @extend .half-column;
     padding-left: 1vw;
 }
+.damage-cards-tablet {
+    @extend .damage-cards;
+}
+.damage-cards-tablet-portrait {
+    @extend .damage-cards;
+}
+.damage-cards-phone-portrait {
+    width: 100%;
+}
+.damage-cards-phone-landscape {
+    @extend .damage-cards;
+}
 .damage-buttons {
     @extend .half-column;
 }
-
+.damage-buttons-tablet {
+    @extend .damage-buttons;
+}
+.damage-buttons-tablet-portrait {
+    @extend .damage-buttons;
+}
+.damage-buttons-phone-portrait {
+    display: none;
+}
+.damage-buttons-phone-landscape {
+    @extend .damage-buttons;
+}
 .card-text {
     font-size: 2vh;
     color: white;
+}
+
+.card-expander {
+    margin-left: -1vw;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+}
+.card-expander-more {
+    width: 100%;
+    text-align: center;
+    color: gray;
+    font-size: 0.3em;
 }
 
 .dial-name {
@@ -119,4 +155,23 @@
 
 .ship-icon {
     font-size: 4vh;
+}
+.pilot-modal::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 0.2vh #282828;
+	border-radius: 0.2vh;
+	background-color: #282828;
+}
+
+.pilot-modal::-webkit-scrollbar
+{
+	width: 0.5vh;
+	background-color: #282828;
+}
+
+.pilot-modal::-webkit-scrollbar-thumb
+{
+	border-radius: 0.2vh;
+	-webkit-box-shadow: inset 0 0 0.2vh rgba(0,0,0,.3);
+	background-color: #555;
 }
