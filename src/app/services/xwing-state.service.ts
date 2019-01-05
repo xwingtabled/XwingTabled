@@ -59,8 +59,8 @@ export class XwingStateService {
 
   resetSquadron() {
     this.squadron.pointsDestroyed = 0;
-    this.squadron.damagediscard = [ ];
-    this.squadron.damagedeck = this.dataService.getDamageDeck();
+    this.damagediscard = [ ];
+    this.damagedeck = this.dataService.getDamageDeck();
     this.shuffleDamageDeck();
     this.squadron.pilots.forEach(
       (pilot) => {
