@@ -3,7 +3,7 @@ import { XwingDataService } from '../../services/xwing-data.service';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { XwingStateService } from '../../services/xwing-state.service';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 @Component({
   selector: 'app-upgrade-modal',
   templateUrl: './upgrade-modal.page.html',
@@ -12,17 +12,20 @@ import { ActivatedRoute } from "@angular/router";
 export class UpgradeModalPage implements OnInit {
   upgrade;
   img_urls: string[] = [ null, null ];
+  useAngularRouter: boolean = false;
 
   constructor(private dataService: XwingDataService,
               public modalController: ModalController,
               public layout: LayoutService,
               private route: ActivatedRoute,
-              public state: XwingStateService) { }
+              public state: XwingStateService,
+              public router: Router) { }
 
   ngOnInit() {
     let pilotNum = this.route.snapshot.paramMap.get("pilotNum");
     let upgradeNum = this.route.snapshot.paramMap.get("upgradeNum");
     if (pilotNum) {
+      this.useAngularRouter = true;
       let pilot = this.state.squadron.pilots.find(pilot => pilot.num == pilotNum);
       this.upgrade = pilot.upgrades.find(upgrade => upgrade.num == upgradeNum);
     }
@@ -43,6 +46,14 @@ export class UpgradeModalPage implements OnInit {
       this.upgrade.side = 1;
     } else {
       this.upgrade.side = 0;
+    }
+  }
+
+  dismiss() {
+    if (this.useAngularRouter) {
+      this.router.navigateByUrl("/");
+    } else {
+      this.modalController.dismiss();
     }
   }
 

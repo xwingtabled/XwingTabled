@@ -11,7 +11,7 @@ import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-pop
 import { DamageCardSelectComponent } from '../../popovers/damage-card-select/damage-card-select.component';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -29,6 +29,7 @@ export class PilotModalPage implements OnInit {
   force: any = null;
   faBars = faBars;
   expanded: boolean = false;
+  useAngularRouter: boolean = false;
 
   maneuverChart: any[] = new Array(7);
 
@@ -41,7 +42,8 @@ export class PilotModalPage implements OnInit {
               private ngZone: NgZone,
               public modalController: ModalController,
               public layout: LayoutService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private router: Router) { }
 
 
   drawHit() {
@@ -257,6 +259,7 @@ export class PilotModalPage implements OnInit {
   ngOnInit() {
     let pilotNum = this.route.snapshot.paramMap.get("pilotNum");
     if (pilotNum) {
+      this.useAngularRouter = true;
       this.pilot = this.state.squadron.pilots.find(pilot => pilot.num == pilotNum);
     }
     console.log("pilot modal", this.pilot);
@@ -330,5 +333,13 @@ export class PilotModalPage implements OnInit {
       }
     }
     return false;
+  }
+
+  dismiss() {
+    if (this.useAngularRouter) {
+      this.router.navigateByUrl("/");
+    } else {
+      this.modalController.dismiss();
+    }
   }
 }
