@@ -6,7 +6,7 @@ var JSZip = require('jszip');
 const { Observable, from, zip } = require('rxjs');
 const { concatMap } = require('rxjs/operators');
 
-let baseUrl = "https://raw.githubusercontent.com/jychuah/xwing-data2/ffgscraper/";
+let baseUrl = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
 
 let urls = [ ];
 let data = { };
@@ -18,7 +18,9 @@ let shims = {
         "scavengedyt1300lightfreighter": "scavengedyt1300"
     },
     xwsPilot: {
-        "niennumb-t70xwing": "niennunb"
+        "niennumb-t70xwing": "niennunb",
+        "niennunb-t70xwing" : "niennunb",
+        "l337escapecraft" : "l337-escapecraft"
     },
     xwsUpgrade: {
         "hansoloscum" : "hansolo-gunner",
