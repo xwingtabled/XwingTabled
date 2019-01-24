@@ -1,0 +1,21 @@
+<div class="assign-id-popover">
+  <strong>Assign Ship ID</strong>
+  <br />
+  <ion-select [(ngModel)]="idType">
+    <ion-select-option selected="true" value="numbers" >Numbers</ion-select-option>
+    <ion-select-option value="letters" >Letters</ion-select-option>
+  </ion-select>
+  <ion-input 
+    type="number" 
+    *ngIf="idType == 'numbers'" 
+    [(ngModel)]="numericId" 
+    placeholder="Lock Number">
+  </ion-input>
+  <ion-input 
+    type="text" 
+    *ngIf="idType == 'letters'" 
+    [(ngModel)]="alphabeticId" 
+    placeholder="Target Lock Letter">
+  </ion-input>
+  <ion-button expand="full" (click)="assignId()">Assign ID</ion-button>
+</div>

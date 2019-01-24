@@ -4,7 +4,7 @@
     <div class="pilot-header-text">
         <span class="pilot-initiative">{{ pilot.pilot.initiative }}</span>
         {{ pilot.pilot.name }}&nbsp;
-        <span *ngIf="pilot.idNumber && pilot.idNumber > 0"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
+        <span *ngIf="pilot.idNumber"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
         ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
   </div>
