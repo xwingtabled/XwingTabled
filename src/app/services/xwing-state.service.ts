@@ -238,11 +238,13 @@ export class XwingStateService {
           remainingPoints == threshold - 1) {
         pilot.pointsDestroyed = Math.ceil(pilot.points / 2);
         const toast = await this.toastController.create({
-          message: pilot.name + " at half points",
+          message: pilot.pilot.name + " at half points",
           duration: 2000,
           position: 'middle'
         });
         toast.present();
+      } else if (remainingPoints > threshold) {
+        pilot.pointsDestroyed = 0;
       }
     }
     this.squadron.pointsDestroyed = 0;
