@@ -17,6 +17,7 @@ export class LayoutService {
                     "electron" | "pwa" | "mobile" | "desktop" | "hybrid");
             }
         );
+        console.log("Platforms", this.platforms);
     }
 
     getClass() {
