@@ -6,7 +6,7 @@ var JSZip = require('jszip');
 const { Observable, from, zip } = require('rxjs');
 const { concatMap } = require('rxjs/operators');
 
-let baseUrl = "https://raw.githubusercontent.com/guidokessels/xwing-data2/master/";
+let baseUrl = "https://raw.githubusercontent.com/jychuah/xwing-data2/ffgscraper/";
 
 let urls = [ ];
 let data = { };
@@ -197,6 +197,9 @@ function stripText(manifest) {
                             }
                         }
                     )
+                    if (ship.alt) {
+                        delete ship.alt;
+                    }
                 }
             )
         }
@@ -212,6 +215,9 @@ function stripText(manifest) {
                             }
                             if (side.text) {
                                 side.text = "";
+                            }
+                            if (side.alt) {
+                                delete side.alt;
                             }
                         }
                     )
