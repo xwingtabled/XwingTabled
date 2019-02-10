@@ -216,8 +216,11 @@ export class XwingImportService {
           }
           if ("variable" in upgrade.cost) {
             let statValue = "";
+            upgrade.cost.variable = upgrade.cost.variable.toLowerCase();
             if (upgrade.cost.variable == "size") {
               statValue = pilot.ship.size;
+            } else if (upgrade.cost.variable == "initiative") {
+              statValue = pilot.pilot.initiative;
             } else {
               statValue = pilot.stats.find((stat) => stat.type == upgrade.cost.variable).value;
             }
