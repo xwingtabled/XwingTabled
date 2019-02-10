@@ -24,7 +24,8 @@ let shims = {
     },
     xwsUpgrade: {
         "hansoloscum" : "hansolo-gunner",
-        "rey" : "rey-gunner"
+        "rey" : "rey-gunner",
+        "c3poresistance" : "c3po-crew" 
     }
 }
 
