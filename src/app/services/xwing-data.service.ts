@@ -255,6 +255,7 @@ export class XwingDataService {
 
   getDamageDeck() {
     let deck = [];
+    let cards = { };
     this.data.damagedecks[0].cards.forEach(
       (card) => {
         for (let i = 0; i < card.amount; i++) {
@@ -264,10 +265,27 @@ export class XwingDataService {
               initials = initials + word[0];
             }
           )
-          deck.push({ title: card.title, type: card.type, text: card.text, initials: initials });
+          if (!cards[card.title]) {
+            cards[card.title] = [ ];
+          }
+          cards[card.title].push({ title: card.title, type: card.type, text: card.text, initials: initials });
         }
       }
     )
+    while (Object.keys(cards).length > 0) {
+      Object.keys(cards).forEach(
+        (cardTitle) => {
+          if (cards[cardTitle].length > 0) {
+            deck.push(cards[cardTitle].pop())
+          } else {
+            delete cards[cardTitle];
+          }
+        }
+      )
+    }
+
+    console.log("Generating damage deck", deck);
+
     return deck;
   }
 

@@ -178,12 +178,13 @@ export class XwingStateService {
   async shuffleDamageDeck() {
     let newDeck = [ ];
     while (this.damagedeck.length > 0) {
-      let index = Math.floor(Math.random() * Math.floor(this.damagedeck.length));
+      let index = Math.floor(Math.random() * this.damagedeck.length);
       let card = this.damagedeck[index];
       this.damagedeck.splice(index, 1);
       newDeck.push(card);
     }
     this.damagedeck = newDeck;
+    console.log("Damage deck shuffled", this.damagedeck);
     this.snapshot();
     const toast = await this.toastController.create({
       message: "Damage Deck shuffled",
