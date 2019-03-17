@@ -60,9 +60,6 @@ i.xwing-miniatures-font-cargo:before {
 i.xwing-miniatures-font-charge:before {
   content: "g"; }
 
-i.xwing-miniatures-font-charges:before {
-  content: "g"; }
-
 i.xwing-miniatures-font-cloak:before {
   content: "k"; }
 
@@ -114,11 +111,11 @@ i.xwing-miniatures-font-firstorder:before {
 i.xwing-miniatures-font-focus:before {
   content: "f"; }
 
-i.xwing-miniatures-font-force:before {
-  content: "h"; }
-
 i.xwing-miniatures-font-forcecharge:before {
   content: "h"; }
+
+i.xwing-miniatures-font-force:before {
+    content: "h"; }
 
 i.xwing-miniatures-font-forcepower:before {
   content: "F"; }
@@ -343,7 +340,7 @@ i.xwing-miniatures-font-sensor:before {
   content: "S"; }
 
 i.xwing-miniatures-font-shield:before {
-  content: "*"; }
+    content: "*"; }
 
 i.xwing-miniatures-font-shields:before {
   content: "*"; }
@@ -368,6 +365,9 @@ i.xwing-miniatures-font-stop:before {
 
 i.xwing-miniatures-font-straight:before {
   content: "8"; }
+
+i.xwing-miniatures-font-tacticalrelay:before {
+  content: "Z"; }
 
 i.xwing-miniatures-font-talent:before {
   content: "E"; }
@@ -589,8 +589,13 @@ i.xwing-miniatures-ship-m12lkimogilafighter:before {
 i.xwing-miniatures-ship-m3ainterceptor:before {
   content: "s"; }
 
-i.xwing-miniatures-ship-mg100starfortresssf17:before {
+i.xwing-miniatures-ship-mg100starfortress:before {
   content: "Z"; }
+  i.xwing-miniatures-ship-mg100starfortresssf17:before {
+    content: "Z"; }
+
+i.xwing-miniatures-ship-modifiedtielnfighter:before {
+  content: "C"; }
 
 i.xwing-miniatures-ship-modifiedyt1300lightfreighter:before {
   content: "m"; }
@@ -604,8 +609,14 @@ i.xwing-miniatures-ship-raiderclasscorvette:before {
 i.xwing-miniatures-ship-rz1awing:before {
   content: "a"; }
 
+i.xwing-miniatures-ship-rz2awing:before {
+  content: "E"; }
+
 i.xwing-miniatures-ship-scurrgh6bomber:before {
   content: "H"; }
+
+i.xwing-miniatures-ship-scavengedyt1300:before {
+  content: "Y"; }
 
 i.xwing-miniatures-ship-sheathipedeclassshuttle:before {
   content: "%"; }
@@ -656,12 +667,18 @@ i.xwing-miniatures-ship-tiesffighter:before {
   content: "S"; }
 
 i.xwing-miniatures-ship-tiesilencer:before {
+    content: "$"; }
+
+i.xwing-miniatures-ship-tievnsilencer:before {
   content: "$"; }
 
 i.xwing-miniatures-ship-tieskstriker:before {
   content: "T"; }
 
-i.xwing-miniatures-ship-upsilonclassshuttle:before {
+  i.xwing-miniatures-ship-upsilonclassshuttle:before {
+    content: "U"; }
+
+i.xwing-miniatures-ship-upsilonclasscommandshuttle:before {
   content: "U"; }
 
 i.xwing-miniatures-ship-ut60duwing:before {
