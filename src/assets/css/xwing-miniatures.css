@@ -4,12 +4,13 @@
  */
 @font-face {
   font-family: XWing;
-  src: url("xwing-miniatures.ttf"); }
+  src: url("../fonts/xwing-miniatures.ttf"); }
 
 i.xwing-miniatures-font {
   font-family: XWing;
   font-style: normal;
-  font-size: 1.5em; }
+  text-transform: none !important;
+}
 
 i.xwing-miniatures-font-agility:before {
   content: "^"; }
@@ -112,6 +113,9 @@ i.xwing-miniatures-font-focus:before {
 
 i.xwing-miniatures-font-forcecharge:before {
   content: "h"; }
+
+i.xwing-miniatures-font-force:before {
+    content: "h"; }
 
 i.xwing-miniatures-font-forcepower:before {
   content: "F"; }
@@ -336,6 +340,9 @@ i.xwing-miniatures-font-sensor:before {
   content: "S"; }
 
 i.xwing-miniatures-font-shield:before {
+    content: "*"; }
+
+i.xwing-miniatures-font-shields:before {
   content: "*"; }
 
 i.xwing-miniatures-font-singleturretarc:before {
@@ -499,12 +506,13 @@ i.xwing-miniatures-font-unique:before {
  */
 @font-face {
   font-family: XWingShip;
-  src: url("xwing-miniatures-ships.ttf"); }
+  src: url("../fonts/xwing-miniatures-ships.ttf"); }
 
 i.xwing-miniatures-ship {
   font-family: XWingShip;
   font-style: normal;
-  font-size: 1.5em; }
+  text-transform: none !important;
+}
 
 i.xwing-miniatures-ship-aggressorassaultfighter:before {
   content: "i"; }
@@ -583,6 +591,8 @@ i.xwing-miniatures-ship-m3ainterceptor:before {
 
 i.xwing-miniatures-ship-mg100starfortress:before {
   content: "Z"; }
+  i.xwing-miniatures-ship-mg100starfortresssf17:before {
+    content: "Z"; }
 
 i.xwing-miniatures-ship-modifiedtielnfighter:before {
   content: "C"; }
@@ -656,11 +666,17 @@ i.xwing-miniatures-ship-tiesabomber:before {
 i.xwing-miniatures-ship-tiesffighter:before {
   content: "S"; }
 
+i.xwing-miniatures-ship-tiesilencer:before {
+    content: "$"; }
+
 i.xwing-miniatures-ship-tievnsilencer:before {
   content: "$"; }
 
 i.xwing-miniatures-ship-tieskstriker:before {
   content: "T"; }
+
+  i.xwing-miniatures-ship-upsilonclassshuttle:before {
+    content: "U"; }
 
 i.xwing-miniatures-ship-upsilonclasscommandshuttle:before {
   content: "U"; }

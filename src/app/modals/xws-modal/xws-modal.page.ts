@@ -50,7 +50,7 @@ export class XwsModalPage implements OnInit {
     if (!isYasb) {
       return false;
     }
-    let matchArray = value.match(/s\!.*\&sn/g);
+    let matchArray = value.match(/s\=.*\&sn/g);
     this.xwsData = { 
       yasb : {
         pilots: [ ],
