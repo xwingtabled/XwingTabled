@@ -42,7 +42,7 @@ export class XwsModalPage implements OnInit {
 
   processYasb(value: string) : boolean {
 
-    let pilotRegex = /(\d+:(\-?\d+\,?)*)+(\:U\.\-?\d+)?/g;
+    let pilotRegex = /(\d+:(\-?\d*\,?)*)+(\:U\.\-?\d+)?/g;
     if (!value || value.length == 0) {
       return false;
     }
