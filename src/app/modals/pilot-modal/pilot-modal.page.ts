@@ -31,6 +31,7 @@ export class PilotModalPage implements OnInit {
   faBars = faBars;
   expanded: boolean = false;
   useAngularRouter: boolean = false;
+  tab: string = "tokens";
 
   maneuverChart: any[] = new Array(7);
 
@@ -239,6 +240,10 @@ export class PilotModalPage implements OnInit {
         await popover.present();
       }
     )
+  }
+  
+  showTab(tab: string) {
+    this.tab = tab;
   }
 
   ngOnInit() {

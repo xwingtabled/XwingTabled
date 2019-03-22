@@ -15,8 +15,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
-  <ion-tabs>
-    <ion-tab tab="tokens">  
+  <div class="pilot-tabs">
+    <div *ngIf="tab === 'tokens'"">  
       <div class="pilot-modal">
         <div [class]="'pilot-art-container' + layout.getClass()">
           <img *ngIf="img_url" [src]="img_url" class="pilot-art"/>
@@ -42,8 +42,9 @@
         </div>
         <ion-button *ngIf="layout.isPhone()" expand="full" (click)="assignIdNumber()">Assign Ship ID</ion-button>
       </div>
-    </ion-tab>
-    <ion-tab tab="cards">
+    </div>
+    <!--
+    <div *ngIf="tab === 'cards'">
       <div class="pilot-modal">
         <div [class]="'damage-buttons' + layout.getClass()">
           <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
@@ -89,8 +90,10 @@
         </ion-toolbar>
         </div>
       </div>
-    </ion-tab>
-    <ion-tab tab="dial">
+    </div>
+  -->
+  <!--
+    <div *ngIf="tab === 'dial'">
       <div class="pilot-modal">
         <div class="dial-name">
           {{ pilot.ship.name }}
@@ -113,24 +116,22 @@
           </table>
         </div>
       </div>
-    </ion-tab>
-  
+    </div>
+    -->
     <ion-tab-bar slot="bottom">
-      <ion-tab-button tab="tokens">
+      <ion-tab-button (click)="showTab('tokens')">
         <xwing-icon [name]="'shield'" class="tab-icon"></xwing-icon>
         <ion-label>Tokens</ion-label>
       </ion-tab-button>
   
-      <ion-tab-button tab="cards">
+      <ion-tab-button (click)="showTab('cards')">
         <xwing-icon [name]="'hit'" class="tab-icon"></xwing-icon>
         <ion-label>Cards</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button tab="dial">
+      <ion-tab-button (click)="showTab('dial')">
         <xwing-icon [name]="'trollleft'" class="tab-icon"></xwing-icon>
         <ion-label>Maneuver Dial</ion-label>
       </ion-tab-button>
-  
     </ion-tab-bar>
-  </ion-tabs>
 </ion-content>
