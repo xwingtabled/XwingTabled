@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { LayoutService } from '../../services/layout.service';
 import { PilotModalPage } from '../../modals/pilot-modal/pilot-modal.page';
+import { TokenModalPage } from '../../modals/token-modal/token-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
 import { Events } from '@ionic/angular';
@@ -152,11 +153,34 @@ export class PilotComponent implements OnInit {
     }
   }
 
+  async presentTokenModal() {
+    let stateString = JSON.stringify(this.pilot);
+    const modal = await this.modalController.create({
+      component: TokenModalPage,
+      componentProps: {
+        pilot: this.pilot,
+      }
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (stateString != JSON.stringify(this.pilot)) {
+      this.state.snapshot();
+    }
+  }
+
   showPilot() {
     if (this.layout.isPhone()) {
       this.router.navigateByUrl('pilot/' + this.pilot.num +'/card');
     } else {
       this.presentPilotModal();
+    }
+  }
+
+  showTokens() {
+    if (this.layout.isPhone()) {
+      this.router.navigateByUrl('pilot/' + this.pilot.num +'/tokens');
+    } else {
+      this.presentTokenModal();
     }
   }
 }

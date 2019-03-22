@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { XwsModalPageModule } from './xws-modal/xws-modal.module';
 import { UpgradeModalPageModule } from './upgrade-modal/upgrade-modal.module';
 import { PilotModalPageModule } from './pilot-modal/pilot-modal.module';
+import { TokenModalPageModule } from './token-modal/token-modal.module';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { PilotModalPageModule } from './pilot-modal/pilot-modal.module';
     XwsModalPageModule,
     UpgradeModalPageModule,
     PilotModalPageModule,
+    TokenModalPageModule
   ],
 })
 export class ModalModule {}

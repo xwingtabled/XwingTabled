@@ -1,43 +1,16 @@
 @import '../../components/component.scss';
 
-.pilot-modal {
+.token-modal {
     @extend .modal-content;
     overflow-y: scroll;
     height: 100%;
     font-size: 8vh;
 }
-.pilot-art {
-    display: inline-block;
-}
-.pilot-art-container {
-    display: block;
-    img {
-        display: block;
-        margin: auto;
-    }
-}
-.pilot-art-container-tablet {
-    @extend .pilot-art-container;
-    img {
-        width: 60%;
-    }
-}
-.pilot-art-container-tablet-portrait {
-    @extend .pilot-art-container-tablet;
-}
-.pilot-art-container-phone-portrait {
-    @extend .pilot-art-container;
-    display: block;
-    width: 100%;
-}
-.pilot-art-container-phone-landscape {
-    @extend .pilot-art-container;
-}
 .token-box {
     display: inline-block;
     padding-left: 1vw;
     vertical-align: top;
-    width: 42%;
+    width: 50%;
     font-size: 6vh;
 }
 .token-box-tablet {
@@ -111,7 +84,6 @@
 }
 
 .card-expander {
-    margin-left: -1vw;
     position: absolute;
     width: 100%;
     bottom: 0px;
