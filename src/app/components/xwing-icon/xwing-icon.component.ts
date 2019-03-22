@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class XwingIconComponent implements OnInit {
   @Input() name: string = "";
   static name_map = {
+    "charges" : "charge",
     "Base All": "base-all",
     "Base Small": "base-small",
     "Base Medium": "base-medium",
