@@ -7,6 +7,7 @@ import { Platform } from '@ionic/angular'
 import { Events } from '@ionic/angular';
 import { XwingStateService } from '../../services/xwing-state.service';
 import { Router } from '@angular/router';
+import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'xws-pilot',
@@ -19,6 +20,9 @@ export class PilotComponent implements OnInit {
   img_url: string = null;
   shipData: any;
   pilotData: any;
+  shields: any = null;
+  charges: any = null;
+  force: any = null;
 
   constructor(public dataService: XwingDataService, 
               public modalController: ModalController, 
@@ -26,7 +30,8 @@ export class PilotComponent implements OnInit {
               public events: Events,
               public layout: LayoutService,
               public state: XwingStateService,
-              private router: Router) { }
+              private router: Router,
+              private ngZone: NgZone) { }
 
   getStatString(statname: string) : string {
     this.pilot.ship.stats.forEach(
@@ -69,6 +74,8 @@ export class PilotComponent implements OnInit {
         }
       )
     }
+
+
   }
 
   numFacedown() {
@@ -79,6 +86,55 @@ export class PilotComponent implements OnInit {
       }
     }
     return 0;
+  }
+
+  createTokens(stat, tokenType) {
+    let tokens = [ ];
+    if (!stat) {
+      return tokens;
+    }
+    for (let i = 0; i < stat.remaining; i++) {
+      tokens.push(
+        {
+          name: tokenType,
+          css: tokenType
+        }
+      )
+    }
+    for (let i = 0; i < stat.value - stat.remaining; i++) {
+      tokens.push(
+        {
+          name: tokenType,
+          css: tokenType + ' spent'
+        }
+      )
+    }
+    return tokens;
+
+  }
+
+  createMiniTokenDisplay() {
+    let tokens = [ ]
+    // Find stats with tokens to display
+    tokens = tokens.concat(
+      this.createTokens(
+        this.pilot.stats.find((stat) => stat.type == 'shields'),
+        'shield'
+      )
+    );
+    tokens = tokens.concat(
+      this.createTokens(
+        this.pilot.stats.find((stat) => stat.type == 'charges'),
+        'charge'
+      )
+    );
+    tokens = tokens.concat(
+      this.createTokens(
+        this.pilot.stats.find((stat) => stat.type == 'force'),
+        'force'
+      )
+    );
+    return tokens;
   }
 
   async presentPilotModal() {
@@ -98,7 +154,7 @@ export class PilotComponent implements OnInit {
 
   showPilot() {
     if (this.layout.isPhone()) {
-      this.router.navigateByUrl('pilot/' + this.pilot.num);
+      this.router.navigateByUrl('pilot/' + this.pilot.num +'/card');
     } else {
       this.presentPilotModal();
     }

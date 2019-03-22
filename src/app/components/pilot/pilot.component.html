@@ -8,31 +8,59 @@
         ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
   </div>
-  <div [class]="'pilot-card' + layout.getClass()" (click)="showPilot()">
-    <img *ngIf="pilot.pilot.artwork" [src]="img_url" [class]="'item-pilotart' + layout.getClass()" />
-    <div *ngIf="!pilot.pilot.artwork" class="image-container">
-      <img *ngIf="img_url" [src]="img_url" class="image-constrained" />
-      <div *ngIf="!img_url" class="card-text">
-        <xwing-text [text]="pilot.card_text"></xwing-text>
+  <div [class]="'pilot-card' + layout.getClass()">
+    <div (click)="showPilot()" class="item-box">
+      <img *ngIf="pilot.pilot.artwork" 
+          [src]="img_url" 
+          [class]="'item-pilotart' + layout.getClass()" />
+      <div *ngIf="!pilot.pilot.artwork" class="image-container">
+        <img *ngIf="img_url" [src]="img_url" class="image-constrained" />
+        <div *ngIf="!img_url" class="card-text">
+          <xwing-text [text]="pilot.card_text"></xwing-text>
+        </div>
       </div>
-    </div>
-    <div [class]="'action-bar' + layout.getClass()">
-      <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>
-    </div>
-    <div [class]="'stat-block' + layout.getClass()">
-      <xws-stat *ngFor="let stat of pilot.stats" [stat]="stat" [orientation]="'vertical'"></xws-stat>
-    </div>
-    <div class="conditions">
-      <div *ngFor="let condition of pilot.conditions">
-        <xwing-icon [name]="'condition'"></xwing-icon>{{ condition.name }}
+      <div [class]="'action-bar' + layout.getClass()">
+        <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>
       </div>
-    </div>
-    <div class="damage-cards">
-      <div *ngFor="let damagecard of pilot.damagecards">
-        <div *ngIf="damagecard.exposed"><xwing-icon [name]="'crit'"></xwing-icon>{{damagecard.title}}</div>
+      <div [class]="'stat-block' + layout.getClass()">
+          <xws-stat *ngFor="let stat of pilot.stats" [stat]="stat" [orientation]="'vertical'"></xws-stat>
       </div>
-      <div class="damage-facedown" *ngIf="numFacedown() > 0">
-         <xwing-icon [name]="'hit'"></xwing-icon>Damage Cards x{{ numFacedown() }}
+
+    </div>
+    <div (click)="showPilot()" class="item-box token-box">
+      <div class="token-header">
+        Tokens
+        <span
+          *ngIf="createMiniTokenDisplay().length == 0" 
+          class="none">
+          &nbsp;(None)
+        </span>
+      </div>
+      <div class="token-set">
+        <xwing-icon 
+          *ngFor="let token of createMiniTokenDisplay()"
+          [name]="'token-' + token.name + '-outline'" [class]="token.css"></xwing-icon>
+      </div>
+      <div class="token-header">
+        Cards
+        <span 
+          *ngIf="pilot.damagecards.length == 0 && pilot.conditions.length == 0" 
+          class="none">
+          &nbsp;(None)
+        </span>
+      </div>
+      <div class="conditions">
+        <div *ngFor="let condition of pilot.conditions">
+          <xwing-icon [name]="'condition'"></xwing-icon>{{ condition.name }}
+        </div>
+      </div>
+      <div class="damage-cards">
+        <div *ngFor="let damagecard of pilot.damagecards">
+          <div *ngIf="damagecard.exposed"><xwing-icon [name]="'crit'"></xwing-icon>{{damagecard.title}}</div>
+        </div>
+        <div class="damage-facedown" *ngIf="numFacedown() > 0">
+          <xwing-icon [name]="'hit'"></xwing-icon>Damage Cards x{{ numFacedown() }}
+        </div>
       </div>
     </div>
   </div>

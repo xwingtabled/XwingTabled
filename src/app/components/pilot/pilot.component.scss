@@ -249,3 +249,47 @@
     display: inline-block;
     width: 50%;
 }
+.item-box {
+    border: 0.15em solid #555;
+    margin-bottom: 0.15em;
+    margin-left: 0.15em;
+}
+
+.token-box {
+    padding: 0.15em 0.15em 0.15em 0.15em;
+    vertical-align: text-top;
+    .token-header {
+        font-size: 0.75em;
+    }
+    .token-set {
+        font-size: 1.5em;
+    }
+    .none {
+        font-style: italic;
+    }
+}
+
+.tokens {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.force {
+    @extend .tokens;
+    color: blueviolet;
+}
+
+.charge {
+    @extend .tokens;
+    color: yellow;
+}
+
+.shield { 
+    @extend .tokens;
+    color: lightblue;
+}
+
+.spent {
+    @extend .tokens;
+    color: red;
+}
