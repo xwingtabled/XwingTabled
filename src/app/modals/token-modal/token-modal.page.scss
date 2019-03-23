@@ -7,11 +7,11 @@
     font-size: 8vh;
 }
 .token-box {
-    display: inline-block;
+    display: block;
     padding-left: 1vw;
     vertical-align: top;
-    width: 50%;
     font-size: 6vh;
+    width: 100%;
 }
 .token-box-tablet {
     @extend .token-box;
@@ -21,7 +21,6 @@
 }
 .token-box-phone-portrait {
     @extend .token-box;
-    width: 100%;
     font-size: 8vh;
 }
 .token-box-phone-landscape {
@@ -29,16 +28,12 @@
     font-size: 8vw;
 }
 .token-set {
-    display: block;
-    width: 100%;
+    display: inline-block;
     font-size: 1em;
     overflow: wrap;
 }
 .damage-cards {
-    display: inline-block;
-    width: 50%;
-    vertical-align: top;
-    padding-left: 1vw;
+    height: 100%;
 }
 .tab-icon {
     font-size: 2vh;
@@ -47,17 +42,23 @@
     width: 50%;
     display: inline-block;
 }
-.damage-cards {
-    @extend .half-column;
-    padding-left: 1vw;
-}
 .damage-cards-tablet {
     @extend .damage-cards;
+    display: flex;
+    flex-flow: column wrap;
+    height: 70%;
+    xws-condition {
+        width: 50%;
+    }
+    xws-damage-card {
+        width: 50%;
+    }
 }
 .damage-cards-tablet-portrait {
-    @extend .damage-cards;
+    @extend .damage-cards-tablet;
 }
 .damage-cards-phone-portrait {
+    height: initial;
     width: 100%;
 }
 .damage-cards-phone-landscape {

@@ -1,5 +1,2 @@
 <xwing-icon [name]="'token-' + name + '-outline'" [class]="name" *ngFor="let number of available" (click)="spend()"></xwing-icon>
 <xwing-icon [name]="'token-' + name + '-outline'" class="spent" *ngFor="let number of spent" (click)="recover()"></xwing-icon>
-<div *ngIf="data.recovers > 0" class="recover-container">
-    <ion-button (click)="recoverRecurring()" class="recover-button">Recover&nbsp;<xwing-icon [name]="name"></xwing-icon><xwing-icon [name]="'recurring'" *ngFor="let number of data.numbers"></xwing-icon></ion-button>
-</div>

@@ -13,9 +13,6 @@
 </ion-header>
 <ion-content padding>
   <div class="token-modal">
-    <div>
-      <img [src]="img_url">
-    </div>
     <div [class]="'token-box' + layout.getClass()">
       <xws-token-display 
         *ngIf="shields" 
@@ -33,7 +30,7 @@
         [name]="'force'" 
         [data]="force" 
         class="token-set"></xws-token-display>
-    </div>
+    </div> 
     <div [class]="'damage-cards' + layout.getClass()">
       <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
       <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
