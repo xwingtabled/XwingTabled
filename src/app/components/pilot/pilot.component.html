@@ -4,7 +4,6 @@
     <div class="pilot-header-text">
         <span class="pilot-initiative">{{ pilot.pilot.initiative }}</span>
         {{ pilot.pilot.name }}&nbsp;
-        <span *ngIf="pilot.idNumber"><xwing-icon [name]="'token-lock'"></xwing-icon> {{ pilot.idNumber }}</span>&nbsp;
         ( {{ pilot.pointsDestroyed }} / {{pilot.points}} )
     </div>
   </div>
@@ -18,6 +17,10 @@
         <div *ngIf="!img_url" class="card-text">
           <xwing-text [text]="pilot.card_text"></xwing-text>
         </div>
+      </div>
+      <div class="id-overlay" *ngIf="pilot.idNumber">
+        <span>{{ pilot.idNumber }}</span>
+        <xwing-icon [name]="'token-lock'"></xwing-icon>
       </div>
       <div [class]="'action-bar' + layout.getClass()">
         <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>

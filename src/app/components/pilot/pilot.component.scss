@@ -256,6 +256,7 @@
     border-bottom: 0.1em solid #880000;
     margin-bottom: 0.25em;
     margin-left: 0.15em;
+    position: relative;
     cursor: pointer;
 }
 
@@ -313,5 +314,22 @@
         display: inline-block;
         width: 90%;
         vertical-align: top;
+    }
+}
+
+.id-overlay {
+    position: absolute;
+    left: 0.1em;
+    top: 0.1em;
+    color: #FFFFFFBB;
+    xwing-icon {
+        font-size: 2.5vh;
+        vertical-align: top;
+    }
+    span {
+        margin-left: 1vh;
+        font-size: 9vh;
+        vertical-align: top;
+        text-transform: uppercase;
     }
 }
