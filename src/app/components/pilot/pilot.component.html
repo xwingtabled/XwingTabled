@@ -49,17 +49,23 @@
           &nbsp;(None)
         </span>
       </div>
-      <div class="conditions">
-        <div *ngFor="let condition of pilot.conditions">
-          <xwing-icon [name]="'condition'"></xwing-icon>{{ condition.name }}
+      <div class="cards">
+        <div *ngFor="let condition of pilot.conditions" class="card-title">
+          <xwing-icon [name]="'condition'"></xwing-icon>
+          <span>{{ condition.name }}</span>
         </div>
       </div>
-      <div class="damage-cards">
+      <div class="cards">
         <div *ngFor="let damagecard of pilot.damagecards">
-          <div *ngIf="damagecard.exposed"><xwing-icon [name]="'crit'"></xwing-icon>{{damagecard.title}}</div>
+          <div *ngIf="damagecard.exposed" class="card-title">
+            <xwing-icon [name]="'crit'"></xwing-icon>
+            <span>{{ damagecard.title}}</span>
+          </div>
+          <!-- <div *ngIf="damagecard.exposed">{{damagecard.title}}</div>-->
         </div>
-        <div class="damage-facedown" *ngIf="numFacedown() > 0">
-          <xwing-icon [name]="'hit'"></xwing-icon>Damage Cards x{{ numFacedown() }}
+        <div class="card-title damage-facedown" *ngIf="numFacedown() > 0">
+          <xwing-icon [name]="'hit'"></xwing-icon>
+          <span>Damage Cards x{{ numFacedown() }}</span>
         </div>
       </div>
     </div>
@@ -69,7 +75,7 @@
       <xws-upgrade 
         *ngFor="let upgrade of group" 
         [upgrade]="upgrade" 
-        [class]="'upgrade' + layout.getClass()"></xws-upgrade>
+        [class]="'item-box upgrade' + layout.getClass()"></xws-upgrade>
     </div>
   </div>
   <div *ngIf="layout.isPhone()" [class]="'phone-upgrades' + layout.getClass()">

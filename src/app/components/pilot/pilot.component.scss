@@ -231,9 +231,8 @@
     display: inline-block;
     vertical-align: top;
 }
-.damage-cards {
+.cards {
     font-size: 1em;
-    padding-left: 0.5em;
 }
 .damage-facedown {
     color: red;
@@ -250,9 +249,19 @@
     width: 50%;
 }
 .item-box {
-    border: 0.15em solid #555;
-    margin-bottom: 0.15em;
+    background-image: linear-gradient(to right, #440000, black, black, #440000);
+    -webkit-transition: border-top 0.5s ease, border-bottom 0.2s ease;
+    transition: border-top 0.5s ease, border-bottom 0.2s ease;
+    border-top: 0.1em solid #880000;
+    border-bottom: 0.1em solid #880000;
+    margin-bottom: 0.25em;
     margin-left: 0.15em;
+    cursor: pointer;
+}
+
+.item-box:hover {
+    border-top: 0.1em solid #FF0000;
+    border-bottom: 0.1em solid #FF0000; 
 }
 
 .token-box {
@@ -292,4 +301,17 @@
 .spent {
     @extend .tokens;
     color: red;
+}
+
+.card-title {
+    xwing-icon {
+        display: inline-block;
+        width: 10%;
+        vertical-align: top;
+    }
+    span {
+        display: inline-block;
+        width: 90%;
+        vertical-align: top;
+    }
 }
