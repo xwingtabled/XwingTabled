@@ -43,21 +43,21 @@
         class="pilot-minwidth"></xws-pilot>
     </div>
   </div>
-  <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>
     </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button (click)="resetData()">
+    <ion-fab-list side="top" class="labels">
+      <ion-fab-button (click)="resetData()" data-desc="Nuke local data">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="state.squadron" (click)="askReset()">
+      <ion-fab-button *ngIf="state.squadron" (click)="askReset()" data-desc="Reset squadron">
         <xwing-icon [name]="'reload'"></xwing-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="state.snapshots.length > 1" (click)="askUndo()">
+      <ion-fab-button *ngIf="state.snapshots.length > 1" (click)="askUndo()" data-desc="Undo">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="xwsAddButton()">
+      <ion-fab-button (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
