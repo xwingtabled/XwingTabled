@@ -183,4 +183,17 @@ export class PilotComponent implements OnInit {
       this.presentTokenModal();
     }
   }
+
+  showImage() {
+    let lineNums = this.pilot.damagecards.filter(
+      (card) => card.exposed
+    ).length;
+    if (this.pilot.damagecards.find((card) => !card.exposed)) {
+      lineNums++;
+    }
+    if (this.createMiniTokenDisplay().length > 0) {
+      lineNums++;
+    }
+    return lineNums < 5;
+  }
 }
