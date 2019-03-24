@@ -332,6 +332,9 @@ export class XwingImportService {
           this.injectForceBonuses(pilot);
         }
     )
+    for (let i = 0; i < squadron.pilots.length; i++) {
+      squadron.pilots[i].idNumber = i + 1;
+    }
     squadron.points = squadPoints;
     squadron.pointsDestroyed = 0;
     return squadron;
