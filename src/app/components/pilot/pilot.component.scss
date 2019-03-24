@@ -142,7 +142,7 @@
 }
 .action-bar {
     text-align: center;
-    font-size: 1.25em;
+    font-size: 1em;
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
     padding-right: 0.5em;
@@ -266,10 +266,12 @@
 }
 
 .token-box {
+    background-image: linear-gradient(to right, black,#770000, black);
     padding: 0.15em 0.15em 0.15em 0.15em;
     vertical-align: text-top;
     .token-header {
         font-size: 0.75em;
+        text-align: center;
     }
     .token-set {
         font-size: 1.5em;
@@ -322,11 +324,7 @@
     left: 0.1em;
     top: 0.1em;
     color: #FFFFFFBB;
-    xwing-icon {
-        font-size: 2.5vh;
-        vertical-align: top;
-    }
-    span {
+    div.pilot-num {
         margin-left: 1vh;
         font-size: 9vh;
         vertical-align: top;

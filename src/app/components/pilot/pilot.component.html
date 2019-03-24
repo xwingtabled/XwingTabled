@@ -9,7 +9,7 @@
   </div>
   <div [class]="'pilot-card' + layout.getClass()">
     <div (click)="showPilot()" class="item-box">
-      <img *ngIf="pilot.pilot.artwork" 
+      <img *ngIf="pilot.pilot.artwork && pilot.damagecards.length < 3" 
           [src]="img_url" 
           [class]="'item-pilotart' + layout.getClass()" />
       <div *ngIf="!pilot.pilot.artwork" class="image-container">
@@ -19,8 +19,7 @@
         </div>
       </div>
       <div class="id-overlay" *ngIf="pilot.idNumber">
-        <span>{{ pilot.idNumber }}</span>
-        <xwing-icon [name]="'token-lock'"></xwing-icon>
+        <div class="pilot-num">{{ pilot.idNumber }}</div>
       </div>
       <div [class]="'action-bar' + layout.getClass()">
         <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>
@@ -28,29 +27,18 @@
       <div [class]="'stat-block' + layout.getClass()">
           <xws-stat *ngFor="let stat of pilot.stats" [stat]="stat" [orientation]="'vertical'"></xws-stat>
       </div>
-
     </div>
     <div (click)="showTokens()" class="item-box token-box">
       <div class="token-header">
-        Tokens
-        <span
-          *ngIf="createMiniTokenDisplay().length == 0" 
-          class="none">
-          &nbsp;(None)
+        <span 
+          *ngIf="pilot.damagecards.length == 0 && pilot.conditions.length == 0">
+          Tokens and Cards
         </span>
       </div>
       <div class="token-set">
         <xwing-icon 
           *ngFor="let token of createMiniTokenDisplay()"
           [name]="'token-' + token.name + '-outline'" [class]="token.css"></xwing-icon>
-      </div>
-      <div class="token-header">
-        Cards
-        <span 
-          *ngIf="pilot.damagecards.length == 0 && pilot.conditions.length == 0" 
-          class="none">
-          &nbsp;(None)
-        </span>
       </div>
       <div class="cards">
         <div *ngFor="let condition of pilot.conditions" class="card-title">
