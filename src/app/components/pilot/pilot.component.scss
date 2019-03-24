@@ -324,6 +324,8 @@
     left: 0.1em;
     top: 0.1em;
     color: #FFFFFFBB;
+    -webkit-text-stroke-width: 0.1em;
+    -webkit-text-stroke-color: #000000AA;
     div.pilot-num {
         margin-left: 1vh;
         font-size: 9vh;
