@@ -15,6 +15,7 @@ export class UpgradeComponent implements OnInit {
   img_class: string = "img-alt";
   img_urls: string[] = [ "", "" ];
   artwork: boolean = true;
+  sides: any[] = [ { } ];
 
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
@@ -38,24 +39,14 @@ export class UpgradeComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.upgrade['type'] == "configuration") {
-      this.img_class = "img-alt-config";
-    }
     for (let i = 0; i < this.upgrade.sides.length; i++) {
-      let img_url = null;
-      if (this.artwork && this.upgrade.sides[i].artwork) {
-        img_url = this.upgrade.sides[i].artwork;
-      } else if (this.upgrade.sides[i].image) {
-        img_url = this.upgrade.sides[i].image;
-        this.artwork = false;
-      }
-      if (img_url) {
-        this.dataService.get_image_by_url(img_url).then(
-          (url) => {
-            this.img_urls[i] = url;
-          }
-        )
-      }
+      this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
+      console.log(this.sides[i]);
+      this.dataService.get_image_by_url(this.sides[i].image).then(
+        (url) => {
+          this.img_urls[i] = url;
+        }
+      )
     }
   }
 

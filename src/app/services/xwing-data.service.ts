@@ -33,6 +33,7 @@ export class XwingDataService {
 
   // Json Data
   data: any = { };
+  ffg_data: any = { };
 
   constructor(private storage: Storage, private http: HttpProvider, private events: Events, 
               private platform: Platform, private file: File, private fileTransfer: FileTransfer,
@@ -61,6 +62,7 @@ export class XwingDataService {
     this.image_map = { };
     this.image_urls = { };
     this.data = { };
+    this.ffg_data = { };
     await this.storage.clear();
     this.check_manifest();
   }
@@ -69,20 +71,59 @@ export class XwingDataService {
     // Start of data verification/download sequence
     // Loads cached data structure containing all xwing-data2 data.
     // If none is stored, then this.data will be null
-    // Followed by download_manifest()
+    // Followed by download_ffg_data()
     this.status("manifest_loading", "Loading cached manifest... ");
     this.storage.get('manifest').then(
       (data) => {
         this.status("manifest_loading", "Loading cached manifest... found!");
         this.data = data;
-        this.download_manifest();
       },
       (error) => {
         this.status("manifest_loading", "Loading cached manifest... none found");
+      }
+    ).then(
+      (data) => {
+        this.status("manifest_loading", "Loading cached FFG Data...");
+        return this.storage.get("ffg_data").then(
+          (ffg_data) => {
+            this.status("manifest_loading", "Loading cached FFG Data... found!");
+            this.ffg_data = ffg_data;
+          },
+          (error) => {
+            this.status("manifest_loading", "Loading cached FFG Data... none found");
+          }
+        )
+      }
+    ).then(
+      (result) => {
         this.download_manifest();
       }
     );
   }
+
+  download_ffg_data() {
+    this.http.get("https://squadbuilder.fantasyflightgames.com/api/cards").subscribe(
+      (ffg) => {
+        if (ffg) {
+          this.status("ffg_downloading", "Downloading FFG Squadbuilder Data... received!");
+          this.ffg_data = ffg;
+          this.storage.set('ffg_data', this.ffg_data);
+          console.log("FFG Squadbuilder Data", this.ffg_data);
+          // Continue to image loading
+          this.load_images(this.ffg_data);
+        }
+      },
+      (error) => {
+        if (this.ffg_data) {
+          // Even if we weren't able to download a manifest, at least we have some existing data
+          this.load_images(this.ffg_data);
+        } else {
+          this.status("no_data_no_connection", "Unable to load or download FFG Squadbuilder data");
+        }
+      }
+    )
+  }
+
 
   download_manifest() {
     // Download the current manifest from xwing-data2
@@ -93,27 +134,31 @@ export class XwingDataService {
         if (manifest) {
           this.status("manifest_downloading", "Downloading current manifest... received!");
           let new_manifest = manifest;
-          if (!this.data || this.data["version"] != new_manifest["version"]) {
+          if (!this.data || this.data["version"] != new_manifest["version"] || !this.ffg_data) {
             this.storage.set('manifest', new_manifest);
             this.data = new_manifest;
+            // If manifest data is updated, re-download FFG data. Otherwise, skip.
+            this.download_ffg_data();
+            return;
           }
           // Our manifest is good to go.
           this.status("manifest_current", "Manifest is current.");
           console.log("X-Wing Json Data", this.data);
-          this.load_images(this.data);
+          // Continue to download squadbuilder data
+          this.load_images(this.ffg_data);
         }
       },
       (error) => {
-        if (this.data) {
+        if (this.data && this.ffg_data) {
           // Even if we weren't able to download a manifest, at least we have some existing data
-          this.load_images(this.data);
+          this.status("manifest_download_failed", "Using cached manfiest");
+          this.load_images(this.ffg_data);
         } else {
           this.status("no_data_no_connection", "Unable to load or download manifest.json");
         }
       }
     );
   }
-
 
   load_from_storage(keys: string[]) : Observable<{ key: string, value: any }> {
     // Helper function to sequentially load keys from storage
@@ -172,7 +217,7 @@ export class XwingDataService {
             Object.entries(item).forEach(
               ([ key, value ]) => {
                 if (value == undefined) {
-                  console.log("Empty value in ", item);
+                  // console.log("Empty value in ", item);
                 } else {
                   unpack_queue.push(value);
                 }
@@ -398,6 +443,27 @@ export class XwingDataService {
     } catch (Error) {
       return null;
     }
+  }
+
+  getCardByFFG(id: number) {
+    let card = this.ffg_data.cards.find((card) => { return card.id == id });
+    if (card) {
+      if (card.statistics) {
+        card.statistics.forEach(
+          (statistic) => {
+            // Search xws stat metadata.
+            let xwsEntry = this.data.stats[0].find((stat) => { return stat.ffg == statistic.statistic_id });
+            if (xwsEntry) {
+              statistic.xws = xwsEntry.xws;
+            } else {
+              console.log("Could not find stat", statistic);
+            }
+          }
+        )
+      }
+      return card;
+    }
+    return null;
   }
 
 

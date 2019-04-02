@@ -6,6 +6,7 @@
     color: white;
     margin-right: 0.2vh;
     margin-bottom: 0.2vh;
+    position: relative;
 }
 .upgrade-tablet {
     @extend .upgrade;
@@ -94,4 +95,16 @@
 }
 .stat {
     margin-left: 0.1em;
+}
+
+.stat-overlay {
+    position: absolute;
+    right: 0.1em;
+    top: 0.1em;
+    div.big-stat {
+        font-size: 9vh;
+        vertical-align: top;
+        text-transform: uppercase;
+        opacity: 0.8;
+    }
 }

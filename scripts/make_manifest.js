@@ -195,6 +195,12 @@ function stripText(manifest) {
                             if (pilot.text) {
                                 pilot.text = "";
                             }
+                            if (pilot.artwork) {
+                                pilot.artwork = "";
+                            }
+                            if (pilot.image) {
+                                pilot.image = "";
+                            }
                         }
                     )
                     if (ship.alt) {
@@ -218,6 +224,12 @@ function stripText(manifest) {
                             }
                             if (side.alt) {
                                 delete side.alt;
+                            }
+                            if (side.image) {
+                                side.image = "";
+                            }
+                            if (side.artwork) {
+                                side.artwork = "";
                             }
                         }
                     )

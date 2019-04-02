@@ -8,12 +8,8 @@
   <div class="upgrade-name">
     {{ upgrade.sides[upgrade.side].title }}
   </div>
-  <div class="upgrade-info-block">
-    <div class="upgrade-info-block-left">
-      <xws-stat *ngIf="upgrade.sides[upgrade.side].attack" [stat]="upgrade.sides[upgrade.side].attack"></xws-stat>
-      <xws-action *ngFor="let action of upgrade.sides[upgrade.side].actions" [action]="action" class="action-box"></xws-action>
-    </div>
-    <div class="upgrade-info-block-right">
+  <div class="stat-overlay">
+    <div class="big-stat">
       <xws-stat *ngIf="upgrade.sides[upgrade.side].charges" [stat]="upgrade.sides[upgrade.side].charges" class="stat"></xws-stat>
       <xws-stat *ngIf="upgrade.sides[upgrade.side].force" [stat]="upgrade.sides[upgrade.side].force" [bonus]="true" class="stat"></xws-stat>
       <xwing-icon *ngIf="upgrade['type'] == 'configuration'" [name]="'config'" class="stat"></xwing-icon>

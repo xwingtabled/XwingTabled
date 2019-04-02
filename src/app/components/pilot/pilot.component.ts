@@ -50,6 +50,7 @@ export class PilotComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.dataService.getCardByFFG(this.pilot.pilot.ffg));
     let numGroups = this.pilot.upgrades >= 9 ? 3 : 2;
     let groupSize = Math.ceil(this.pilot.upgrades.length / numGroups);
     for (let i = 0; i < numGroups; i++) {

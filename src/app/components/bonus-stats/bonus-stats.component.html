@@ -1,6 +1,6 @@
 <span *ngIf="grant.type == 'stat' && grant.value == 'shields'" class="grant-shield">
-  <xwing-icon [name]="'shield'" class="grant-icon"></xwing-icon><span class="bonus-text">+{{ grant.amount}}</span>
+  <xwing-icon [name]="'shield'" class="grant-icon"></xwing-icon><span class="bonus-text">{{ grant.amount}}</span>
 </span> 
 <span *ngIf="grant.type == 'stat' && grant.value == 'hull'" class="grant-hull">
-  <xwing-icon [name]="'hull'" class="grant-icon"></xwing-icon><span class="bonus-text">+{{ grant.amount}}</span>
+  <xwing-icon [name]="'hull'" class="grant-icon"></xwing-icon><span class="bonus-text">{{ grant.amount}}</span>
 </span>
