@@ -59,6 +59,24 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
+  maxCharges() {
+    let chargeStat = this.dataService.getChargeStat(this.upgrade.sides[0].ffg);
+    if (chargeStat) {
+      return parseInt(chargeStat.value);
+    }
+    return 0;
+  }
+
+  chargeStat() {
+    let chargeStat = this.dataService.getChargeStat(this.upgrade.sides[0].ffg);
+    return {
+      value: parseInt(chargeStat.value),
+      remaining: this.upgrade.charges,
+      type: "charge",
+      recovers: chargeStat.recurring ? 1 : 0
+    }
+  }
+
   statClass(grant) {
     if (grant.type == 'action' && grant.value.linked) {
       return "stat-small";

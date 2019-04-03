@@ -18,12 +18,9 @@ export class StatComponent implements OnInit {
   }
 
   recoverIcons() {
-    let icons = [ ];
     if (this.stat.recovers) {
-      for (let i = 0; i < this.stat.recovers; i++) {
-        icons.push(i);
-      }
+      return new Array(this.stat.recovers);
     }
-    return icons;
+    return new Array();
   }
 }

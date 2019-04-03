@@ -116,12 +116,7 @@ export class XwingImportService {
       sides: [ ]
     };
     if (upgrade.sides[0].charges) {
-      upgradeData["charges"] = {
-        value: upgrade.sides[0].charges.value,
-        remaining: upgrade.sides[0].charges.value,
-        recovers: upgrade.sides[0].charges.recovers,
-        type: 'charges'
-      }
+      upgradeData["charges"] = upgrade.sides[0].charges.value;
     }
     upgrade.sides.forEach(
       (side) => {
@@ -129,49 +124,6 @@ export class XwingImportService {
       }
     )
     return upgradeData;
-  }
-
-  injectUpgradeData(pilot: any, upgrade: any) {
-    // Set default "side" of upgrade card to side 0
-    upgrade.side = 0;
-
-    // Process each side
-    upgrade.sides.forEach(
-      (side) => {
-        // Mangle charges stats
-        if (side.charges) {
-          side.charges.type = "charges"
-          side.charges.remaining = side.charges.value;
-          side.charges.numbers = Array(side.charges.recovers);
-        }
-        // Mangle force stats
-        if (side.force) {
-          side.force.numbers = Array(side.force.recovers);
-          side.force.type = "force";
-        } 
-        // Mangle attack stats
-        if (side.attack) {
-          side.attack.type = "attack";
-          // Displayed icon should be the attack's icon
-          side.attack.icon = side.attack.arc;
-        }
-
-        // If side has granted actions that aren't listed as actions, 
-        // inject those
-        if (!side.actions) {
-          side.actions = [ ];
-          if (side.grants) {
-            side.grants.forEach(
-              (grant) => {
-                if (grant['type'] == "action") {
-                  side.actions.push(grant.value);
-                }
-              }
-            )
-          }
-        }
-      }
-    )
   }
 
   injectShipBonuses(pilot: any) {

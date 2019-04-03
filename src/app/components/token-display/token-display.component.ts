@@ -7,30 +7,31 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class TokenDisplayComponent implements OnInit {
   @Input() name: string;
-  @Input() data: any = { };
+  @Input() remaining: number;
+  @Input() maximum: number;
   @Output() change = new EventEmitter<any>();
 
   constructor() { }
 
   emit() {
-    this.change.emit(this.data);
+    this.change.emit(this.remaining);
   }
 
   spent() {
-    return new Array(this.data.value - this.data.remaining);
+    return new Array(this.maximum - this.remaining);
   }
 
   available() {
-    return new Array(this.data.remaining);
+    return new Array(this.remaining);
   }
 
   spend() {
-    this.data.remaining -= 1;
+    this.remaining -= 1;
     this.emit();
   }
 
   recover() {
-    this.data.remaining += 1;
+    this.remaining += 1;
     this.emit();
   }
 

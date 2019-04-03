@@ -16,6 +16,7 @@ export class UpgradeModalPage implements OnInit {
   sides: any[] = [ ];
   img_urls: string[] = [ null, null ];
   useAngularRouter: boolean = false;
+  chargeMax: number = 0;
 
   constructor(private dataService: XwingDataService,
               public modalController: ModalController,
@@ -42,6 +43,10 @@ export class UpgradeModalPage implements OnInit {
           this.img_urls[i] = url;
         }
       )
+    }
+    let chargeStat = this.sides[0].statistics.find((stat) => stat.xws == "charge");
+    if (chargeStat) {
+      this.chargeMax = parseInt(chargeStat.value);
     }
   }
 

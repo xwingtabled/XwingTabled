@@ -17,18 +17,20 @@
       <xws-token-display 
         *ngIf="shields" 
         [name]="'shield'" 
-        [data]="shields" 
+        [maximum]="1"
+        [remaining]="1"
         (change)="state.postDamage(pilot)" 
         class="token-set"></xws-token-display>
       <xws-token-display 
         *ngIf="charges" 
         [name]="'charge'" 
-        [data]="charges" 
+        [remaining]="1"
         class="token-set"></xws-token-display>
       <xws-token-display 
         *ngIf="force" 
-        [name]="'force'" 
-        [data]="force" 
+        [name]="'force'"
+        [maximum]="1" 
+        [remaining]="1"
         class="token-set"></xws-token-display>
     </div> 
     <div [class]="'damage-cards' + layout.getClass()">

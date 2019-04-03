@@ -2,7 +2,7 @@
   <div *ngIf="artwork" class="upgrade-img-container">
     <img [src]="img_urls[upgrade.side]" [class]="'upgrade-img' + layout.getClass()"/>
     <div class="stat-overlay">
-      <xws-stat *ngIf="upgrade.charges" [stat]="upgrade.charges" class="stat"></xws-stat>
+      <xws-stat *ngIf="maxCharges() > 0" [stat]="chargeStat()" class="stat"></xws-stat>
       <xwing-icon *ngIf="isConfiguration()" [name]="'config'" class="stat"></xwing-icon>
       <xws-bonus-stats *ngFor="let grant of sides[upgrade.side].metadata.grants" [grant]="grant" [class]="statClass(grant)"></xws-bonus-stats>
     </div>

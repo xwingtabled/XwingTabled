@@ -14,8 +14,8 @@
     <div *ngIf="img_urls[upgrade.side]">
       <img [src]="img_urls[upgrade.side]" />
     </div>
-    <div *ngIf="upgrade.charges" [class]="'token-set' + layout.getClass()">
-      <xws-token-display [name]="'charge'" [data]="upgrade.charges" (change)="chargeChange($event)"></xws-token-display>
+    <div *ngIf="chargeMax > 0" [class]="'token-set' + layout.getClass()">
+      <xws-token-display [name]="'charge'" [maximum]="chargeMax" [remaining]="upgrade.charges" (change)="chargeChange($event)"></xws-token-display>
     </div>
     <div *ngIf="layout.isPhone()">
       <ion-button expand="full" color="primary" *ngIf="upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>

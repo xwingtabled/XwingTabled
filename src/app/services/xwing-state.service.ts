@@ -116,6 +116,7 @@ export class XwingStateService {
         return;
       }
     }
+    // TODO: Firebase update?
   }
 
   rechargeAllRecurring() {
@@ -192,9 +193,6 @@ export class XwingStateService {
     for (let pilotNum = 0; pilotNum < this.squadron.pilots.length; pilotNum++) {
       let pilot = this.squadron.pilots[pilotNum];
       pilot.num = pilotNum;
-      for (let upgradeNum = 0; upgradeNum < pilot.upgrades.length; upgradeNum++) {
-        pilot.upgrades[upgradeNum].num = upgradeNum;
-      }
     }
   }
 

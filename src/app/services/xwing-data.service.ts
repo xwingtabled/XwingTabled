@@ -497,12 +497,12 @@ export class XwingDataService {
     return null;
   }
 
-  getCardByFFG(id: number) {
-    let card = this.ffg_data.cards.find((card) => { return card.id == id });
+  getCardByFFG(ffg: number) {
+    let card = this.ffg_data.cards.find((card) => { return card.id == ffg });
     if (!card) {
       return null;
     }
-    card["metadata"] = this.getMetadataByFFG(id);
+    card["metadata"] = this.getMetadataByFFG(ffg);
     if (card.statistics) {
       card.statistics.forEach(
         (statistic) => {
@@ -517,6 +517,11 @@ export class XwingDataService {
       )
     }
     return card;
+  }
+
+  getChargeStat(ffg: number) {
+    let card = this.getCardByFFG(ffg);
+    return card.statistics.find((stat) => stat.xws == "charge");
   }
 
   getXwsUpgradeType(ffg: number) {

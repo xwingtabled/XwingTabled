@@ -36,6 +36,10 @@
     color: yellow;
 }
 
+.charge {
+    @extend .charges;
+}
+
 .force {
     @extend .stats;
     color: blueviolet;
