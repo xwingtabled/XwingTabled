@@ -10,8 +10,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./phone-upgrade.component.scss']
 })
 export class PhoneUpgradeComponent implements OnInit {
-  @Input() upgrade: any = { };
   @Input() pilotNum: number;
+  @Input() ffg: number;
+  upgrade: any = { };
   sides: any[] = [ ];
 
   constructor(public dataService: XwingDataService, 
@@ -21,6 +22,7 @@ export class PhoneUpgradeComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    this.upgrade = this.state.getUpgradeState(this.pilotNum, this.ffg);
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
     }

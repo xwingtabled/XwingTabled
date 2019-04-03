@@ -10,7 +10,9 @@ import { ActivatedRoute, Router } from "@angular/router";
   styleUrls: ['./upgrade-modal.page.scss'],
 })
 export class UpgradeModalPage implements OnInit {
-  upgrade;
+  pilotNum: number;
+  ffg: number;
+  upgrade: any = { };
   sides: any[] = [ ];
   img_urls: string[] = [ null, null ];
   useAngularRouter: boolean = false;
@@ -23,25 +25,14 @@ export class UpgradeModalPage implements OnInit {
               public router: Router) { }
 
   ngOnInit() {
-    let pilotNum = this.route.snapshot.paramMap.get("pilotNum");
-    let ffg = this.route.snapshot.paramMap.get("ffg");
-    if (pilotNum) {
+    let routePilotNum = this.route.snapshot.paramMap.get("pilotNum");
+    let routeFFG = this.route.snapshot.paramMap.get("ffg");
+    if (routePilotNum && routeFFG) {
       this.useAngularRouter = true;
-      let pilot = this.state.squadron.pilots.find(pilot => pilot.num == pilotNum);
-      this.upgrade = pilot.upgrades.find(
-        (upgrade) => {
-          let hasSide = false;
-          upgrade.sides.forEach(
-            (side) => {
-              if (side.ffg == ffg) {
-                hasSide = true;
-              }
-            }
-          )
-          return hasSide;
-        }
-      );
+      this.pilotNum = parseInt(routePilotNum);
+      this.ffg = parseInt(routeFFG);
     }
+    this.upgrade = this.state.getUpgradeState(this.pilotNum, this.ffg); 
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
     }
@@ -54,12 +45,18 @@ export class UpgradeModalPage implements OnInit {
     }
   }
 
+  chargeChange(data: any) {
+    this.upgrade.charges = data;
+    this.state.setUpgradeState(this.pilotNum, this.upgrade);
+  }
+
   flipCard() {
     if (this.upgrade.side == 0) {
       this.upgrade.side = 1;
     } else {
       this.upgrade.side = 0;
     }
+    this.state.setUpgradeState(this.pilotNum, this.upgrade);
   }
 
   dismiss() {

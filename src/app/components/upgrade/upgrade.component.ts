@@ -11,7 +11,9 @@ import { XwingStateService } from '../../services/xwing-state.service';
   styleUrls: ['./upgrade.component.scss']
 })
 export class UpgradeComponent implements OnInit {
-  @Input() upgrade: any = { };
+  @Input() pilotNum: number;
+  @Input() ffg: number;
+  upgrade: any = { };
   img_class: string = "img-alt";
   img_urls: string[] = [ "", "" ];
   artwork: boolean = true;
@@ -28,7 +30,8 @@ export class UpgradeComponent implements OnInit {
     const modal = await this.modalController.create({
       component: UpgradeModalPage,
       componentProps: {
-        upgrade: this.upgrade
+        ffg: this.upgrade.sides[this.upgrade.side].ffg,
+        pilotNum: this.pilotNum
       }
     });
     await modal.present();
@@ -45,6 +48,7 @@ export class UpgradeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.upgrade = this.state.getUpgradeState(this.pilotNum, this.ffg);
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
       this.dataService.get_image_by_url(this.sides[i].image).then(

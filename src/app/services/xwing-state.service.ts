@@ -85,6 +85,39 @@ export class XwingStateService {
     this.snapshot();
   }
 
+  getPilotState(pilotNum: number) {
+    return this.squadron.pilots.find(pilot => pilot.num == pilotNum); 
+  }
+
+  getUpgradeState(pilotNum: number, ffg: number) {
+    let pilot = this.getPilotState(pilotNum);
+    let upgrade = pilot.upgrades.find(
+      (upgrade) => {
+        let hasSide = false;
+        upgrade.sides.forEach(
+          (side) => {
+            if (side.ffg == ffg) {
+              hasSide = true;
+            }
+          }
+        )
+        return hasSide;
+      }
+    );
+    return upgrade;
+  }
+
+  setUpgradeState(pilotNum: number, newData: any) {
+    let pilot = this.getPilotState(pilotNum);
+    newData = JSON.parse(JSON.stringify(newData));
+    for (let i = 0; i < pilot.upgrades.length; i++) {
+      if (pilot.upgrades[i].sides[0].ffg == newData.sides[0].ffg) {
+        pilot.upgrades[i] = newData;
+        return;
+      }
+    }
+  }
+
   rechargeAllRecurring() {
     let recover = (stat) => {
       stat.remaining += stat.recovers;

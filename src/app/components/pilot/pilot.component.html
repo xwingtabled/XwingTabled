@@ -58,13 +58,15 @@
     <div [class]="'upgrade-group' + layout.getClass()" *ngFor="let group of groups">
       <xws-upgrade 
         *ngFor="let upgrade of group" 
-        [upgrade]="upgrade" 
+        [pilotNum]="pilot.num"
+        [ffg]="upgrade.sides[upgrade.side].ffg" 
         [class]="'item-box upgrade' + layout.getClass()"></xws-upgrade>
     </div>
   </div>
   <div *ngIf="layout.isPhone()" [class]="'phone-upgrades' + layout.getClass()">
     <ion-list>
-      <xws-phone-upgrade *ngFor="let upgrade of pilot.upgrades" [upgrade]="upgrade" [pilotNum]="pilot.num">
+      <xws-phone-upgrade *ngFor="let upgrade of pilot.upgrades" 
+        [ffg]="upgrade.sides[upgrade.side].ffg" [pilotNum]="pilot.num">
       </xws-phone-upgrade>
     </ion-list>
   </div>
