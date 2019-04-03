@@ -110,6 +110,27 @@ export class XwingImportService {
     pilot.upgrades = mangledUpgrades;
   }
 
+  getUpgradeStateObject(upgrade: any) {
+    let upgradeData = {
+      side: 0,
+      sides: [ ]
+    };
+    if (upgrade.sides[0].charges) {
+      upgradeData["charges"] = {
+        value: upgrade.sides[0].charges.value,
+        remaining: upgrade.sides[0].charges.value,
+        recovers: upgrade.sides[0].charges.recovers,
+        type: 'charges'
+      }
+    }
+    upgrade.sides.forEach(
+      (side) => {
+        upgradeData.sides.push({ ffg: side.ffg })
+      }
+    )
+    return upgradeData;
+  }
+
   injectUpgradeData(pilot: any, upgrade: any) {
     // Set default "side" of upgrade card to side 0
     upgrade.side = 0;
@@ -239,20 +260,20 @@ export class XwingImportService {
     let pilots = [ ];
     data.deck.forEach(
         (pilot) => {
-        let xwsPilot = this.dataService.getXwsFromFFG(pilot.pilot_card.id);
-        xwsPilot.points = pilot.cost;
-        let upgrades = { };
-        pilot.slots.forEach(
-            (upgrade) => {
-            let upgradeData = this.dataService.getXwsFromFFG(upgrade.id);
-            if (upgrades[upgradeData.type] == undefined) {
-                upgrades[upgradeData.type] = [ ];
-            }
-            upgrades[upgradeData.type].push(upgradeData.xws);
-            }
-        )
-        xwsPilot.upgrades = upgrades;
-        pilots.push(xwsPilot);
+          let xwsPilot = this.dataService.getXwsFromFFG(pilot.pilot_card.id);
+          xwsPilot.points = pilot.cost;
+          let upgrades = { };
+          pilot.slots.forEach(
+              (upgrade) => {
+              let upgradeData = this.dataService.getXwsFromFFG(upgrade.id);
+              if (upgrades[upgradeData.type] == undefined) {
+                  upgrades[upgradeData.type] = [ ];
+              }
+              upgrades[upgradeData.type].push(upgradeData.xws);
+              }
+          )
+          xwsPilot.upgrades = upgrades;
+          pilots.push(xwsPilot);
         }
     );
     let squadron = {
@@ -317,19 +338,21 @@ export class XwingImportService {
           this.injectShipData(pilot, squadron.faction);
           this.injectPilotData(pilot, squadron.faction);
           this.mangleUpgradeArray(pilot);
-      
-          // Process each upgrade card
+          this.injectShipBonuses(pilot);
+          this.injectForceBonuses(pilot);
+     
+          let upgradeArray = [ ];
           pilot.upgrades.forEach(
             (upgrade) => {
-              this.injectUpgradeData(pilot, upgrade);
+              upgradeArray.push(this.getUpgradeStateObject(upgrade))
             }
-          );
+          )
+
+          pilot.upgrades = upgradeArray;
 
           this.calculatePoints(pilot);
           squadPoints += pilot.points;
 
-          this.injectShipBonuses(pilot);
-          this.injectForceBonuses(pilot);
         }
     )
     for (let i = 0; i < squadron.pilots.length; i++) {

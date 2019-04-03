@@ -372,7 +372,13 @@ export class XwingDataService {
           ([ship_key, ship]) => {
             let shipData = ship['pilots'].find((pilot) => pilot.ffg == id);
             if (shipData) {
-              pilot = { id: shipData.xws, name: shipData.xws, ship: ship['xws'] };
+              pilot = { 
+                card_type: 1, 
+                faction: faction.faction, 
+                xws: shipData.xws, 
+                name: shipData.xws, 
+                ship: ship['xws'] 
+              };
             }
           }
         )
@@ -384,9 +390,19 @@ export class XwingDataService {
     let upgrade = null;
     Object.entries(this.data.upgrades).forEach(
       ([upgrade_type, upgrade_array]) => {
-        let upgradeData = (<Array<any> >upgrade_array).find((upgrade) => upgrade.sides[0].ffg == id);
+        let upgradeData = (<Array<any> >upgrade_array).find(
+          (upgrade) => {
+            if (upgrade.sides[0].ffg == id) {
+              return true;
+            }
+            if (upgrade.sides[1] && upgrade.sides[1].ffg == id) {
+              return true;
+            }
+            return false;
+          }
+        );
         if (upgradeData) {
-          upgrade = { type: upgrade_type, xws: upgradeData.xws };
+          upgrade = { card_type: 2, type: upgrade_type, xws: upgradeData.xws };
         }
       }
     )
@@ -445,25 +461,63 @@ export class XwingDataService {
     }
   }
 
-  getCardByFFG(id: number) {
-    let card = this.ffg_data.cards.find((card) => { return card.id == id });
-    if (card) {
-      if (card.statistics) {
-        card.statistics.forEach(
-          (statistic) => {
-            // Search xws stat metadata.
-            let xwsEntry = this.data.stats[0].find((stat) => { return stat.ffg == statistic.statistic_id });
-            if (xwsEntry) {
-              statistic.xws = xwsEntry.xws;
-            } else {
-              console.log("Could not find stat", statistic);
-            }
-          }
-        )
+  getMetadataByFFG(id: number) {
+    let xwsInfo = this.getXwsFromFFG(id);
+    if (!xwsInfo) {
+      console.log("Could not find", id);
+    }
+    if (xwsInfo.card_type == 1) {
+      let faction = this.data.pilots.find((faction) => faction.faction == xwsInfo.faction);
+      let xwsData = faction.ships[xwsInfo.ship].pilots.find((pilot) => pilot.xws == xwsInfo.xws);
+      // What metadata will we eventually need for pilots, not provided by FFG data?
+      let pilotMeta = { 
+
       }
-      return card;
+      return pilotMeta;
+    }
+    if (xwsInfo.card_type == 2) {
+      let xwsData = this.data.upgrades[xwsInfo.type].find((upgrade) => upgrade.xws == xwsInfo.xws);
+      let sideNum = 0;
+      let side: any = { };
+      for (let i = 0; i < xwsData.sides.length; i++) {
+        if (xwsData.sides[i].ffg == id) {
+          sideNum = i;
+          side = xwsData.sides[i];
+        }
+      }
+      // Set the cost only once for any given card. If it is the second "side", the cost should be 0.
+      let upgradeMeta = {
+        cost: sideNum == 0 ? xwsData.cost : 0,
+      }
+      if (side.grants) {
+        upgradeMeta["grants"] = side.grants;
+      }
+      return upgradeMeta;
     }
     return null;
+  }
+
+  getCardByFFG(id: number) {
+    let card = this.ffg_data.cards.find((card) => { return card.id == id });
+    if (!card) {
+      return null;
+    }
+    card["metadata"] = this.getMetadataByFFG(id);
+    if (card.statistics) {
+      card.statistics.forEach(
+        (statistic) => {
+          // Search xws stat metadata.
+          let xwsEntry = this.data.stats[0].find((stat) => { return stat.ffg == statistic.statistic_id });
+          if (xwsEntry) {
+            statistic.xws = xwsEntry.xws;
+          } else {
+            console.log("Could not find stat", statistic);
+          }
+        }
+      )
+    }
+    return card;
+
   }
 
 

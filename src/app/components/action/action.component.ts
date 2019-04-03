@@ -8,12 +8,17 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ActionComponent implements OnInit {
   @Input() action;
 
-  css_class: string = "difficulty-white";
-
   constructor() { }
 
+  getActionClass() {
+    return "action " + (this.action.linked ? "action-linked" : "");
+  }
+
+  getDifficultyClass() {
+    return "difficulty-" + this.action.difficulty.toLowerCase();
+  }
+
   ngOnInit() {
-    this.css_class = "difficulty-" + this.action.difficulty.toLowerCase();
   }
 
 }

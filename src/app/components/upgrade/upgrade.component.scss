@@ -16,6 +16,7 @@
     @extend .upgrade;
 }
 .upgrade-img-container {
+    position: relative;
     display: block;
 }
 
@@ -95,16 +96,27 @@
 }
 .stat {
     margin-left: 0.1em;
+    display: block;
+}
+
+.stat-small {
+    @extend .stat;
+    font-size: 0.6em;
 }
 
 .stat-overlay {
     position: absolute;
-    right: 0.1em;
-    top: 0.1em;
-    div.big-stat {
-        font-size: 9vh;
-        vertical-align: top;
-        text-transform: uppercase;
-        opacity: 0.8;
-    }
+    right: 0em;
+    top: 0em;
+    background-color:#00000088;
+    height: 100%;
+    opacity: 0.8;
+    width: 33%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.7em;
 }
+
+
+

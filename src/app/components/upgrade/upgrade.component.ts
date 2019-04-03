@@ -38,16 +38,28 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
+  isConfiguration() {
+    let configurationUpgradeType = 
+      this.dataService.data["upgrade-types"].find((upgradeType) => upgradeType.xws == 'configuration').ffg;
+    return this.sides[this.upgrade.side].upgrade_types.includes(configurationUpgradeType);
+  }
+
   ngOnInit() {
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
-      console.log(this.sides[i]);
       this.dataService.get_image_by_url(this.sides[i].image).then(
         (url) => {
           this.img_urls[i] = url;
         }
       )
     }
+  }
+
+  statClass(grant) {
+    if (grant.type == 'action' && grant.value.linked) {
+      return "stat-small";
+    }
+    return  "stat";
   }
 
   showUpgrade() {
