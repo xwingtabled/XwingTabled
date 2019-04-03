@@ -21,7 +21,7 @@ const routes: Routes = [
     canActivate: [ModalGuard]
   },
   {
-    path: 'pilot/:pilotNum/upgrade/:upgradeNum',
+    path: 'pilot/:pilotNum/upgrade/:ffg',
     component: UpgradeModalPage,
     canActivate: [ModalGuard]
   },

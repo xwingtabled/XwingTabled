@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class PhoneUpgradeComponent implements OnInit {
   @Input() upgrade: any = { };
   @Input() pilotNum: number;
+  sides: any[] = [ ];
 
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
@@ -20,9 +21,23 @@ export class PhoneUpgradeComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    for (let i = 0; i < this.upgrade.sides.length; i++) {
+      this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
+    }
+  }
+
+  avatar() {
+    return this.dataService.getXwsUpgradeType(this.sides[this.upgrade.side].upgrade_types[0]);
+  }
+
+  isConfiguration() {
+    let configurationUpgradeType = 
+      this.dataService.data["upgrade-types"].find((upgradeType) => upgradeType.xws == 'configuration').ffg;
+    return this.sides[this.upgrade.side].upgrade_types.includes(configurationUpgradeType);
   }
 
   showUpgrade() {
-    this.router.navigateByUrl('/pilot/' + this.pilotNum + "/upgrade/" + this.upgrade.num);
+    let url = '/pilot/' + this.pilotNum + "/upgrade/" + this.upgrade.sides[this.upgrade.side].ffg; 
+    this.router.navigateByUrl(url);
   }
 }

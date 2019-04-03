@@ -1,11 +1,10 @@
 <ion-item (click)="showUpgrade()">
   <ion-avatar slot="start">
-    <xwing-icon [name]="upgrade.type" class="upgrade-avatar"></xwing-icon>
+    <xwing-icon [name]="avatar()" class="upgrade-avatar"></xwing-icon>
   </ion-avatar>
-  {{ upgrade.sides[upgrade.side].title }}
+  {{ sides[upgrade.side].name }}
   <ion-note slot="end" class="stat-avatar">
-    <xws-stat *ngIf="upgrade.sides[upgrade.side].charges" [stat]="upgrade.sides[upgrade.side].charges" class="stat"></xws-stat>
-    <xws-stat *ngIf="upgrade.sides[upgrade.side].force" [stat]="upgrade.sides[upgrade.side].force" [bonus]="true" class="stat"></xws-stat>
-    <xws-bonus-stats *ngFor="let grant of upgrade.sides[upgrade.side].grants" [grant]="grant" class="stat"></xws-bonus-stats>
+    <xws-stat *ngIf="upgrade.charges" [stat]="upgrade.charges" class="stat"></xws-stat>
+    <xws-bonus-stats *ngFor="let grant of sides[upgrade.side].grants" [grant]="grant" class="stat"></xws-bonus-stats>
   </ion-note>
 </ion-item>

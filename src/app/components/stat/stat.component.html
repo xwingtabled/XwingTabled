@@ -10,9 +10,7 @@
     <span *ngIf="!bonus && stat.type != 'attack'">
       <span [class]="stat.remaining != stat.value ? 'underline' : ''">{{ stat.remaining }}</span>
     </span> 
-    <span *ngIf="stat.recovers">
-      <xwing-icon *ngFor="let number of stat.numbers" [name]="'recurring'"></xwing-icon>
-    </span>
+    <xwing-icon *ngFor="let icon of recoverIcons()" [name]="'recurring'"></xwing-icon>
   </div>
   <div *ngIf="stat.minrange" [class]="orientation">
     <xwing-icon *ngIf="stat.ordnance" [name]="'rangebonusindicator'"></xwing-icon>

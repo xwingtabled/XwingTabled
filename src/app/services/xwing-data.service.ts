@@ -517,7 +517,10 @@ export class XwingDataService {
       )
     }
     return card;
+  }
 
+  getXwsUpgradeType(ffg: number) {
+    return this.data["upgrade-types"].find((upgrade) => upgrade.ffg == ffg).xws;
   }
 
 

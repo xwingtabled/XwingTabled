@@ -16,4 +16,14 @@ export class StatComponent implements OnInit {
       this.stat.icon = this.stat.arc;
     }
   }
+
+  recoverIcons() {
+    let icons = [ ];
+    if (this.stat.recovers) {
+      for (let i = 0; i < this.stat.recovers; i++) {
+        icons.push(i);
+      }
+    }
+    return icons;
+  }
 }
