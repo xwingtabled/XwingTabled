@@ -44,7 +44,6 @@ export class XwingStateService {
       this.squadron = lastSnapshot.squadron;
       this.damagedeck = lastSnapshot.damagedeck;
       this.damagediscard = lastSnapshot.damagediscard;
-      this.injectNums();
       console.log("Squadron restored", this.squadron);
       this.initialized = true;
     } else {
@@ -189,18 +188,10 @@ export class XwingStateService {
     return snapshot.time;
   }
 
-  injectNums() {
-    for (let pilotNum = 0; pilotNum < this.squadron.pilots.length; pilotNum++) {
-      let pilot = this.squadron.pilots[pilotNum];
-      pilot.num = pilotNum;
-    }
-  }
-
   setSquadron(squadron: any) {
     this.squadron = squadron;
     this.damagedeck = this.dataService.getDamageDeck();
     this.damagediscard = [ ];
-    this.injectNums();
     this.shuffleDamageDeck();
     this.initialized = true;
     this.snapshot();

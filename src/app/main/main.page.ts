@@ -327,6 +327,7 @@ export class MainPage implements OnInit {
         this.state.setSquadron(this.importService.processXws(squadron));
       }
     } catch (e) {
+      console.log(e);
       const toast = await this.toastController.create({
         message: e,
         duration: 2000,

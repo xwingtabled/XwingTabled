@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { XwingDataService } from './xwing-data.service';
 import { HttpProvider } from '../providers/http.provider';
+import { PilotModalPage } from '../modals/pilot-modal/pilot-modal.page';
 
 @Injectable({
   providedIn: 'root'
@@ -123,7 +124,36 @@ export class XwingImportService {
         upgradeData.sides.push({ ffg: side.ffg })
       }
     )
+    console.log(upgradeData);
     return upgradeData;
+  }
+
+  getPilotStateObject(pilot: any, faction: string) {
+    let xwsPilotData = this.dataService.getPilot(faction, pilot.ship, pilot.id);
+    let pilotData = {
+      ffg: xwsPilotData.ffg,
+      upgrades: [ ],
+      damagecards: [ ],
+      conditions: [ ]
+    }
+    return pilotData;
+  }
+
+  injectBonuses(pilotData: any) {
+    console.log("processing force and charges", pilotData);
+    let chargeStat = this.dataService.getFFGCardStat(pilotData.ffg, "charge");
+    if (chargeStat) {
+      pilotData["charges"] = parseInt(chargeStat.value);
+    }
+    let stats = [ "force", "hull", "shields" ];
+    stats.forEach(
+      (stat) => {
+        let statTotal = this.dataService.getStatTotal(pilotData, stat);
+        if (statTotal > 0) {
+          pilotData[stat] = statTotal;
+        }
+      }
+    )
   }
 
   injectShipBonuses(pilot: any) {
@@ -281,37 +311,70 @@ export class XwingImportService {
     return this.processXws(squadron);
   }
 
+  applyXwsShims(squadron: any) {
+    squadron.pilots.forEach(
+      (pilot) => {
+        let pilotShim = this.dataService.data.shims.xwsPilot[pilot.id];
+        if (pilotShim) {
+          console.log("Shim applied:", pilot.id, "=>", pilotShim);
+          pilot.id = pilotShim;
+          pilot.name = pilotShim;
+        }
+        let shipShim = this.dataService.data.shims.xwsShip[pilot.ship];
+        if (shipShim) {
+          console.log("Shim applied:", pilot.ship, "=>", shipShim);
+          pilot.ship = shipShim;
+        }
+        pilot.upgrades.forEach(
+          (upgrade) => {
+            let upgradeShim = this.dataService.data.shims.xwsUpgrade[upgrade.xws];
+            if (upgradeShim) {
+              console.log("Shim applied:", upgrade.xws, "=>", upgradeShim);
+              upgrade.xws = upgradeShim;
+            }
+          }
+        )
+      }
+    )
+  }
+
   processXws(squadron: any) {
     let squadPoints = 0;
-    squadron.damagediscard = [ ];
-    squadron.damagedeck = this.dataService.getDamageDeck();
-    squadron.pilots.forEach(
-        (pilot) => {
-          this.injectShipData(pilot, squadron.faction);
-          this.injectPilotData(pilot, squadron.faction);
-          this.mangleUpgradeArray(pilot);
-          this.injectShipBonuses(pilot);
-          this.injectForceBonuses(pilot);
-     
-          let upgradeArray = [ ];
-          pilot.upgrades.forEach(
-            (upgrade) => {
-              upgradeArray.push(this.getUpgradeStateObject(upgrade))
-            }
-          )
-
-          pilot.upgrades = upgradeArray;
-
-          this.calculatePoints(pilot);
-          squadPoints += pilot.points;
-
-        }
-    )
-    for (let i = 0; i < squadron.pilots.length; i++) {
-      squadron.pilots[i].idNumber = i + 1;
+    let squadronData = {
+      damagediscard: [ ],
+      damagedeck: this.dataService.getDamageDeck(),
+      pilots: [ ]
     }
-    squadron.points = squadPoints;
-    squadron.pointsDestroyed = 0;
-    return squadron;
+    squadron.pilots.forEach(
+      (pilot) => {
+        // Generate a pilot object
+        let pilotData = this.getPilotStateObject(pilot, squadron.faction);
+
+        // Transform upgrade array in xws data source to 
+        // make it easier to grab data
+        this.mangleUpgradeArray(pilot);
+
+        this.applyXwsShims(squadron);
+        // Process xws data source pilot
+        pilot.upgrades.forEach(
+          (upgrade) => {
+            pilotData.upgrades.push(this.getUpgradeStateObject(upgrade))
+          }
+        );
+
+        this.injectBonuses(pilotData);
+
+        squadronData.pilots.push(pilotData);
+      }
+    )
+
+    // Assign ID tokens and enumerate pilots
+    for (let i = 0; i < squadronData.pilots.length; i++) {
+      squadronData.pilots[i].idNumber = i + 1;
+      // num will never change and is used for Angular router
+      squadronData.pilots[i].num = squadronData.pilots[i].idNumber;
+    }
+
+    return squadronData;
   }
 }

@@ -18,6 +18,9 @@ export class UpgradeComponent implements OnInit {
   img_urls: string[] = [ "", "" ];
   artwork: boolean = true;
   sides: any[] = [ { } ];
+  chargeStat: any = null;
+  forceStat: any = null;
+  isConfiguration: boolean = false;
 
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
@@ -41,7 +44,7 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
-  isConfiguration() {
+  getIsConfiguration() {
     let configurationUpgradeType = 
       this.dataService.data["upgrade-types"].find((upgradeType) => upgradeType.xws == 'configuration').ffg;
     return this.sides[this.upgrade.side].upgrade_types.includes(configurationUpgradeType);
@@ -59,22 +62,22 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
-  maxCharges() {
-    let chargeStat = this.dataService.getChargeStat(this.upgrade.sides[0].ffg);
-    if (chargeStat) {
-      return parseInt(chargeStat.value);
+  showOverlay() {
+    if ("charges" in this.upgrade) {
+      this.chargeStat = this.dataService.getCardStatObject(
+        this.upgrade.sides[0].ffg, "charge", this.upgrade.charges
+      );
     }
-    return 0;
-  }
-
-  chargeStat() {
-    let chargeStat = this.dataService.getChargeStat(this.upgrade.sides[0].ffg);
-    return {
-      value: parseInt(chargeStat.value),
-      remaining: this.upgrade.charges,
-      type: "charge",
-      recovers: chargeStat.recurring ? 1 : 0
-    }
+    this.forceStat = this.dataService.getCardStatObject(
+      this.upgrade.sides[this.upgrade.side].ffg,
+      "force",
+      -1
+    );
+    this.isConfiguration = this.getIsConfiguration();
+    return this.chargeStat || 
+            this.forceStat || 
+            this.isConfiguration || 
+            this.sides[this.upgrade.side].grants;
   }
 
   statClass(grant) {

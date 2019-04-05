@@ -370,14 +370,14 @@ export class XwingDataService {
       (faction) => {
         Object.entries(faction.ships).forEach(
           ([ship_key, ship]) => {
-            let shipData = ship['pilots'].find((pilot) => pilot.ffg == id);
-            if (shipData) {
+            let pilotData = ship['pilots'].find((pilot) => pilot.ffg == id);
+            if (pilotData) {
               pilot = { 
                 card_type: 1, 
                 faction: faction.faction, 
-                xws: shipData.xws, 
-                name: shipData.xws, 
-                ship: ship['xws'] 
+                xws: pilotData.xws, 
+                name: pilotData.xws, 
+                ship: ship_key
               };
             }
           }
@@ -465,13 +465,18 @@ export class XwingDataService {
     let xwsInfo = this.getXwsFromFFG(id);
     if (!xwsInfo) {
       console.log("Could not find", id);
+      return null;
     }
     if (xwsInfo.card_type == 1) {
       let faction = this.data.pilots.find((faction) => faction.faction == xwsInfo.faction);
       let xwsData = faction.ships[xwsInfo.ship].pilots.find((pilot) => pilot.xws == xwsInfo.xws);
+      let shipData = JSON.parse(JSON.stringify(faction.ships[xwsInfo.ship]));
+      delete shipData.pilots;
       // What metadata will we eventually need for pilots, not provided by FFG data?
       let pilotMeta = { 
-
+        shipIcon: shipData.icon,
+        dial: shipData.dial,
+        size: shipData.size
       }
       return pilotMeta;
     }
@@ -519,15 +524,44 @@ export class XwingDataService {
     return card;
   }
 
-  getChargeStat(ffg: number) {
+  getFFGCardStat(ffg: number, stat: string) {
     let card = this.getCardByFFG(ffg);
-    return card.statistics.find((stat) => stat.xws == "charge");
+    return card.statistics.find((cardstat) => cardstat.xws == stat);
   }
+
+  getCardStatObject(ffg: number, stat: string, remaining: number) {
+    let statData = this.getFFGCardStat(ffg, stat);
+    if (!statData) {
+      return null;
+    }
+    return {
+      type: stat,
+      value: statData.value,
+      remaining: remaining == -1 ? statData.value : remaining,
+      recovers: statData.recurring ? 1 : 0
+    }
+  } 
 
   getXwsUpgradeType(ffg: number) {
     return this.data["upgrade-types"].find((upgrade) => upgrade.ffg == ffg).xws;
   }
 
+  getStatTotal(pilotData: any, stat: string) {
+    let statTotal = 0;
+    let statData = this.getFFGCardStat(pilotData.ffg, stat);
+    if (statData) {
+      statTotal = parseInt(statData.value);
+    }
+    pilotData.upgrades.forEach(
+      (upgrade) => {
+        let statData = this.getFFGCardStat(upgrade.sides[upgrade.side].ffg, stat);
+        if (statData) {
+          statTotal += parseInt(statData.value);
+        }
+      }
+    );
+    return statTotal;
+  }
 
   load_images(manifest: any) {
     if (this.hotlink) {

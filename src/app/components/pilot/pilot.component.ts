@@ -20,10 +20,11 @@ export class PilotComponent implements OnInit {
   groups: any[][] = [];
   img_url: string = null;
   shipData: any;
-  pilotData: any;
-  shields: any = null;
-  charges: any = null;
-  force: any = null;
+  data: any;
+  bigStat: any = null;
+  smallStat: any = null;
+  chargeStat: any = null;
+  forceStat: any = null;
 
   constructor(public dataService: XwingDataService, 
               public modalController: ModalController, 
@@ -49,8 +50,13 @@ export class PilotComponent implements OnInit {
     return "";
   }
 
+  getPoints() {
+    return "(0/100)"
+  }
+
   ngOnInit() {
-    let numGroups = this.pilot.upgrades >= 9 ? 3 : 2;
+    this.data = this.dataService.getCardByFFG(this.pilot.ffg);
+    let numGroups = this.pilot.upgrades.length >= 9 ? 3 : 2;
     let groupSize = Math.ceil(this.pilot.upgrades.length / numGroups);
     for (let i = 0; i < numGroups; i++) {
       let group: any[] = [];
@@ -64,10 +70,7 @@ export class PilotComponent implements OnInit {
     }
     let group: any[] = [];
 
-    let get_url = this.pilot.pilot.artwork;
-    if (!get_url) {
-      get_url = this.pilot.pilot.image;
-    }
+    let get_url = this.data.image;
     if (get_url) {
       this.dataService.get_image_by_url(get_url).then(
         (url) => {
@@ -75,8 +78,6 @@ export class PilotComponent implements OnInit {
         }
       )
     }
-
-
   }
 
   numFacedown() {
@@ -111,7 +112,43 @@ export class PilotComponent implements OnInit {
       )
     }
     return tokens;
+  }
 
+  generateStat(stat: string) {
+    if(!(stat in this.pilot)) {
+      return null;
+    }
+    return { 
+      type: stat, 
+      value: this.dataService.getStatTotal(this.pilot, stat),
+      remaining: this.pilot[stat]
+    }
+  }
+
+  showOverlay() {
+    let hullStat = this.generateStat("hull");
+    let shieldStat = this.generateStat("shields");
+    
+    if (hullStat.remaining < hullStat.value || !shieldStat) {
+      this.bigStat = hullStat;
+      this.smallStat = shieldStat;
+    } else {
+      this.bigStat = shieldStat;
+      this.smallStat = hullStat;
+    }
+
+    if ("charges" in this.pilot) {
+      this.chargeStat = this.dataService.getCardStatObject(
+        this.pilot.ffg, "charge", this.pilot.charges
+      );
+    }
+
+    this.forceStat = this.generateStat("force");
+    if (this.forceStat) {
+      this.forceStat.recovers = 1;
+    }
+
+    return true;
   }
 
   createMiniTokenDisplay() {
@@ -191,9 +228,11 @@ export class PilotComponent implements OnInit {
     if (this.pilot.damagecards.find((card) => !card.exposed)) {
       lineNums++;
     }
+    /*
     if (this.createMiniTokenDisplay().length > 0) {
       lineNums++;
     }
+    */
     return lineNums < 5;
   }
 }

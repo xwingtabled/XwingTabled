@@ -221,7 +221,7 @@
 }
 .item-pilotart-tablet {
     @extend .item-pilotart;
-    height: 11vh;
+    height: 12.5vh;
 }
 .item-pilotart-tablet-portrait {
     @extend .item-pilotart;
@@ -338,5 +338,22 @@
         font-size: 9vh;
         vertical-align: top;
         text-transform: uppercase;
+    }
+}
+
+.status-overlay {
+    position: absolute;
+    right: 0em;
+    top: 0em;
+    background-color: #000000AA;
+    width: 30%;
+    height: 100%;
+    text-align: right;
+    .big-stat {
+        display: block;
+        font-size: 1.75em;
+    }
+    .small-stat {
+        display: block;
     }
 }
