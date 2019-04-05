@@ -20,7 +20,8 @@ let shims = {
     xwsPilot: {
         "niennumb-t70xwing": "niennunb",
         "niennunb-t70xwing" : "niennunb",
-        "l337escapecraft" : "l337-escapecraft"
+        "l337escapecraft" : "l337-escapecraft",
+        "darthtyranus" : "countdooku"
     },
     xwsUpgrade: {
         "hansoloscum" : "hansolo-gunner",
