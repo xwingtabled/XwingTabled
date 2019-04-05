@@ -11,73 +11,6 @@ export class XwingImportService {
               private http: HttpProvider) {
   }
 
-  injectShipData(pilot: any, faction: string) {
-    // Inject ship data into pilot
-    let xwsShip = pilot.ship;
-    pilot.ship = this.dataService.getShip(faction, pilot.ship);
-    if (pilot.ship != null) {
-      // Inject stats array in pilot root
-      pilot.stats = [ ];
-      pilot.ship.stats.forEach(
-        (stat) => {
-          let statCopy = JSON.parse(JSON.stringify(stat));
-          // Future proofing - in case a chassis ever has baked in recurring charge stats
-          statCopy.remaining = stat.value;
-          if (stat.recovers) {
-            statCopy.numbers = new Array(stat.recovers);
-          }
-          pilot.stats.push(statCopy);
-        }
-      )
-    } else {
-      throw "ERROR: Ship not found - " + xwsShip;
-    }
-  }
-
-
-  injectPilotData(pilot: any, faction: string) {
-    // Get pilot data and insert it into pilot object
-    pilot.pilot = this.dataService.getPilot(faction, pilot.ship.keyname, pilot.id);
-    if (pilot.pilot != null) {
-      // Creates a stat of { type: statType, remaining: 2, numbers: Array() }
-      // for display compatibility
-      let pushStat = (stat, statType) => {
-        let statCopy = JSON.parse(JSON.stringify(stat));
-        statCopy.type = statType;
-        statCopy.remaining = stat.value;
-        statCopy.numbers = Array(stat.numbers);
-        pilot.stats.push(statCopy);
-      }
-      // If the pilot has charges, insert it as a stat
-      if (pilot.pilot.charges) {
-        pushStat(pilot.pilot.charges, 'charges');
-      }
-      // If the pilot has force, insert it as a stat
-      if (pilot.pilot.force) {
-        pushStat(pilot.pilot.force, 'force');
-      }
-
-      pilot.card_text = "";
-      if (pilot.pilot.ability) {
-        pilot.card_text += pilot.pilot.ability + "<br /><br />";
-      }
-      if (pilot.pilot.text) {
-        pilot.card_text += pilot.pilot.text + "<br /><br />";
-      }
-      if (pilot.pilot.shipAbility && pilot.pilot.shipAbility.text) {
-        pilot.card_text += "<i>" + pilot.pilot.shipAbility.name + "</i>: " +
-                          pilot.pilot.shipAbility.text;
-      }
-
-      // Add additional game state variables
-      pilot.damagecards = []; 
-      pilot.conditions = [];
-      pilot.pointsDestroyed = 0;
-    } else {
-      throw "ERROR: Pilot not found - " + pilot.id;
-    }
-  }
-
   mangleUpgradeArray(pilot: any) {
     // Take xws upgrade list {'astromech': ['r2d2']} and mangle it to
     // [ { type: 'astromech', name: 'r2d2', etc... } ]
@@ -124,7 +57,6 @@ export class XwingImportService {
         upgradeData.sides.push({ ffg: side.ffg })
       }
     )
-    console.log(upgradeData);
     return upgradeData;
   }
 
@@ -140,45 +72,16 @@ export class XwingImportService {
   }
 
   injectBonuses(pilotData: any) {
-    console.log("processing force and charges", pilotData);
     let chargeStat = this.dataService.getFFGCardStat(pilotData.ffg, "charge");
     if (chargeStat) {
       pilotData["charges"] = parseInt(chargeStat.value);
     }
-    let stats = [ "force", "hull", "shields" ];
+    let stats = [ "force", "shields" ];
     stats.forEach(
       (stat) => {
         let statTotal = this.dataService.getStatTotal(pilotData, stat);
         if (statTotal > 0) {
           pilotData[stat] = statTotal;
-        }
-      }
-    )
-  }
-
-  injectShipBonuses(pilot: any) {
-    // Search upgrades for any upgrade that has a 'grant'
-    pilot.upgrades.forEach(
-      (upgrade) => {
-        let side = upgrade.sides[0];
-        if (side.grants) {
-          // Find shield or hull bonuses
-          let grant = side.grants.find((grant) => grant.value == "shields" || grant.value == "hull");
-          if (grant) {
-            // Find the granted bonus stat on the pilot and add it
-            let stat = pilot.stats.find((element) => element.type == grant.value);
-            if (!stat) {
-              stat = {
-                "type": grant.value,
-                "remaining": grant.amount,
-                "value": grant.amount
-              };
-              pilot.stats.push(stat);
-            } else {
-              stat.value += grant.amount;
-              stat.remaining = stat.value; 
-            }
-          }
         }
       }
     )

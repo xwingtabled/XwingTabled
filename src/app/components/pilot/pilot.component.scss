@@ -98,11 +98,14 @@
     display: inline-block;
     vertical-align: top;
     overflow-y: scroll;
+    .item-box {
+        height: 98%;
+    }
 }
 .pilot-card-tablet {
     @extend .pilot-card;
     width: 27vh;
-    height: 40vh;
+    height: 35vh;
 }
 .pilot-card-tablet-portrait {
     @extend .pilot-card;
@@ -248,22 +251,7 @@
     display: inline-block;
     width: 50%;
 }
-.item-box {
-    background-image: linear-gradient(to right, #440000, black, black, #440000);
-    -webkit-transition: border-top 0.5s ease, border-bottom 0.2s ease;
-    transition: border-top 0.5s ease, border-bottom 0.2s ease;
-    border-top: 0.1em solid #880000;
-    border-bottom: 0.1em solid #880000;
-    margin-bottom: 0.25em;
-    margin-left: 0.15em;
-    position: relative;
-    cursor: pointer;
-}
 
-.item-box:hover {
-    border-top: 0.1em solid #FF0000;
-    border-bottom: 0.1em solid #FF0000; 
-}
 
 .token-box {
     background-image: linear-gradient(to right, black,#770000, black);

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button (click)="dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{ pilot.pilot.name }}&nbsp;
+    <ion-title>{{ data.name }}&nbsp;
       <span *ngIf="pilot.idNumber">
         <xwing-icon [name]="'token-lock'"></xwing-icon>
         &nbsp;{{ pilot.idNumber }}
@@ -13,10 +13,85 @@
 </ion-header>
 <ion-content padding>
   <div class="pilot-modal">
-    <div [class]="'pilot-art-container' + layout.getClass()">
-      <img *ngIf="img_url" [src]="img_url" class="pilot-art"/>
-      <xwing-text *ngIf="!img_url" [text]="pilot.card_text" class="card-text"></xwing-text>
+    <div [class]="'left-column ' + leftExpandClass()">
+      <div 
+        *ngIf="showCard()" 
+        [class]="'item-box pilot-art-container' + layout.getClass() + ' ' + cardExpandClass()"
+        (click)="toggleCard()">
+        <img *ngIf="img_url" [src]="img_url" class="pilot-art"/>
+      </div>
+      <div 
+        *ngIf="showDial()" 
+        [class]="'item-box maneuver-chart ' + dialExpandClass()"
+        (click)="toggleDial()">
+        <table>
+          <tr *ngFor="let row of maneuverChart">
+            <th class="white">{{ row.speed }}</th>
+            <td *ngFor="let maneuver of row.maneuvers">
+              <span *ngIf="!maneuver" class="white">
+                &nbsp;
+              </span>
+              <span *ngIf="maneuver" [class]="maneuver.difficulty">
+                <xwing-icon [name]="maneuver.name"></xwing-icon>
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <ion-button expand="full" (click)="assignIdNumber()">Assign Ship ID</ion-button>
+    <div *ngIf="showRightColumn()" class="right-column">
+      <div [class]="'token-box' + layout.getClass()">
+        <xws-token-display 
+          *ngIf="shieldTotal > 0" 
+          [name]="'shield'" 
+          [maximum]="shieldTotal"
+          [remaining]="pilot.shields"
+          (change)="changeShields($event)"
+          class="token-set"></xws-token-display>
+        <xws-token-display 
+          *ngIf="chargeTotal > 0" 
+          [name]="'charge'" 
+          [maximum]="chargeTotal"
+          [remaining]="pilot.charges"
+          (change)="changeCharges($event)"
+          class="token-set"></xws-token-display>
+        <xws-token-display 
+          *ngIf="forceTotal > 0" 
+          [name]="'force'"
+          [maximum]="forceTotal" 
+          [remaining]="pilot.force"
+          (change)="changeForce($event)"
+          class="token-set"></xws-token-display>
+      </div> 
+      <div [class]="'damage-cards' + layout.getClass()">
+        <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
+        <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
+      </div>
+    </div>
+
+    <!-- ion-button expand="full" (click)="assignIdNumber()">Assign Ship ID</ion-button -->
   </div>
 </ion-content>
+<ion-footer *ngIf="showFooter()">
+  <ion-toolbar>
+    <div class="card-expander-more" (click)="expandToggle()"><fa-icon [icon]="faBars"></fa-icon></div>
+    <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
+    <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+    <div *ngIf="this.expanded">
+      <ion-button expand="full" (click)="assignIdNumber()">Assign Ship ID</ion-button>
+      <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
+      <ion-button expand="full" (click)="assignCrit()">Assign <xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+      <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">
+        Expose Random <xwing-icon [name]="'hit'"></xwing-icon>
+      </ion-button>
+      <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="thaneKyrell()">
+        Thane Kyrell&nbsp;<xwing-ship [name]="'t65xwing'" class="ship-icon"></xwing-ship>
+      </ion-button>
+      <ion-button expand="full" (click)="maarekStele()">
+          Maarek Stele&nbsp;<xwing-ship [name]="'tieadvancedx1'" class="ship-icon"></xwing-ship>
+        </ion-button>
+      <ion-button expand="full" (click)="fleeShip()">Remove Ship (Flee)</ion-button>
+      <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

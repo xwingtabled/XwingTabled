@@ -4,23 +4,51 @@
     @extend .modal-content;
     overflow-y: scroll;
     height: 100%;
-    font-size: 8vh;
+}
+.left-column {
+    height: 100%;
+    width: 40%;
+    display: inline-block;
+    vertical-align: top;
+}
+.left-column.expand {
+    width: 100%;
+    vertical-align: top;
+}
+.right-column {
+    width: 60%;
+    height: 100%;
+    padding-left: 1em;
+    display: inline-block;
+}
+.left-column div {
+    position: relative;
+}
+.left-column div.expand {
+    width: 100%;
+    height: 100%;
+    font-size: 3em;
+}
+.hidden {
+    visibility: hidden;
+}
+.expand.maneuver-chart {
+    position: absolute;
+    left: 0em;
+    bottom: 0em;
 }
 .pilot-art {
     display: inline-block;
 }
 .pilot-art-container {
     display: block;
+    width: 100%;
     img {
-        display: block;
-        margin: auto;
+        width: 100%;
     }
 }
 .pilot-art-container-tablet {
     @extend .pilot-art-container;
-    img {
-        width: 60%;
-    }
 }
 .pilot-art-container-tablet-portrait {
     @extend .pilot-art-container-tablet;
@@ -34,11 +62,7 @@
     @extend .pilot-art-container;
 }
 .token-box {
-    display: inline-block;
-    padding-left: 1vw;
-    vertical-align: top;
-    width: 42%;
-    font-size: 6vh;
+    font-size: 1em;
 }
 .token-box-tablet {
     @extend .token-box;
@@ -56,27 +80,16 @@
     font-size: 8vw;
 }
 .token-set {
-    display: block;
-    width: 100%;
-    font-size: 1em;
+    font-size: 4em;
     overflow: wrap;
-}
-.damage-cards {
-    display: inline-block;
-    width: 50%;
+    line-height: 1em;
     vertical-align: top;
-    padding-left: 1vw;
 }
 .tab-icon {
     font-size: 2vh;
 }
-.half-column {
-    width: 50%;
-    display: inline-block;
-}
 .damage-cards {
-    @extend .half-column;
-    padding-left: 1vw;
+    width: 100%;
 }
 .damage-cards-tablet {
     @extend .damage-cards;
@@ -91,7 +104,7 @@
     @extend .damage-cards;
 }
 .damage-buttons {
-    @extend .half-column;
+    display: inherit;
 }
 .damage-buttons-tablet {
     @extend .damage-buttons;
@@ -125,23 +138,29 @@
 
 .dial-name {
     color: white;
-    font-size: 2vh;
     margin-bottom: 1em;
     text-align: center;
 }
 
 .maneuver-chart {
     width: 100%;
-    font-size: 2vh;
     text-align: center;
+    height: 6.5em;
     background-color: $xws-background;
+    table {
+        width: 100%;
+    }
+    th {
+        width: 12%;
+    }
+    td {
+        width: 12%;
+    }
 }
 
 .maneuver-icon {
     display: inline-block;
     text-align: center;
-    width: 2em;
-    font-size: 1.5em;
 }
 
 .white {

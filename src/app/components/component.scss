@@ -8,3 +8,21 @@ $stat-weight: 900;
     padding: 1vw 1vw 1vw 1vw;
 }
 
+.item-box {
+    background-image: linear-gradient(to right, #440000, black, black, #440000);
+    -webkit-transition: border-top 0.5s ease, border-bottom 0.2s ease;
+    transition: border-top 0.5s ease, border-bottom 0.2s ease;
+    border-top: 0.1em solid #880000;
+    border-bottom: 0.1em solid #880000;
+    margin-bottom: 0.25em;
+    margin-left: 0.15em;
+    padding-top: 0.15em;
+    padding-bottom: 0.15em;
+    position: relative;
+    cursor: pointer;
+}
+
+.item-box:hover {
+    border-top: 0.1em solid #FF0000;
+    border-bottom: 0.1em solid #FF0000; 
+}

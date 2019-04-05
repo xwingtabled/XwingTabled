@@ -21,25 +21,6 @@
         <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="small-stat"></xws-stat>
         <xws-stat *ngIf="forceStat" [stat]="forceStat" class="small-stat"></xws-stat>
       </div>
-      <!-- div [class]="'action-bar' + layout.getClass()">
-        <xws-action *ngFor="let action of pilot.ship.actions" [action]="action" class="action"></xws-action>
-      </div>
-      <div [class]="'stat-block' + layout.getClass()">
-          <xws-stat *ngFor="let stat of pilot.stats" [stat]="stat" [orientation]="'vertical'"></xws-stat>
-      </div -->
-    </div>
-    <div (click)="showTokens()" class="item-box token-box">
-      <div class="token-header">
-        <span 
-          *ngIf="pilot.damagecards.length == 0 && pilot.conditions.length == 0">
-          Tokens and Cards
-        </span>
-      </div>
-      <!-- div class="token-set">
-        <xwing-icon 
-          *ngFor="let token of createMiniTokenDisplay()"
-          [name]="'token-' + token.name + '-outline'" [class]="token.css"></xwing-icon>
-      </div -->
       <div class="cards">
         <div *ngFor="let condition of pilot.conditions" class="card-title">
           <xwing-icon [name]="'condition'"></xwing-icon>

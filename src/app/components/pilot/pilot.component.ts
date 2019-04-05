@@ -121,12 +121,14 @@ export class PilotComponent implements OnInit {
     return { 
       type: stat, 
       value: this.dataService.getStatTotal(this.pilot, stat),
-      remaining: this.pilot[stat]
+      remaining: stat in this.pilot ? this.pilot[stat] : 0
     }
   }
 
   showOverlay() {
     let hullStat = this.generateStat("hull");
+    hullStat.remaining = hullStat.value - this.pilot.damagecards.length;
+
     let shieldStat = this.generateStat("shields");
     
     if (hullStat.remaining < hullStat.value || !shieldStat) {
