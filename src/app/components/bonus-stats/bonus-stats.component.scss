@@ -8,7 +8,7 @@
         display: inline-block;
     }
 }
-.grant-shield {
+.grant-shields {
     @extend .grant;
     color: lightblue;
 }
@@ -16,6 +16,15 @@
     @extend .grant;
     color: yellow;
 }
+.grant-agility {
+    @extend .grant;
+    color: green;
+}
+.grant-attack {
+    @extend .grant;
+    color: red;
+}
+
 .grant-icon {
     font-weight: 100;
 }

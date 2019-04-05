@@ -5,7 +5,9 @@
       <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="stat"></xws-stat>
       <xws-stat *ngIf="forceStat" [stat]="forceStat" class="stat"></xws-stat>
       <xwing-icon *ngIf="isConfiguration" [name]="'config'" class="stat"></xwing-icon>
-      <xws-bonus-stats *ngFor="let grant of sides[upgrade.side].metadata.grants" [grant]="grant" [class]="statClass(grant)"></xws-bonus-stats>
+      <xws-bonus-stats 
+        *ngFor="let grant of sides[upgrade.side].metadata.grants" 
+        [grant]="grant" [class]="statClass(grant)"></xws-bonus-stats>
     </div>
   </div>
   <div class="upgrade-name">

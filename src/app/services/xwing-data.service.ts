@@ -507,6 +507,8 @@ export class XwingDataService {
     if (!card) {
       return null;
     }
+    // Strip formatting tags
+    card.name = card.name.replace(/\<\/?[a-z]+\>/gi, '');
     card["metadata"] = this.getMetadataByFFG(ffg);
     if (card.statistics) {
       card.statistics.forEach(

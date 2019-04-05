@@ -77,11 +77,14 @@ export class UpgradeComponent implements OnInit {
     return this.chargeStat || 
             this.forceStat || 
             this.isConfiguration || 
-            this.sides[this.upgrade.side].grants;
+            this.sides[this.upgrade.side].metadata.grants;
   }
 
   statClass(grant) {
     if (grant.type == 'action' && grant.value.linked) {
+      return "stat-small";
+    }
+    if (grant.type == 'stat') {
       return "stat-small";
     }
     return  "stat";
