@@ -46,9 +46,6 @@ export class DamagePopoverComponent implements OnInit {
               let index = pilot.damagecards.indexOf(this.card);
               if (index > -1) {
                 pilot.damagecards.splice(index, 1);
-                let hullstat = pilot.stats.find((stat) => { return stat['type'] == "hull" });
-                hullstat.remaining = hullstat.value - pilot.damagecards.length;
-                this.state.postDamage(pilot);
               }
             }
           )

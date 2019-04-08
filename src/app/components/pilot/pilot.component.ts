@@ -19,6 +19,7 @@ export class PilotComponent implements OnInit {
   @Input() pilot: any;
   groups: any[][] = [];
   img_url: string = null;
+  icon_url: string = null;
   shipData: any;
   data: any;
   bigStat: any = null;
@@ -51,7 +52,8 @@ export class PilotComponent implements OnInit {
   }
 
   getPoints() {
-    return "(0/100)"
+    return this.dataService.getPointsDestroyed(this.pilot) +
+          ' / ' + this.dataService.getPilotPoints(this.pilot);
   }
 
   ngOnInit() {
@@ -75,6 +77,15 @@ export class PilotComponent implements OnInit {
       this.dataService.get_image_by_url(get_url).then(
         (url) => {
           this.img_url = url;
+        }
+      )
+    }
+
+    let get_icon_url = this.data.metadata.shipIcon;
+    if (get_icon_url) {
+      this.dataService.get_image_by_url(get_icon_url).then(
+        (url) => {
+          this.icon_url = url;
         }
       )
     }
@@ -121,13 +132,17 @@ export class PilotComponent implements OnInit {
     return { 
       type: stat, 
       value: this.dataService.getStatTotal(this.pilot, stat),
-      remaining: stat in this.pilot ? this.pilot[stat] : 0
+      remaining: this.pilot[stat]
     }
   }
 
   showOverlay() {
-    let hullStat = this.generateStat("hull");
-    hullStat.remaining = hullStat.value - this.pilot.damagecards.length;
+    let hullTotal = this.dataService.getStatTotal(this.pilot, "hull");
+    let hullStat = {
+      type: "hull",
+      value: hullTotal,
+      remaining: hullTotal - this.pilot.damagecards.length
+    }
 
     let shieldStat = this.generateStat("shields");
     

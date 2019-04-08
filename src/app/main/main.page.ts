@@ -58,6 +58,21 @@ export class MainPage implements OnInit {
     this.state.snapshotCheck();
   }
 
+  getPoints() {
+    if (!this.state.squadron.pilots) {
+      return "";
+    }
+    let pointsDestroyed = 0;
+    let totalPoints = 0;
+    this.state.squadron.pilots.forEach(
+      (pilot) => {
+        pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
+        totalPoints += this.dataService.getPilotPoints(pilot);
+      }
+    )
+    return "( " + pointsDestroyed + " / " + totalPoints + " )";
+  }
+
   async data_event_handler(event: any) {
     this.data_message = event.message;
     this.data_progress = event.progress;

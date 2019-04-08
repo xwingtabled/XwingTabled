@@ -22,11 +22,18 @@
     @extend .pilot;
 }
 .pilot-header {
+    padding-left: 0.5vh;
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
     font-size: 2vh;
     height: 4vh;
     vertical-align: text-bottom;
+    img {
+        height: 90%;
+        vertical-align: text-bottom;
+        display: inline-block;
+        padding-right: 0.5vh;
+    }
 }
 .pilot-header-text {
     display: inline-block;

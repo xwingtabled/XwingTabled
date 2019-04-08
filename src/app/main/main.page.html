@@ -22,7 +22,7 @@
         <ion-toolbar>
           <span class="squadron-name">
             <xwing-icon *ngIf="state.squadron.faction" [name]="state.squadron.faction"></xwing-icon>&nbsp;
-            {{ state.squadron.name }} ( {{ state.squadron.pointsDestroyed }} / {{ state.squadron.points}} )
+            {{ state.squadron.name }} {{ getPoints() }} 
           </span>
           <ion-buttons slot="end">
             <ion-button (click)="askRechargeRecurring()">

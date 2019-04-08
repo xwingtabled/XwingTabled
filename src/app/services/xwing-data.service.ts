@@ -110,13 +110,13 @@ export class XwingDataService {
           this.storage.set('ffg_data', this.ffg_data);
           console.log("FFG Squadbuilder Data", this.ffg_data);
           // Continue to image loading
-          this.load_images(this.ffg_data);
+          this.load_images();
         }
       },
       (error) => {
         if (this.ffg_data) {
           // Even if we weren't able to download a manifest, at least we have some existing data
-          this.load_images(this.ffg_data);
+          this.load_images();
         } else {
           this.status("no_data_no_connection", "Unable to load or download FFG Squadbuilder data");
         }
@@ -145,14 +145,14 @@ export class XwingDataService {
           this.status("manifest_current", "Manifest is current.");
           console.log("X-Wing Json Data", this.data);
           // Continue to download squadbuilder data
-          this.load_images(this.ffg_data);
+          this.load_images();
         }
       },
       (error) => {
         if (this.data && this.ffg_data) {
           // Even if we weren't able to download a manifest, at least we have some existing data
           this.status("manifest_download_failed", "Using cached manfiest");
-          this.load_images(this.ffg_data);
+          this.load_images();
         } else {
           this.status("no_data_no_connection", "Unable to load or download manifest.json");
         }
@@ -409,6 +409,51 @@ export class XwingDataService {
     return upgrade;
   }
 
+  getPilotPoints(pilot: any) {
+    let pilotData = this.getCardByFFG(pilot.ffg);
+    let pilotPoints = parseInt(pilotData.cost);
+    let initiative = pilotData.initiative;
+    let agility = parseInt(pilotData.statistics.find((stat) => stat.xws == 'agility').value);
+    pilot.upgrades.forEach(
+      (upgrade) => {
+        let upgradeData = this.getCardByFFG(upgrade.sides[upgrade.side].ffg);
+        if (upgradeData.cost == '*') {
+          let statVariable = upgradeData.metadata.cost.variable;
+          let cost;
+          if (statVariable == 'initiative') {
+            cost = upgradeData.metadata.cost.values[initiative];
+          } else if (statVariable == 'agility') {
+            cost = upgradeData.metadata.cost.values[agility];
+          }
+          pilotPoints += cost;
+        } else {
+          pilotPoints += parseInt(upgradeData.cost);
+        }
+      }
+    )
+
+    return pilotPoints;
+  }
+
+  getPointsDestroyed(pilot: any) {
+    let pilotPoints = this.getPilotPoints(pilot);
+    let hull = this.getStatTotal(pilot, "hull");
+    let shields = this.getStatTotal(pilot, "shields");
+    let totalHitPoints = hull + shields;
+    let currentHull = hull - pilot.damagecards.length;
+    if (currentHull <= 0) {
+      return pilotPoints;
+    }
+    let currentHitPoints = currentHull;
+    if (pilot.shields) {
+      currentHitPoints += pilot.shields;
+    }
+    if (currentHitPoints < totalHitPoints / 2.0) {
+      return Math.ceil(pilotPoints / 2.0);
+    }
+    return 0;
+  }
+
   getYasbUpgrade(id: number) {
     let upgrade = this.data.yasb.upgrades[id];
     if (!upgrade) {
@@ -565,14 +610,15 @@ export class XwingDataService {
     return statTotal;
   }
 
-  load_images(manifest: any) {
+  load_images() {
+    let downloads = { ffg: this.ffg_data, manifest: this.data };
     if (this.hotlink) {
       // If this is running in a desktop browser, then we can simply
       // hotlink to FFG's image CDN
-      this.hotlink_images(manifest);
+      this.hotlink_images(downloads);
     } else {
       // Otherwise, begin a local file storage loading sequence.
-      this.await_mainpage_loading_notification(manifest);
+      this.await_mainpage_loading_notification(downloads);
     }
   }
 
