@@ -435,15 +435,23 @@ export class XwingDataService {
     return pilotPoints;
   }
 
+  isDestroyed(pilot: any) {
+    let hull = this.getStatTotal(pilot, "hull");
+    let currentHull = hull - pilot.damagecards.length;
+    return currentHull <= 0;
+  }
+
   getPointsDestroyed(pilot: any) {
+
     let pilotPoints = this.getPilotPoints(pilot);
+    if (this.isDestroyed(pilot)) {
+      return pilotPoints;
+    }
+
     let hull = this.getStatTotal(pilot, "hull");
     let shields = this.getStatTotal(pilot, "shields");
     let totalHitPoints = hull + shields;
     let currentHull = hull - pilot.damagecards.length;
-    if (currentHull <= 0) {
-      return pilotPoints;
-    }
     let currentHitPoints = currentHull;
     if (pilot.shields) {
       currentHitPoints += pilot.shields;
@@ -611,6 +619,8 @@ export class XwingDataService {
   }
 
   load_images() {
+    console.log("FFG Data", this.ffg_data);
+    console.log("xwing-data2 Data", this.data);
     let downloads = { ffg: this.ffg_data, manifest: this.data };
     if (this.hotlink) {
       // If this is running in a desktop browser, then we can simply

@@ -234,59 +234,11 @@ export class XwingStateService {
     return this.damagedeck.shift();
   }
 
-  async postDamage(pilot: any) {
-    // Get the hull stat
-    let hull = pilot.stats.find((stat) => stat.type == 'hull');
-    // Compute hull remaining based on number of damage cards
-    hull.remaining = hull.value - pilot.damagecards.length;
-    // Calculate points destroyed
-    if (hull.remaining <= 0) {
-      pilot.pointsDestroyed = pilot.points;
-      const toast = await this.toastController.create({
-        message: pilot.pilot.name + " destroyed",
-        duration: 2000,
-        position: 'middle'
-      });
-      toast.present();
-    } else {
-      let totalPoints = hull.value;
-      let remainingPoints = hull.remaining;
-      let shields = pilot.stats.find((stat) => stat.type == 'shields');
-      if (shields) {
-        totalPoints += shields.value;
-        remainingPoints += shields.remaining;
-      }
-      let threshold = Math.floor(totalPoints / 2);
-      if (remainingPoints == threshold ||
-          remainingPoints == threshold - 1) {
-        pilot.pointsDestroyed = Math.ceil(pilot.points / 2);
-        const toast = await this.toastController.create({
-          message: pilot.pilot.name + " at half points",
-          duration: 2000,
-          position: 'middle'
-        });
-        toast.present();
-      } else if (remainingPoints > threshold) {
-        pilot.pointsDestroyed = 0;
-      }
-    }
-    this.squadron.pointsDestroyed = 0;
-    this.squadron.pilots.forEach(
-      (pilot) => {
-        this.squadron.pointsDestroyed += pilot.pointsDestroyed;
-      }
-    )
-    if (this.squadron.pointsDestroyed == this.squadron.points) {
-      this.squadron.pointsDestroyed = 200;
-    }
-  }
-
   drawHit(pilot: any) {
     let card = this.damagedeck.shift();
     if (card) {
       card.exposed = false;
       pilot.damagecards.push(card);
-      this.postDamage(pilot);
       return true;
     } else {
       return false;
@@ -298,7 +250,6 @@ export class XwingStateService {
     if (card) {
       card.exposed = true;
       pilot.damagecards.push(card);
-      this.postDamage(pilot);
       return true;
     } else {
       return false;

@@ -228,8 +228,7 @@ export class PilotModalPage implements OnInit {
   }
 
   recycleAvailable() : boolean {
-    let hull = this.pilot.stats.find((stat) => stat.type == 'hull');
-    return hull.remaining <= 0 && this.pilot.damagecards.length > 0;
+    return this.dataService.isDestroyed(this.pilot);
   }
 
   async recycleDamageCards() {
