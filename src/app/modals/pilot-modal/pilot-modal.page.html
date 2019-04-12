@@ -12,7 +12,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
-  <div class="pilot-modal">
+  <div *ngIf="!layout.getClass().includes('phone') || layout.getClass() == '-phone-landscape'" class="pilot-modal">
     <div [class]="'left-column ' + leftExpandClass()">
       <div 
         *ngIf="showCard()" 
@@ -68,8 +68,59 @@
         <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
       </div>
     </div>
-
-    <!-- ion-button expand="full" (click)="assignIdNumber()">Assign Ship ID</ion-button -->
+  </div>
+  <div *ngIf="layout.getClass() == '-phone-portrait'" class="pilot-modal">
+    <div>
+      <div [class]="'token-box' + layout.getClass()">
+        <xws-token-display 
+          *ngIf="shieldTotal > 0" 
+          [name]="'shield'" 
+          [maximum]="shieldTotal"
+          [remaining]="pilot.shields"
+          (change)="changeShields($event)"
+          class="token-set"></xws-token-display>
+        <xws-token-display 
+          *ngIf="chargeTotal > 0" 
+          [name]="'charge'" 
+          [maximum]="chargeTotal"
+          [remaining]="pilot.charges"
+          (change)="changeCharges($event)"
+          class="token-set"></xws-token-display>
+        <xws-token-display 
+          *ngIf="forceTotal > 0" 
+          [name]="'force'"
+          [maximum]="forceTotal" 
+          [remaining]="pilot.force"
+          (change)="changeForce($event)"
+          class="token-set"></xws-token-display>
+      </div> 
+      <div [class]="'damage-cards' + layout.getClass()">
+        <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
+        <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
+      </div>
+    </div>
+    <div 
+      *ngIf="showCard()" 
+      [class]="'pilot-art-container' + layout.getClass()">
+      <img *ngIf="img_url" [src]="img_url" class="pilot-art"/>
+    </div> 
+    <div 
+      *ngIf="showDial()" 
+      class="maneuver-chart-phone">
+      <table>
+        <tr *ngFor="let row of maneuverChart">
+          <th class="white">{{ row.speed }}</th>
+          <td *ngFor="let maneuver of row.maneuvers">
+            <span *ngIf="!maneuver" class="white">
+              &nbsp;
+            </span>
+            <span *ngIf="maneuver" [class]="maneuver.difficulty">
+              <xwing-icon [name]="maneuver.name"></xwing-icon>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
 </ion-content>
 <ion-footer *ngIf="showFooter()">

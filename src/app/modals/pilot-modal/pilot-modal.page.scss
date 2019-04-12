@@ -73,11 +73,11 @@
 .token-box-phone-portrait {
     @extend .token-box;
     width: 100%;
-    font-size: 8vh;
+    font-size: 2.5vh;
 }
 .token-box-phone-landscape {
     @extend .token-box;
-    font-size: 8vw;
+    font-size: 2.5vw;
 }
 .token-set {
     font-size: 4em;
@@ -156,6 +156,11 @@
     td {
         width: 12%;
     }
+}
+
+.maneuver-chart-phone {
+    @extend .maneuver-chart;
+    font-size: 2em;
 }
 
 .maneuver-icon {

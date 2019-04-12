@@ -49,8 +49,12 @@
     @extend .pilot-header;
 }
 .pilot-header-phone-landscape {
+    @extend .pilot-header;
     font-size: 2.5vw;
-    height: 4vw;
+    height: 3vw;
+    img {
+        height: 125%;
+    }
 }
 .pilot-initiative {
     color: orange;
@@ -120,11 +124,13 @@
 }
 .pilot-card-phone-portrait {
     @extend .pilot-card;
+    font-size: 3.5vh;
     padding-left: 1vw;
 }
 .pilot-card-phone-landscape {
     @extend .pilot-card;
     display: inline-block;
+    font-size: 3.5vw;
     width: 50%;
 }
 .pilot-card::-webkit-scrollbar-track

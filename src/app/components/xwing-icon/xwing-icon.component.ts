@@ -30,7 +30,8 @@ export class XwingIconComponent implements OnInit {
     "rebelalliance" : "rebel",
     "galacticempire" : "empire",
     "scumandvillainy" : "scum",
-    "configuration" : "config"
+    "configuration" : "config",
+    "force-power" : "forcepower"
   };
 
   static icon_class_template = "xwing-miniatures-font xwing-miniatures-font-TEMPLATE";
