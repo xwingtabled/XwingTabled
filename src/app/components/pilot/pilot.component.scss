@@ -120,6 +120,7 @@
 }
 .pilot-card-tablet-portrait {
     @extend .pilot-card;
+    font-size: 3vw;
     width: 40vw;
 }
 .pilot-card-phone-portrait {

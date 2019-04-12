@@ -119,29 +119,37 @@ export class XwingStateService {
   }
 
   rechargeAllRecurring() {
-    let recover = (stat) => {
-      stat.remaining += stat.recovers;
-      if (stat.remaining > stat.value) {
-        stat.remaining = stat.value;
+
+    let recoverCharges = (obj) => {
+      if ("charges" in obj) {
+        let ffg = obj.ffg;
+        if ("side" in obj) {
+          ffg = obj.sides[obj.side].ffg;
+        }
+        let chargeStat = this.dataService.getFFGCardStat(ffg, "charge");
+        if (chargeStat.recurring) {
+          let maxCharges = chargeStat.value;
+          obj.charges += 1;
+          if (obj.charges > maxCharges) {
+            obj.charges = maxCharges;
+          }
+        }
       }
     }
 
     this.squadron.pilots.forEach(
       (pilot) => {
-        for (let i = 0; i < pilot.stats.length; i++) {
-          let stat = pilot.stats[i];
-          if (stat.recovers) {
-            recover(stat);
-            pilot.stats.splice(i, 1, JSON.parse(JSON.stringify(stat)));
+        if ("force" in pilot) {
+          let maxForce = this.dataService.getStatTotal(pilot, "force");
+          pilot.force += 1;
+          if (pilot.force > maxForce) {
+            pilot.force = maxForce;
           }
         }
+        recoverCharges(pilot);
         pilot.upgrades.forEach(
           (upgrade) => {
-            let side = upgrade.sides[0];
-            if (side.charges && side.charges.recovers) {
-              recover(side.charges);
-              side.charges = JSON.parse(JSON.stringify(side.charges));
-            }
+            recoverCharges(upgrade);
           }
         )
       }
