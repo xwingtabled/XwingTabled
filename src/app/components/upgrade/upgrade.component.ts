@@ -11,6 +11,7 @@ import { XwingStateService } from '../../services/xwing-state.service';
   styleUrls: ['./upgrade.component.scss']
 })
 export class UpgradeComponent implements OnInit {
+  @Input() squadronNum: number;
   @Input() pilotNum: number;
   @Input() ffg: number;
   upgrade: any = { };
@@ -34,7 +35,8 @@ export class UpgradeComponent implements OnInit {
       component: UpgradeModalPage,
       componentProps: {
         ffg: this.upgrade.sides[this.upgrade.side].ffg,
-        pilotNum: this.pilotNum
+        pilotNum: this.pilotNum,
+        squadronNum: this.squadronNum
       }
     });
     await modal.present();
@@ -51,7 +53,7 @@ export class UpgradeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.upgrade = this.state.getUpgradeState(this.pilotNum, this.ffg);
+    this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg);
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
       this.dataService.get_image_by_url(this.sides[i].image).then(

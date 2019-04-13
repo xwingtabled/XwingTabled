@@ -10,16 +10,19 @@ import { XwingStateService } from '../../services/xwing-state.service';
 })
 export class DamagePopoverComponent implements OnInit {
   card;
+  squadronNum: number;
+  squadron: any;
 
   constructor(private popoverController: PopoverController, 
               private ngZone: NgZone,
               private state: XwingStateService) { }
 
   ngOnInit() {
+    this.squadron = this.state.squadrons[this.squadronNum];
   }
 
   mutateCard() {
-    this.state.squadron.pilots.forEach(
+    this.squadron.pilots.forEach(
       (pilot) => {
         let cardCopy = JSON.parse(JSON.stringify(this.card));
         let index = pilot.damagecards.indexOf(this.card);
@@ -41,7 +44,7 @@ export class DamagePopoverComponent implements OnInit {
         } else {
           this.popoverController.dismiss();
           // Search for the damage card on each pilot and delete it
-          this.state.squadron.pilots.forEach(
+          this.squadron.pilots.forEach(
             (pilot) => {
               let index = pilot.damagecards.indexOf(this.card);
               if (index > -1) {
@@ -50,7 +53,7 @@ export class DamagePopoverComponent implements OnInit {
             }
           )
           // Move discarded cards to damage discard pile
-          this.state.discard(this.card);
+          this.state.discard(this.squadronNum, this.card);
         }
       }
     )

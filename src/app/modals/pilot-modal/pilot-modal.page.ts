@@ -13,6 +13,7 @@ import { AssignIdPopoverComponent } from '../../popovers/assign-id-popover/assig
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
+import { Location } from '@angular/common';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -21,7 +22,10 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./pilot-modal.page.scss'],
 })
 export class PilotModalPage implements OnInit {
-  pilot;
+  pilot: any;
+  squadron: any;
+  pilotNum: number;
+  squadronNum: number;
   img_url: string = null;
   data: any = null;
   faBars = faBars;
@@ -46,14 +50,20 @@ export class PilotModalPage implements OnInit {
               public modalController: ModalController,
               public layout: LayoutService,
               private route: ActivatedRoute,
-              private router: Router) { }
+              private router: Router,
+              private location: Location) { }
 
   ngOnInit() {
-    let pilotNum = this.route.snapshot.paramMap.get("pilotNum");
-    if (pilotNum) {
+    let squadronNumParam = this.route.snapshot.paramMap.get("squadronNum");
+    let pilotNumParam = this.route.snapshot.paramMap.get("pilotNum");
+    if (squadronNumParam && pilotNumParam) {
       this.useAngularRouter = true;
-      this.pilot = this.state.squadron.pilots.find(pilot => pilot.num == pilotNum);
+      this.squadronNum = parseInt(squadronNumParam);
+      this.pilotNum = parseInt(pilotNumParam);
     }
+
+    this.squadron = this.state.squadrons[this.squadronNum];
+    this.pilot = this.state.getPilotState(this.squadronNum, this.pilotNum);
 
     this.data = this.dataService.getCardByFFG(this.pilot.ffg);
    
@@ -207,13 +217,13 @@ export class PilotModalPage implements OnInit {
 
 
   drawHit() {
-    if (!this.state.drawHit(this.pilot)) {
+    if (!this.state.drawHit(this.squadronNum, this.pilot)) {
       this.presentDamageDeckEmpty();
     }
   }
 
   drawCrit() {
-    if (!this.state.drawCrit(this.pilot)) {
+    if (!this.state.drawCrit(this.squadronNum, this.pilot)) {
       this.presentDamageDeckEmpty();
     }
   }
@@ -235,7 +245,7 @@ export class PilotModalPage implements OnInit {
     this.pilot.damagecards.forEach(
       (card) => {
         card.exposed = false;
-        this.state.discard(card);
+        this.state.discard(this.squadronNum, card);
       }
     )
     this.pilot.damagecards = [ ];
@@ -273,8 +283,8 @@ export class PilotModalPage implements OnInit {
 
   async maarekStele() {
     let cards = [ ];
-    for (let i = 0; i < 3 && this.state.damagedeck.length; i++) {
-      cards.push(this.state.draw());
+    for (let i = 0; i < 3 && this.squadron.damagedeck.length; i++) {
+      cards.push(this.state.draw(this.squadronNum));
     }
     const popover = await this.popoverController.create({
       component: DamageCardSelectComponent,
@@ -287,7 +297,7 @@ export class PilotModalPage implements OnInit {
           cards.forEach(
             (remaining) => {
               if (remaining != card) {
-                this.state.discard(remaining);
+                this.state.discard(this.squadronNum, remaining);
               }
             }
           );
@@ -300,7 +310,7 @@ export class PilotModalPage implements OnInit {
   async assignCrit() {
     let cards = [ ];
     // Fill cards with unique titles from damage deck
-    this.state.damagedeck.forEach(
+    this.squadron.damagedeck.forEach(
       (draw) => {
         let found = cards.find(card => draw.title == card.title);
         if (!found) {
@@ -319,8 +329,8 @@ export class PilotModalPage implements OnInit {
         callback: (card) => {
           card.exposed = true;
           this.pilot.damagecards.push(card);
-          let index = this.state.damagedeck.indexOf(card);
-          this.state.damagedeck.splice(index, 1);
+          let index = this.squadron.damagedeck.indexOf(card);
+          this.squadron.damagedeck.splice(index, 1);
        }
       }
     });
@@ -331,7 +341,8 @@ export class PilotModalPage implements OnInit {
     const popover = await this.popoverController.create({
       component: ConditionMenuComponent,
       componentProps: {
-        pilot: this.pilot
+        pilotNum: this.pilotNum,
+        squadronNum: this.squadronNum
       }
     });
     await popover.present();
@@ -342,6 +353,7 @@ export class PilotModalPage implements OnInit {
   }
 
   fleeShip() {
+    /*
     this.pilot.pointsDestroyed = this.pilot.points;
     this.state.squadron.pointsDestroyed = 0;
     this.state.squadron.pilots.forEach(
@@ -352,6 +364,7 @@ export class PilotModalPage implements OnInit {
     if (this.state.squadron.pointsDestroyed == this.state.squadron.points) {
       this.state.squadron.pointsDestroyed = 200;
     }
+    */
   }
 
   hitCardAvailable() : boolean {
@@ -401,7 +414,7 @@ export class PilotModalPage implements OnInit {
 
   dismiss() {
     if (this.useAngularRouter) {
-      this.router.navigateByUrl("/");
+      this.location.back();
     } else {
       this.modalController.dismiss();
     }

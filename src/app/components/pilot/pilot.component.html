@@ -9,7 +9,7 @@
   </div>
   <div [class]="'pilot-card' + layout.getClass()">
     <div (click)="showPilot()" class="item-box">
-      <img *ngIf="layout.getClass().includes('phone') || showImage()" 
+      <img
           [src]="img_url" 
           [class]="'item-pilotart' + layout.getClass()" />
       <div class="id-overlay" *ngIf="pilot.idNumber">
@@ -45,7 +45,8 @@
     <div [class]="'upgrade-group' + layout.getClass()" *ngFor="let group of groups">
       <xws-upgrade 
         *ngFor="let upgrade of group" 
-        [pilotNum]="pilot.num"
+        [squadronNum]="squadronNum"
+        [pilotNum]="pilotNum"
         [ffg]="upgrade.sides[upgrade.side].ffg" 
         [class]="'item-box upgrade' + layout.getClass()"></xws-upgrade>
     </div>
@@ -53,7 +54,9 @@
   <div *ngIf="layout.isPhone()" [class]="'phone-upgrades' + layout.getClass()">
     <ion-list>
       <xws-phone-upgrade *ngFor="let upgrade of pilot.upgrades" 
-        [ffg]="upgrade.sides[upgrade.side].ffg" [pilotNum]="pilot.num">
+        [squadronNum]="squadronNum"
+        [ffg]="upgrade.sides[upgrade.side].ffg" 
+        [pilotNum]="pilotNum">
       </xws-phone-upgrade>
     </ion-list>
   </div>
