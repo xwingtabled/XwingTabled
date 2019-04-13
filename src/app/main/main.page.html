@@ -1,27 +1,40 @@
-<ion-header *ngIf="!dataService.initialized">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button *ngIf="retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
-      <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
-      <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title class="title-bar">{{ data_message }}</ion-title>
-    <div class="progress-bar-container">
-      <progress-bar 
-        [progress]="data_progress" 
-        [color]="'#488aff'">
-      </progress-bar>
-    </div>
+    <ion-title>
+      Home
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
-    <div>
-      <a href="/squadron/1">1</a>
-    </div>
-    <div>
-      {{ squadronNum }}
-    </div>
-
+  <div [class]="'card-container' + layout.getClass()">
+    <ion-card>
+      <img src="assets/img/splash.png">
+      <ion-card-header>
+        <ion-card-title>
+          X-Wing Tabled
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="true || !dataService.initialized">
+          <div class="progress-bar-container">
+            <progress-bar 
+              [progress]="data_progress" 
+              [color]="'#488aff'">
+            </progress-bar>
+          </div>
+          {{ data_message }}
+          <div class="ion-text-right">
+            <ion-button *ngIf="true || retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
+            <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
+            <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button> 
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

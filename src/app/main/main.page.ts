@@ -13,6 +13,7 @@ import { HttpProvider } from '../providers/http.provider';
 import { XwingStateService } from '../services/xwing-state.service';
 import { XwingImportService } from '../services/xwing-import.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutService } from '../services/layout.service';
 
 @Component({
   selector: 'app-main',
@@ -45,7 +46,8 @@ export class MainPage implements OnInit {
               private loadingCtrl: LoadingController,
               public state: XwingStateService,
               private importService: XwingImportService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              public layout: LayoutService) { }
 
   ngOnInit() {
     this.squadronNum = this.route.snapshot.paramMap.get("squadronNum");

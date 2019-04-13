@@ -3,8 +3,8 @@
     width: 50%;
 }
 .progress-bar-container {
-    display: inline-block;
-    width: 50%;
+    display: block;
+    width: 100%;
 }
 .squadron-container {
     display: block;
@@ -66,6 +66,49 @@
 .pilot-minwidth {
     display: inline-block;
     vertical-align: top;
+}
+
+.card-container {
+    width: 100%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    ion-card {
+        width: 33%;
+    }
+}
+
+.card-container-phone-portrait {
+    @extend .card-container;
+    ion-card {
+        width: 100%;
+    }
+}
+
+.card-container-phone-landscape {
+    @extend .card-container-phone-portrait;
+    ion-card {
+        width: 50%;
+        img {
+            display: none;
+        }
+    }
+}
+
+.card-container-tablet {
+    @extend .card-container;
+}
+
+.card-container-tablet-portrait {
+    @extend .card-container;
+    ion-card {
+        width: 66%;
+    }
+}
+
+.card-container-tablet-landscape {
+    @extend .card-container;
 }
 
 ion-fab-button[data-desc] {
