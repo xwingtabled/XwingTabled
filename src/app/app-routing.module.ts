@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: './main/main.module#MainPageModule' 
   },
   {
+    path: 'squadron/:squadronNum',
+    loadChildren: './main/main.module#MainPageModule'
+  },
+  {
     path: 'pilot/:pilotNum/card',
     component: PilotModalPage,
     canActivate: [ModalGuard]

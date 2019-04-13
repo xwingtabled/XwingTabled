@@ -15,34 +15,13 @@
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
-  <div class="squadron-container">
-    <div class="squadron-header"></div>
-    <div class="squadron-fullwidth" *ngIf="state.squadron">
-      <div class="squadron-header">
-        <ion-toolbar>
-          <span class="squadron-name">
-            <xwing-icon *ngIf="state.squadron.faction" [name]="state.squadron.faction"></xwing-icon>&nbsp;
-            {{ state.squadron.name }} {{ getPoints() }} 
-          </span>
-          <ion-buttons slot="end">
-            <ion-button (click)="askRechargeRecurring()">
-              Recover&nbsp;<xwing-icon [name]="'charge'"></xwing-icon><xwing-icon [name]="'recurring'"></xwing-icon>
-            </ion-button>
-            <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)" class="damage-deck-button">
-              <span class="damage-deck-summary">
-                <xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
-                <span class="damage-deck-summary-text">{{ state.damagedeck.length}}</span>
-              </span>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </div>
-      <xws-pilot 
-        *ngFor="let pilot of state.squadron.pilots" 
-        [pilot]="pilot" 
-        class="pilot-minwidth"></xws-pilot>
+    <div>
+      <a href="/squadron/1">1</a>
     </div>
-  </div>
+    <div>
+      {{ squadronNum }}
+    </div>
+
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

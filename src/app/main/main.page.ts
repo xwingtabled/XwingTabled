@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, PopoverController, LoadingController } from '@ionic/angular';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
-import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { Events } from '@ionic/angular';
@@ -13,6 +12,7 @@ import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { XwingStateService } from '../services/xwing-state.service';
 import { XwingImportService } from '../services/xwing-import.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-main',
@@ -29,6 +29,8 @@ export class MainPage implements OnInit {
   image_button: boolean = false;
   image_button_disabled: boolean = false;
 
+  squadronNum: string = "";
+
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
               public router: Router,
@@ -42,9 +44,11 @@ export class MainPage implements OnInit {
               private http: HttpProvider,
               private loadingCtrl: LoadingController,
               public state: XwingStateService,
-              private importService: XwingImportService) { }
+              private importService: XwingImportService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.squadronNum = this.route.snapshot.paramMap.get("squadronNum");
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
