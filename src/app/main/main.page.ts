@@ -102,6 +102,9 @@ export class MainPage implements OnInit {
 
   closeSquadron(index) {
     this.state.squadrons.splice(index, 1);
+    for (let i = 0; i < this.state.squadrons.length; i++) {
+      this.state.squadrons[i].squadronNum = i;
+    }
     this.state.snapshot();
     if (this.state.squadrons.length == 0) {
       this.router.navigateByUrl("/");
