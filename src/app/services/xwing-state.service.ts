@@ -9,10 +9,8 @@ import { ToastController } from '@ionic/angular';
 })
 export class XwingStateService {
   public initialized: boolean = false;
-  public squadron: any = { };
+  public squadrons: any[ ] = [ ];
   public snapshots: any[ ] = [ ];
-  public damagedeck: any[ ] = [ ];
-  public damagediscard: any[ ] = [ ];
 
   constructor(public dataService: XwingDataService,
               private events: Events,
@@ -22,7 +20,7 @@ export class XwingStateService {
   }
 
   reset() {
-    this.squadron = { };
+    this.squadrons = [ ];
     this.snapshots = [ ];
     this.initialized = false;
   }
@@ -35,19 +33,11 @@ export class XwingStateService {
       this.snapshots = snapshots;
       let lastSnapshot = JSON.parse(JSON.stringify(this.snapshots[this.snapshots.length - 1]));
       if (lastSnapshot.squadrons) {
-        console.log("Legacy snapshot found");
-        lastSnapshot.squadron = lastSnapshot.squadrons[0];
-        lastSnapshot.damagedeck = lastSnapshot.squadrons[0].damagedeck;
-        lastSnapshot.damagediscard = lastSnapshot.squadrons[0].damagediscard;
-        this.snapshots = [ lastSnapshot ];
+        this.squadrons = lastSnapshot.squadrons;
       }
-      this.squadron = lastSnapshot.squadron;
-      this.damagedeck = lastSnapshot.damagedeck;
-      this.damagediscard = lastSnapshot.damagediscard;
-      console.log("Squadron restored", this.squadron);
+      console.log("Squadrons restored", this.squadrons);
       this.initialized = true;
     } else {
-      this.squadron = null;
       this.initialized = false;
     }
   }
@@ -56,26 +46,32 @@ export class XwingStateService {
     return this.snapshots[this.snapshots.length - 1].time;
   }
 
-  resetSquadron() {
-    this.squadron.pointsDestroyed = 0;
-    this.damagediscard = [ ];
-    this.damagedeck = this.dataService.getDamageDeck();
-    this.shuffleDamageDeck();
-    this.squadron.pilots.forEach(
+  resetSquadron(squadronNum: any) {
+    let squadron = this.squadrons[squadronNum];
+    squadron.pointsDestroyed = 0;
+    squadron.damagediscard = [ ];
+    squadron.damagedeck = this.dataService.getDamageDeck();
+    this.shuffleDamageDeck(squadronNum);
+    squadron.pilots.forEach(
       (pilot) => {
         pilot.damagecards = [ ];
         pilot.conditions = [ ];
-        pilot.pointsDestroyed = 0;
-        pilot.stats.forEach(
-          (stat) => {
-            stat.remaining = stat.value;
-          }
-        )
+        if ("shields" in pilot) {
+          pilot.shields = this.dataService.getStatTotal(pilot, "shields");
+        }
+        if ("force" in pilot) {
+          pilot.force = this.dataService.getStatTotal(pilot, "force");
+        }
+        if ("charges" in pilot) {
+          let chargeStat = this.dataService.getFFGCardStat(pilot.ffg, "charge");
+          pilot.charges = chargeStat.value;
+        }
         pilot.upgrades.forEach(
           (upgrade) => {
             upgrade.side = 0;
-            if (upgrade.sides[0].charges) {
-              upgrade.sides[0].charges.remaining = upgrade.sides[0].charges.value;
+            if ("charges" in upgrade) {
+              let chargeStat = this.dataService.getFFGCardStat(upgrade.sides[0].ffg, "charge");
+              upgrade.charges = chargeStat.value
             }
           }
         )
@@ -84,18 +80,19 @@ export class XwingStateService {
     this.snapshot();
   }
 
-  getPilotState(pilotNum: number) {
-    return this.squadron.pilots.find(pilot => pilot.num == pilotNum); 
+  getPilotState(squadronNum: number, pilotNum: number) {
+    let squadron = this.squadrons[squadronNum];
+    return squadron.pilots.find(pilot => pilot.num == pilotNum); 
   }
 
-  getUpgradeState(pilotNum: number, ffg: number) {
-    let pilot = this.getPilotState(pilotNum);
+  getUpgradeState(squadronNum: number, pilotNum: any, upgradeFFG: number) {
+    let pilot = this.getPilotState(squadronNum, pilotNum);
     let upgrade = pilot.upgrades.find(
       (upgrade) => {
         let hasSide = false;
         upgrade.sides.forEach(
           (side) => {
-            if (side.ffg == ffg) {
+            if (side.ffg == upgradeFFG) {
               hasSide = true;
             }
           }
@@ -106,20 +103,43 @@ export class XwingStateService {
     return upgrade;
   }
 
-  setUpgradeState(pilotNum: number, newData: any) {
-    let pilot = this.getPilotState(pilotNum);
+  getSquadronPointsDestroyed(squadronNum: number) {
+    let squadron = this.squadrons[squadronNum];
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPointsDestroyed(pilot);
+      }
+    )
+    return points;
+  }
+
+  getSquadronPointTotal(squadronNum: number) {
+    let squadron = this.squadrons[squadronNum];
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPilotPoints(pilot);
+      }
+    )
+    return points;
+  }
+
+  setUpgradeState(squadronNum: number, pilotNum: any, upgradeFFG: number, newData: any) {
+    let pilot = this.getPilotState(squadronNum, pilotNum);
     newData = JSON.parse(JSON.stringify(newData));
     for (let i = 0; i < pilot.upgrades.length; i++) {
-      if (pilot.upgrades[i].sides[0].ffg == newData.sides[0].ffg) {
+      if (pilot.upgrades[i].sides[0].ffg == upgradeFFG) {
         pilot.upgrades[i] = newData;
+        pilot.upgrades = JSON.parse(JSON.stringify(pilot.upgrades));
         return;
       }
     }
     // TODO: Firebase update?
   }
 
-  rechargeAllRecurring() {
-
+  rechargeAllRecurring(squadronNum: any) {
+    let squadron = this.squadrons[squadronNum];
     let recoverCharges = (obj) => {
       if ("charges" in obj) {
         let ffg = obj.ffg;
@@ -137,7 +157,7 @@ export class XwingStateService {
       }
     }
 
-    this.squadron.pilots.forEach(
+    squadron.pilots.forEach(
       (pilot) => {
         if ("force" in pilot) {
           let maxForce = this.dataService.getStatTotal(pilot, "force");
@@ -152,6 +172,7 @@ export class XwingStateService {
             recoverCharges(upgrade);
           }
         )
+        pilot.upgrades = JSON.parse(JSON.stringify(pilot.upgrades));
       }
     );
     this.snapshot();
@@ -162,9 +183,7 @@ export class XwingStateService {
       this.snapshots.shift();
     }
     this.snapshots.push({ time: new Date().toISOString(), 
-                          squadron: JSON.parse(JSON.stringify(this.squadron)),
-                          damagedeck: JSON.parse(JSON.stringify(this.damagedeck)),
-                          damagediscard: JSON.parse(JSON.stringify(this.damagediscard)) });
+                          squadrons: JSON.parse(JSON.stringify(this.squadrons))});
     this.storage.set("snapshots", this.snapshots);
     console.log("snapshot created", this.snapshots);
     const toast = await this.toastController.create({
@@ -178,9 +197,7 @@ export class XwingStateService {
   snapshotCheck() {
     if (this.snapshots.length) {
       let lastSnapshot = this.snapshots[this.snapshots.length - 1];
-      if (JSON.stringify(lastSnapshot.squadron) != JSON.stringify(this.squadron) ||
-          JSON.stringify(lastSnapshot.damagedeck) != JSON.stringify(this.damagedeck) ||
-          JSON.stringify(lastSnapshot.damagediscard) != JSON.stringify(this.damagediscard)) {
+      if (JSON.stringify(lastSnapshot.squadron) != JSON.stringify(this.squadrons)) {
         this.snapshot();
       }
     }
@@ -189,61 +206,67 @@ export class XwingStateService {
   undo() {
     this.snapshots.pop();
     let snapshot = this.snapshots.pop();
-    this.squadron = snapshot.squadron;
-    this.damagedeck = snapshot.damagedeck;
-    this.damagediscard = snapshot.damagediscard;
+    this.squadrons = snapshot.squadrons;
     this.snapshot();
     return snapshot.time;
   }
 
-  setSquadron(squadron: any) {
-    this.squadron = squadron;
-    this.damagedeck = this.dataService.getDamageDeck();
-    this.damagediscard = [ ];
-    this.shuffleDamageDeck();
+  addSquadron(squadron: any) {
+    squadron.damagedeck = this.dataService.getDamageDeck();
+    squadron.damagediscard = [ ];
+    this.squadrons.push(squadron);
+    let squadronNum = this.squadrons.length - 1;
+    squadron.squadronNum = squadronNum;
+    this.shuffleDamageDeck(squadronNum);
     this.initialized = true;
+    console.log("Squadron added", squadron);
     this.snapshot();
   }
 
-  async shuffleDamageDeck() {
+  async shuffleDamageDeck(squadronNum: any) {
+    let squadron = this.squadrons[squadronNum];
     let newDeck = [ ];
-    while (this.damagedeck.length > 0) {
-      let index = Math.floor(Math.random() * this.damagedeck.length);
-      let card = this.damagedeck[index];
-      this.damagedeck.splice(index, 1);
+    while (squadron.damagedeck.length > 0) {
+      let index = Math.floor(Math.random() * squadron.damagedeck.length);
+      let card = squadron.damagedeck[index];
+      squadron.damagedeck.splice(index, 1);
       newDeck.push(card);
     }
-    this.damagedeck = newDeck;
-    console.log("Damage deck shuffled", this.damagedeck);
+    squadron.damagedeck = newDeck;
+    console.log("Damage deck shuffled", squadron.damagedeck);
     this.snapshot();
     const toast = await this.toastController.create({
       message: "Damage Deck shuffled",
       duration: 2000,
-      position: 'top'
+      position: 'bottom'
     });
     return toast.present();
   }
 
-  shuffleDamageDiscard() {
-    this.damagediscard.forEach(
+  shuffleDamageDiscard(squadronNum: number) {
+    let squadron = this.squadrons[squadronNum];
+    squadron.damagediscard.forEach(
       (card) => {
-        this.damagedeck.push(card);
+        squadron.damagedeck.push(card);
       }
     )
-    this.damagediscard = [ ];
-    this.shuffleDamageDeck();
+    squadron.damagediscard = [ ];
+    this.shuffleDamageDeck(squadron);
   }
 
-  discard(card: any) {
-    this.damagediscard.push(card);
+  discard(squadronNum: any, card: any) {
+    let squadron = this.squadrons[squadronNum];
+    squadron.damagediscard.push(card);
   }
 
-  draw() {
-    return this.damagedeck.shift();
+  draw(squadronNum: any) {
+    let squadron = this.squadrons[squadronNum];
+    return squadron.damagedeck.shift();
   }
 
-  drawHit(pilot: any) {
-    let card = this.damagedeck.shift();
+  drawHit(squadronNum: any, pilot: any) {
+    let squadron = this.squadrons[squadronNum];
+    let card = squadron.damagedeck.shift();
     if (card) {
       card.exposed = false;
       pilot.damagecards.push(card);
@@ -253,8 +276,9 @@ export class XwingStateService {
     }
   }
 
-  drawCrit(pilot: any) {
-    let card = this.damagedeck.shift();
+  drawCrit(squadronNum: any, pilot: any) {
+    let squadron = this.squadrons[squadronNum];
+    let card = squadron.damagedeck.shift();
     if (card) {
       card.exposed = true;
       pilot.damagecards.push(card);

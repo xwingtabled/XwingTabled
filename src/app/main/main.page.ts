@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, PopoverController, LoadingController } from '@ionic/angular';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
-import { Router } from '@angular/router';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { Events } from '@ionic/angular';
@@ -13,6 +12,8 @@ import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { XwingStateService } from '../services/xwing-state.service';
 import { XwingImportService } from '../services/xwing-import.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutService } from '../services/layout.service';
 
 @Component({
   selector: 'app-main',
@@ -29,6 +30,9 @@ export class MainPage implements OnInit {
   image_button: boolean = false;
   image_button_disabled: boolean = false;
 
+  squadronNum: number = -1;
+  squadron: any = null;
+
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
               public router: Router,
@@ -42,9 +46,16 @@ export class MainPage implements OnInit {
               private http: HttpProvider,
               private loadingCtrl: LoadingController,
               public state: XwingStateService,
-              private importService: XwingImportService) { }
+              private importService: XwingImportService,
+              private route: ActivatedRoute,
+              public layout: LayoutService) { }
 
   ngOnInit() {
+    let squadronNumParam = this.route.snapshot.paramMap.get("squadronNum");
+    if (squadronNumParam) {
+      this.squadronNum = parseInt(squadronNumParam);
+      this.squadron = this.state.squadrons[this.squadronNum];
+    }
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -54,17 +65,65 @@ export class MainPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    console.log("Snapshot check");
     this.state.snapshotCheck();
+
+  }
+
+  getPointsDestroyed(squadron) {
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPointsDestroyed(pilot);
+      }
+    )
+    return points;
+  }
+
+  getPointTotal(squadron) {
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPilotPoints(pilot);
+      }
+    )
+  }
+
+  squadronRoute(index) {
+    return "/squadron/" + index;
+  }
+
+  goToSquadron(index) {
+    if (index == this.squadronNum || !this.state.squadrons[index]) {
+      return;
+    }
+    this.router.navigateByUrl(this.squadronRoute(index));
+    return;
+  }
+
+  closeSquadron(index) {
+    this.state.squadrons.splice(index, 1);
+    this.state.snapshot();
+    if (this.state.squadrons.length == 0) {
+      this.router.navigateByUrl("/");
+      return;
+    }
+    let destination = this.squadronNum;
+    if (this.squadronNum >= this.state.squadrons.length) {
+      destination = this.state.squadrons.length - 1;
+      this.router.navigateByUrl(this.squadronRoute(destination));
+      return;
+    } else {
+      this.squadron = this.state.squadrons[this.squadronNum];
+    }
   }
 
   getPoints() {
-    if (!this.state.squadron.pilots) {
+    if (!this.state.squadrons[this.squadronNum].pilots) {
       return "";
     }
     let pointsDestroyed = 0;
     let totalPoints = 0;
-    this.state.squadron.pilots.forEach(
+    this.state.squadrons[this.squadronNum].pilots.forEach(
       (pilot) => {
         pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
         totalPoints += this.dataService.getPilotPoints(pilot);
@@ -148,9 +207,7 @@ export class MainPage implements OnInit {
     if (this.state.snapshots && this.state.snapshots.length) {
       this.toastUndo(this.state.getLastSnapshotTime());
     }
-    if (!this.state.squadron) {
-      this.presentXwsModal();
-    }
+    this.squadron = this.state.squadrons[this.squadronNum];
   }
 
   retryDownload() {
@@ -169,13 +226,12 @@ export class MainPage implements OnInit {
     this.dataService.download_missing_images(this.dataService.data);
   }
 
-  async presentDamageDeckActionsPopover(ev: any, squadron: any) {
+  async damageDeck() {
     const popover = await this.popoverController.create({
       component: DamageDeckActionsComponent,
       componentProps: {
-        squadron: squadron
+        squadronNum: this.squadronNum
       },
-      event: ev
     });
     return await popover.present();
   }
@@ -195,6 +251,7 @@ export class MainPage implements OnInit {
                 this.data_button_disabled = false;
                 this.image_button = false;
                 this.image_button_disabled = false;
+                this.state.reset();
                 this.dataService.reset();
               }
             )
@@ -205,10 +262,10 @@ export class MainPage implements OnInit {
           cssClass: 'secondary' }
       ]
     });
-    return await alert.present();
+    await alert.present();
   }
 
-  async askRechargeRecurring() {
+  async askRecharge() {
     const alert = await this.alertController.create({
       header: 'Recharge Recurring',
       message: 'Do you wish to recover all recurring ' +
@@ -219,7 +276,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.state.rechargeAllRecurring();
+                this.state.rechargeAllRecurring(this.squadronNum);
               }
             )
           }
@@ -274,7 +331,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               async () => {
-                this.state.resetSquadron();
+                this.state.resetSquadron(this.squadronNum);
                 const toast = await this.toastController.create({
                   message: 'Squadrons reset',
                   duration: 2000,
@@ -319,7 +376,7 @@ export class MainPage implements OnInit {
     
         this.http.get(url).subscribe(
           (data) => {
-            this.state.setSquadron(this.importService.processFFG(data))
+            this.state.addSquadron(this.importService.processFFG(data))
           },
           async (error) => {
             console.log("Unable to get FFG SquadBuilder data", error);
@@ -332,15 +389,18 @@ export class MainPage implements OnInit {
           }
         );
 
-        this.state.setSquadron(this.importService.processFFG(data.ffg));
+        this.state.addSquadron(this.importService.processFFG(data.ffg));
       }
       if (data.yasb) {
-        this.state.setSquadron(this.importService.processYasb(data.yasb));
+        this.state.addSquadron(this.importService.processYasb(data.yasb));
       }
       if (data.xws) {
         let squadron = data.xws;
-        this.state.setSquadron(this.importService.processXws(squadron));
+        this.state.addSquadron(this.importService.processXws(squadron));
       }
+      let newSquadronNum = this.state.squadrons.length - 1;
+      let url = '/squadron/' + newSquadronNum;
+      this.router.navigateByUrl(url);
     } catch (e) {
       console.log(e);
       const toast = await this.toastController.create({

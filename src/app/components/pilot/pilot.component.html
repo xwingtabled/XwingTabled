@@ -9,18 +9,22 @@
   </div>
   <div [class]="'pilot-card' + layout.getClass()">
     <div (click)="showPilot()" class="item-box">
-      <img *ngIf="layout.getClass().includes('phone') || showImage()" 
+      <div class="pilot-image">
+        <img
           [src]="img_url" 
           [class]="'item-pilotart' + layout.getClass()" />
+        <div class="status-overlay" *ngIf="showOverlay()">
+          <xws-stat [stat]="bigStat" class="big-stat"></xws-stat>
+          <xws-stat *ngIf="smallStat" [stat]="smallStat" class="small-stat"></xws-stat>
+          <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="small-stat"></xws-stat>
+          <xws-stat *ngIf="forceStat" [stat]="forceStat" class="small-stat"></xws-stat>
+        </div>
+      </div>
+
       <div class="id-overlay" *ngIf="pilot.idNumber">
         <div class="pilot-num">{{ pilot.idNumber }}</div>
       </div>
-      <div class="status-overlay" *ngIf="showOverlay()">
-        <xws-stat [stat]="bigStat" class="big-stat"></xws-stat>
-        <xws-stat *ngIf="smallStat" [stat]="smallStat" class="small-stat"></xws-stat>
-        <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="small-stat"></xws-stat>
-        <xws-stat *ngIf="forceStat" [stat]="forceStat" class="small-stat"></xws-stat>
-      </div>
+
       <div class="cards">
         <div *ngFor="let condition of pilot.conditions" class="card-title">
           <xwing-icon [name]="'condition'"></xwing-icon>
@@ -45,15 +49,18 @@
     <div [class]="'upgrade-group' + layout.getClass()" *ngFor="let group of groups">
       <xws-upgrade 
         *ngFor="let upgrade of group" 
-        [pilotNum]="pilot.num"
-        [ffg]="upgrade.sides[upgrade.side].ffg" 
+        [squadronNum]="squadronNum"
+        [pilotNum]="pilotNum"
+        [upgrade]="upgrade"
         [class]="'item-box upgrade' + layout.getClass()"></xws-upgrade>
     </div>
   </div>
   <div *ngIf="layout.isPhone()" [class]="'phone-upgrades' + layout.getClass()">
     <ion-list>
       <xws-phone-upgrade *ngFor="let upgrade of pilot.upgrades" 
-        [ffg]="upgrade.sides[upgrade.side].ffg" [pilotNum]="pilot.num">
+        [squadronNum]="squadronNum"
+        [ffg]="upgrade.sides[upgrade.side].ffg" 
+        [pilotNum]="pilotNum">
       </xws-phone-upgrade>
     </ion-list>
   </div>

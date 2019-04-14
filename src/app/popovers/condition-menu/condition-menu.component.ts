@@ -10,7 +10,10 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./condition-menu.component.scss']
 })
 export class ConditionMenuComponent implements OnInit {
-  pilot;
+  squadronNum: number;
+  pilotNum: number;
+  squadron: any;
+  pilot: any;
   conditions: any[] = [];
   img_urls: any = { };
   selected_condition: any;
@@ -27,8 +30,8 @@ export class ConditionMenuComponent implements OnInit {
     if (!existing) {
       if (this.selected_condition.xws == this.darksideXws && this.selected_condition.pilotDamageCard) {
         this.selected_condition.pilotDamageCard.exposed = true;
-        let index = this.state.damagedeck.indexOf(this.selected_condition.pilotDamageCard);
-        this.state.damagedeck.splice(index, 1);
+        let index = this.squadron.damagedeck.indexOf(this.selected_condition.pilotDamageCard);
+        this.squadron.damagedeck.splice(index, 1);
       }
       this.pilot.conditions.push(this.selected_condition);
       return this.popoverController.dismiss();
@@ -44,7 +47,7 @@ export class ConditionMenuComponent implements OnInit {
 
   getPilotDamageCards() {
     this.pilotDamageCards = [ ];
-    let pilotCards = this.state.damagedeck.filter(
+    let pilotCards = this.squadron.damagedeck.filter(
       (card) => card['type'] == 'Pilot'
     );
     pilotCards.forEach(
@@ -67,6 +70,8 @@ export class ConditionMenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.squadron = this.state.squadrons[this.squadronNum];
+    this.pilot = this.state.getPilotState(this.squadronNum, this.pilotNum);
     this.dataService.data.conditions.forEach(
       (condition) => {
         // Make a copy of each condition object

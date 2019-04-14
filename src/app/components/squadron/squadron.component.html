@@ -1,0 +1,9 @@
+<div class="squadron-container">
+    <div class="squadron-fullwidth">
+        <xws-pilot 
+            *ngFor="let pilot of squadron.pilots" 
+            [squadronNum]="squadronNum"
+            [pilot]="pilot" 
+            class="pilot-minwidth"></xws-pilot>
+    </div>
+</div>

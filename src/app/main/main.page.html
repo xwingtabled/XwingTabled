@@ -1,48 +1,92 @@
-<ion-header *ngIf="!dataService.initialized">
-  <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button *ngIf="retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
-      <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
-      <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button>
-    </ion-buttons>
-    <ion-title class="title-bar">{{ data_message }}</ion-title>
-    <div class="progress-bar-container">
-      <progress-bar 
-        [progress]="data_progress" 
-        [color]="'#488aff'">
-      </progress-bar>
-    </div>
-  </ion-toolbar>
-</ion-header>
-<ion-content padding>
-  <div class="squadron-container">
-    <div class="squadron-header"></div>
-    <div class="squadron-fullwidth" *ngIf="state.squadron">
-      <div class="squadron-header">
-        <ion-toolbar>
-          <span class="squadron-name">
-            <xwing-icon *ngIf="state.squadron.faction" [name]="state.squadron.faction"></xwing-icon>&nbsp;
-            {{ state.squadron.name }} {{ getPoints() }} 
-          </span>
-          <ion-buttons slot="end">
-            <ion-button (click)="askRechargeRecurring()">
-              Recover&nbsp;<xwing-icon [name]="'charge'"></xwing-icon><xwing-icon [name]="'recurring'"></xwing-icon>
-            </ion-button>
-            <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)" class="damage-deck-button">
-              <span class="damage-deck-summary">
-                <xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
-                <span class="damage-deck-summary-text">{{ state.damagedeck.length}}</span>
-              </span>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
+<div *ngIf="layout.getClass().includes('phone')" class="squadron-toolbar">
+  <div class='active' *ngIf="state.squadrons[squadronNum]">
+    <xwing-icon [name]="state.squadrons[squadronNum].faction"></xwing-icon>
+    {{ state.squadrons[squadronNum].name }} 
+    ({{ state.getSquadronPointsDestroyed(squadronNum) }} / 
+    {{ state.getSquadronPointTotal(squadronNum) }})
+    <i class="fa fa-times" (click)="closeSquadron(squadronNum)"></i> 
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum + 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum + 1)"
+    style="float: right;">
+    <i class="fa fa-caret-right"></i>
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum - 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum - 1)"
+    style="float: right;">
+    <i class="fa fa-caret-left"></i>
+  </div>
+</div>
+<div *ngIf="!layout.getClass().includes('phone')" class="squadron-toolbar">
+  <div *ngFor="let squadron of state.squadrons" 
+    (click)="goToSquadron(squadron.squadronNum)"
+    [class]="squadron.squadronNum == squadronNum ? 'active' : ''">
+    <xwing-icon [name]="squadron.faction"></xwing-icon>{{ squadron.name }} 
+    ({{ state.getSquadronPointsDestroyed(squadron.squadronNum) }} / 
+    {{ state.getSquadronPointTotal(squadron.squadronNum) }})
+    <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="closeSquadron(squadron.Num)"></i>
+  </div>
+  <div (click)="xwsAddButton()" class="active hover squad-control">
+    <i class="fa fa-plus"></i>
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum + 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum + 1)"
+    style="float: right;">
+    <i class="fa fa-caret-right"></i>
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum - 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum - 1)"
+    style="float: right;">
+    <i class="fa fa-caret-left"></i>
+  </div>
+</div>
+<div *ngIf="!state.squadrons[squadronNum]" [class]="'card-container' + layout.getClass()">
+  <div class="card">
+    <img src="assets/img/splash.png">
+    <div class="card-content">
+      <div *ngIf="dataService.initialized">
+        <span class="card-title">X-Wing Tabled</span><br /><br />
+        <div *ngIf="state.squadrons.length == 0">This app is a card and token 
+          manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
+          <a href="#" (click)="xwsAddButton()">import a squadron</a>.
+        </div>
+        <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
+          Saved squadrons
+        </div>
+        <div *ngFor="let squadron of state.squadrons" 
+          (click)="goToSquadron(squadron.squadronNum)"
+          class="squadron-link">
+          <xwing-icon [name]="squadron.faction"></xwing-icon>
+          <span>{{ squadron.name }}</span>
+        </div>
       </div>
-      <xws-pilot 
-        *ngFor="let pilot of state.squadron.pilots" 
-        [pilot]="pilot" 
-        class="pilot-minwidth"></xws-pilot>
+      <div *ngIf="!dataService.initialized">
+        <div class="progress-bar-container">
+          <progress-bar 
+            [progress]="data_progress" 
+            [color]="'#488aff'">
+          </progress-bar>
+        </div>
+        {{ data_message }}
+        <div class="ion-text-right">
+          <ion-button *ngIf="retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
+          <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
+          <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button> 
+        </div>
+      </div>
     </div>
   </div>
+</div>
+<ion-content padding>
+  <squadron *ngIf="state.squadrons[squadronNum]" [squadron]="state.squadrons[squadronNum]" [squadronNum]="squadronNum"></squadron>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>
@@ -51,14 +95,22 @@
       <ion-fab-button (click)="resetData()" data-desc="Nuke local data">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="state.squadron" (click)="askReset()" data-desc="Reset squadron">
-        <xwing-icon [name]="'reload'"></xwing-icon>
+      <ion-fab-button (click)="xwsAddButton()" data-desc="Import squadron">
+          <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
+        <i class="fa fa-power-off"></i>
       </ion-fab-button>
       <ion-fab-button *ngIf="state.snapshots.length > 1" (click)="askUndo()" data-desc="Undo">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="xwsAddButton()" data-desc="Import squadron">
-        <ion-icon name="add"></ion-icon>
+      <ion-fab-button *ngIf="squadron" 
+        (click)="damageDeck()" 
+        data-desc="Damage deck">
+        <xwing-icon [name]="'hit'"></xwing-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="squadron" (click)="askRecharge()" data-desc="Recurring charges">
+        <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>

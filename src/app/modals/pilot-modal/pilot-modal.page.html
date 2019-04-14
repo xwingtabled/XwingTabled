@@ -65,7 +65,10 @@
       </div> 
       <div [class]="'damage-cards' + layout.getClass()">
         <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
-        <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
+        <xws-damage-card 
+          *ngFor="let card of pilot.damagecards" 
+          [card]="card" 
+          [squadronNum]="squadronNum"></xws-damage-card> 
       </div>
     </div>
   </div>
@@ -96,7 +99,10 @@
       </div> 
       <div [class]="'damage-cards' + layout.getClass()">
         <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
-        <xws-damage-card *ngFor="let card of pilot.damagecards" [card]="card" [squadron]="squadron"></xws-damage-card> 
+        <xws-damage-card 
+          *ngFor="let card of pilot.damagecards" 
+          [card]="card" 
+          [squadronNum]="squadronNum"></xws-damage-card> 
       </div>
     </div>
     <div 

@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { LayoutService } from '../../services/layout.service';
 import { PilotModalPage } from '../../modals/pilot-modal/pilot-modal.page';
-import { TokenModalPage } from '../../modals/token-modal/token-modal.page';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular'
 import { Events } from '@ionic/angular';
@@ -16,7 +15,9 @@ import { NgZone } from '@angular/core';
   styleUrls: ['./pilot.component.scss']
 })
 export class PilotComponent implements OnInit {
+  @Input() squadronNum: number;
   @Input() pilot: any;
+  pilotNum: number;
   groups: any[][] = [];
   img_url: string = null;
   icon_url: string = null;
@@ -57,6 +58,7 @@ export class PilotComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.pilotNum = this.pilot.num;
     this.data = this.dataService.getCardByFFG(this.pilot.ffg);
     let numGroups = this.pilot.upgrades.length >= 9 ? 3 : 2;
     let groupSize = Math.ceil(this.pilot.upgrades.length / numGroups);
@@ -197,22 +199,8 @@ export class PilotComponent implements OnInit {
     const modal = await this.modalController.create({
       component: PilotModalPage,
       componentProps: {
-        pilot: this.pilot,
-      }
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (stateString != JSON.stringify(this.pilot)) {
-      this.state.snapshot();
-    }
-  }
-
-  async presentTokenModal() {
-    let stateString = JSON.stringify(this.pilot);
-    const modal = await this.modalController.create({
-      component: TokenModalPage,
-      componentProps: {
-        pilot: this.pilot,
+        pilotNum: this.pilotNum,
+        squadronNum: this.squadronNum
       }
     });
     await modal.present();
@@ -224,32 +212,10 @@ export class PilotComponent implements OnInit {
 
   showPilot() {
     if (this.layout.isPhone()) {
-      this.router.navigateByUrl('pilot/' + this.pilot.num +'/card');
+      let url = '/squadron/' + this.squadronNum + '/pilot/' + this.pilotNum;
+      this.router.navigateByUrl(url);
     } else {
       this.presentPilotModal();
     }
-  }
-
-  showTokens() {
-    if (this.layout.isPhone()) {
-      this.router.navigateByUrl('pilot/' + this.pilot.num +'/tokens');
-    } else {
-      this.presentTokenModal();
-    }
-  }
-
-  showImage() {
-    let lineNums = this.pilot.damagecards.filter(
-      (card) => card.exposed
-    ).length;
-    if (this.pilot.damagecards.find((card) => !card.exposed)) {
-      lineNums++;
-    }
-    /*
-    if (this.createMiniTokenDisplay().length > 0) {
-      lineNums++;
-    }
-    */
-    return lineNums < 5;
   }
 }

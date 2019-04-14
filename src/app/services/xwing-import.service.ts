@@ -244,18 +244,24 @@ export class XwingImportService {
   processXws(squadron: any) {
     let squadPoints = 0;
     let squadronData = {
+      name: squadron.name,
+      faction: squadron.faction,
       damagediscard: [ ],
       damagedeck: this.dataService.getDamageDeck(),
       pilots: [ ]
     }
+
+    // Transform upgrade array in xws data source to 
+    // make it easier to grab data
+    squadron.pilots.forEach(
+      (pilot) => {
+        this.mangleUpgradeArray(pilot);
+      }
+    )
     squadron.pilots.forEach(
       (pilot) => {
         // Generate a pilot object
         let pilotData = this.getPilotStateObject(pilot, squadron.faction);
-
-        // Transform upgrade array in xws data source to 
-        // make it easier to grab data
-        this.mangleUpgradeArray(pilot);
 
         this.applyXwsShims(squadron);
         // Process xws data source pilot

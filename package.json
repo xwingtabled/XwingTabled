@@ -49,6 +49,7 @@
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-sqlite-storage": "2.5.1",
     "core-js": "^2.6.1",
+    "font-awesome": "^4.7.0",
     "jsonpack": "^1.1.5",
     "rxjs": "^6.3.0",
     "xwing-miniatures-font": "^2.3.3",

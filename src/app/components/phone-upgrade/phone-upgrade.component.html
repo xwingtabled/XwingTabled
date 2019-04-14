@@ -4,7 +4,7 @@
   </ion-avatar>
   {{ sides[upgrade.side].name }}
   <ion-note slot="end" class="stat-avatar">
-    <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="stat"></xws-stat>
+    <xws-stat *ngIf="getChargeStat()" [stat]="getChargeStat()" class="stat"></xws-stat>
     <xws-bonus-stats *ngFor="let grant of sides[upgrade.side].grants" [grant]="grant" class="stat"></xws-bonus-stats>
   </ion-note>
 </ion-item>

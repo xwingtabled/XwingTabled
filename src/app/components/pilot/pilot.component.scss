@@ -10,6 +10,7 @@
 .pilot-tablet {
     @extend .pilot;
     font-size: 2.25vh;
+    display: inline-block;
 }
 .pilot-tablet-portrait {
     @extend .pilot;
@@ -104,6 +105,9 @@
 
 .upgrade-portrait {
     display: block;
+}
+.pilot-image {
+    position: relative;
 }
 .pilot-card {
     display: inline-block;
@@ -347,7 +351,7 @@
     position: absolute;
     right: 0em;
     top: 0em;
-    background-color: #000000AA;
+    background-color: #00000066;
     width: 30%;
     height: 100%;
     text-align: right;
