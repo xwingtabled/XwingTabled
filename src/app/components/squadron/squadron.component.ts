@@ -28,19 +28,4 @@ export class SquadronComponent implements OnInit {
     
   ngOnInit() {
   }
-
-  getPoints() {
-    if (!this.squadron.pilots) {
-      return "";
-    }
-    let pointsDestroyed = 0;
-    let totalPoints = 0;
-    this.squadron.pilots.forEach(
-      (pilot) => {
-        pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
-        totalPoints += this.dataService.getPilotPoints(pilot);
-      }
-    )
-    return "( " + pointsDestroyed + " / " + totalPoints + " )";
-  }
 }

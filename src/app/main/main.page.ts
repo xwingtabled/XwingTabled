@@ -225,13 +225,12 @@ export class MainPage implements OnInit {
     this.dataService.download_missing_images(this.dataService.data);
   }
 
-  async presentDamageDeckActionsPopover(ev: any, squadron: any) {
+  async damageDeck() {
     const popover = await this.popoverController.create({
       component: DamageDeckActionsComponent,
       componentProps: {
         squadronNum: this.squadronNum
       },
-      event: ev
     });
     return await popover.present();
   }
@@ -265,7 +264,7 @@ export class MainPage implements OnInit {
     await alert.present();
   }
 
-  async askRechargeRecurring() {
+  async askRecharge() {
     const alert = await this.alertController.create({
       header: 'Recharge Recurring',
       message: 'Do you wish to recover all recurring ' +

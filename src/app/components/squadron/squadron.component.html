@@ -1,24 +1,5 @@
 <div class="squadron-container">
-    <div class="squadron-fullwidth" *ngIf="squadron">
-        <div class="squadron-header">
-        <ion-toolbar>
-            <span class="squadron-name">
-            <xwing-icon *ngIf="squadron.faction" [name]="squadron.faction"></xwing-icon>&nbsp;
-            {{ squadron.name }} {{ getPoints() }} 
-            </span>
-            <ion-buttons slot="end">
-            <ion-button (click)="askRechargeRecurring()">
-                Recover&nbsp;<xwing-icon [name]="'charge'"></xwing-icon><xwing-icon [name]="'recurring'"></xwing-icon>
-            </ion-button>
-            <ion-button (click)="presentDamageDeckActionsPopover($event, squadron)" class="damage-deck-button">
-                <span class="damage-deck-summary">
-                <xwing-icon [name]="'hit'" class="damage-deck-icon"></xwing-icon>
-                <span class="damage-deck-summary-text">{{ squadron.damagedeck.length}}</span>
-                </span>
-            </ion-button>
-            </ion-buttons>
-        </ion-toolbar>
-        </div>
+    <div class="squadron-fullwidth">
         <xws-pilot 
             *ngFor="let pilot of squadron.pilots" 
             [squadronNum]="squadronNum"
