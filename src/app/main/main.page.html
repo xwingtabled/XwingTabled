@@ -7,14 +7,18 @@
     {{ state.getSquadronPointTotal(squadron.squadronNum) }})
     <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="closeSquadron(squadron.Num)"></i>
   </div>
+  <div (click)="xwsAddButton()" class="active hover">
+    <i class="fa fa-plus"></i>
+  </div>
 </div>
 <div *ngIf="!state.squadrons[squadronNum]" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
       <span class="card-title">X-Wing Tabled</span><br /><br />
-      <div *ngIf="state.squadrons.length == 0">To begin, 
-        <a href="#" (click)="xwsAddButton()">add a squadron</a>.
+      <div *ngIf="state.squadrons.length == 0">This app is a card and token 
+        manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
+        <a href="#" (click)="xwsAddButton()">import a squadron</a>.
       </div>
       <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
         Saved squadrons

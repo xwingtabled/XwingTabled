@@ -176,6 +176,10 @@ ion-fab-button[data-desc]::after {
         background-color: white;
         color: #1f1f1f;
     }
+    div.hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
     i.fa-times {
         margin-left: 0.25em;
     }

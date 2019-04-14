@@ -106,6 +106,9 @@
 .upgrade-portrait {
     display: block;
 }
+.pilot-image {
+    position: relative;
+}
 .pilot-card {
     display: inline-block;
     vertical-align: top;
@@ -348,7 +351,7 @@
     position: absolute;
     right: 0em;
     top: 0em;
-    background-color: #000000AA;
+    background-color: #00000066;
     width: 30%;
     height: 100%;
     text-align: right;

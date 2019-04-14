@@ -9,18 +9,22 @@
   </div>
   <div [class]="'pilot-card' + layout.getClass()">
     <div (click)="showPilot()" class="item-box">
-      <img
+      <div class="pilot-image">
+        <img
           [src]="img_url" 
           [class]="'item-pilotart' + layout.getClass()" />
+        <div class="status-overlay" *ngIf="showOverlay()">
+          <xws-stat [stat]="bigStat" class="big-stat"></xws-stat>
+          <xws-stat *ngIf="smallStat" [stat]="smallStat" class="small-stat"></xws-stat>
+          <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="small-stat"></xws-stat>
+          <xws-stat *ngIf="forceStat" [stat]="forceStat" class="small-stat"></xws-stat>
+        </div>
+      </div>
+
       <div class="id-overlay" *ngIf="pilot.idNumber">
         <div class="pilot-num">{{ pilot.idNumber }}</div>
       </div>
-      <div class="status-overlay" *ngIf="showOverlay()">
-        <xws-stat [stat]="bigStat" class="big-stat"></xws-stat>
-        <xws-stat *ngIf="smallStat" [stat]="smallStat" class="small-stat"></xws-stat>
-        <xws-stat *ngIf="chargeStat" [stat]="chargeStat" class="small-stat"></xws-stat>
-        <xws-stat *ngIf="forceStat" [stat]="forceStat" class="small-stat"></xws-stat>
-      </div>
+
       <div class="cards">
         <div *ngFor="let condition of pilot.conditions" class="card-title">
           <xwing-icon [name]="'condition'"></xwing-icon>

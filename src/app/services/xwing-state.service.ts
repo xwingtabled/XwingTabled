@@ -238,7 +238,7 @@ export class XwingStateService {
     const toast = await this.toastController.create({
       message: "Damage Deck shuffled",
       duration: 2000,
-      position: 'top'
+      position: 'bottom'
     });
     return toast.present();
   }
