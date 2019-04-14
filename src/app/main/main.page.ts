@@ -51,6 +51,11 @@ export class MainPage implements OnInit {
               public layout: LayoutService) { }
 
   ngOnInit() {
+    let squadronNumParam = this.route.snapshot.paramMap.get("squadronNum");
+    if (squadronNumParam) {
+      this.squadronNum = parseInt(squadronNumParam);
+      this.squadron = this.state.squadrons[this.squadronNum];
+    }
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -61,11 +66,7 @@ export class MainPage implements OnInit {
 
   ionViewDidEnter() {
     this.state.snapshotCheck();
-    let squadronNumParam = this.route.snapshot.paramMap.get("squadronNum");
-    if (squadronNumParam) {
-      this.squadronNum = parseInt(squadronNumParam);
-      this.squadron = this.state.squadrons[this.squadronNum];
-    }
+
   }
 
   getPointsDestroyed(squadron) {

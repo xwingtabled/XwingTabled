@@ -8,7 +8,7 @@
     <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="closeSquadron(squadron.Num)"></i>
   </div>
 </div>
-<div *ngIf="!squadron" [class]="'card-container' + layout.getClass()">
+<div *ngIf="!state.squadrons[squadronNum]" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
@@ -29,7 +29,7 @@
   </div>
 </div>
 <ion-content padding>
-  <squadron *ngIf="squadron" [squadron]="state.squadrons[squadronNum]" [squadronNum]="squadronNum"></squadron>
+  <squadron *ngIf="state.squadrons[squadronNum]" [squadron]="state.squadrons[squadronNum]" [squadronNum]="squadronNum"></squadron>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>
