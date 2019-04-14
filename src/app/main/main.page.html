@@ -1,4 +1,27 @@
-<div class="squadron-toolbar">
+<div *ngIf="layout.getClass().includes('phone')" class="squadron-toolbar">
+  <div class='active' *ngIf="state.squadrons[squadronNum]">
+    <xwing-icon [name]="state.squadrons[squadronNum].faction"></xwing-icon>
+    {{ state.squadrons[squadronNum].name }} 
+    ({{ state.getSquadronPointsDestroyed(squadronNum) }} / 
+    {{ state.getSquadronPointTotal(squadronNum) }})
+    <i class="fa fa-times" (click)="closeSquadron(squadronNum)"></i> 
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum + 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum + 1)"
+    style="float: right;">
+    <i class="fa fa-caret-right"></i>
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum - 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum - 1)"
+    style="float: right;">
+    <i class="fa fa-caret-left"></i>
+  </div>
+</div>
+<div *ngIf="!layout.getClass().includes('phone')" class="squadron-toolbar">
   <div *ngFor="let squadron of state.squadrons" 
     (click)="goToSquadron(squadron.squadronNum)"
     [class]="squadron.squadronNum == squadronNum ? 'active' : ''">
@@ -7,27 +30,57 @@
     {{ state.getSquadronPointTotal(squadron.squadronNum) }})
     <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="closeSquadron(squadron.Num)"></i>
   </div>
-  <div (click)="xwsAddButton()" class="active hover">
+  <div (click)="xwsAddButton()" class="active hover squad-control">
     <i class="fa fa-plus"></i>
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum + 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum + 1)"
+    style="float: right;">
+    <i class="fa fa-caret-right"></i>
+  </div>
+  <div 
+    *ngIf="state.squadrons.length > 1" 
+    [class]="state.squadrons[squadronNum - 1] ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(squadronNum - 1)"
+    style="float: right;">
+    <i class="fa fa-caret-left"></i>
   </div>
 </div>
 <div *ngIf="!state.squadrons[squadronNum]" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
-      <span class="card-title">X-Wing Tabled</span><br /><br />
-      <div *ngIf="state.squadrons.length == 0">This app is a card and token 
-        manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
-        <a href="#" (click)="xwsAddButton()">import a squadron</a>.
+      <div *ngIf="dataService.initialized">
+        <span class="card-title">X-Wing Tabled</span><br /><br />
+        <div *ngIf="state.squadrons.length == 0">This app is a card and token 
+          manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
+          <a href="#" (click)="xwsAddButton()">import a squadron</a>.
+        </div>
+        <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
+          Saved squadrons
+        </div>
+        <div *ngFor="let squadron of state.squadrons" 
+          (click)="goToSquadron(squadron.squadronNum)"
+          class="squadron-link">
+          <xwing-icon [name]="squadron.faction"></xwing-icon>
+          <span>{{ squadron.name }}</span>
+        </div>
       </div>
-      <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
-        Saved squadrons
-      </div>
-      <div *ngFor="let squadron of state.squadrons" 
-        (click)="goToSquadron(squadron.squadronNum)"
-        class="squadron-link">
-        <xwing-icon [name]="squadron.faction"></xwing-icon>
-        <span>{{ squadron.name }}</span>
+      <div *ngIf="!dataService.initialized">
+        <div class="progress-bar-container">
+          <progress-bar 
+            [progress]="data_progress" 
+            [color]="'#488aff'">
+          </progress-bar>
+        </div>
+        {{ data_message }}
+        <div class="ion-text-right">
+          <ion-button *ngIf="retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
+          <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
+          <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button> 
+        </div>
       </div>
     </div>
   </div>

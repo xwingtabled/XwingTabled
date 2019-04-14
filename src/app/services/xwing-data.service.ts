@@ -33,7 +33,7 @@ export class XwingDataService {
 
   // Json Data
   data: any = { };
-  ffg_data: any = { };
+  ffg_data: any = [ ];
 
   constructor(private storage: Storage, private http: HttpProvider, private events: Events, 
               private platform: Platform, private file: File, private fileTransfer: FileTransfer,
@@ -101,13 +101,47 @@ export class XwingDataService {
     );
   }
 
+  store_ffg_data(ffg: any) {
+    let ffg_data = [ ];
+    let maxId = 0;
+    ffg.cards.forEach(
+      (card) => {
+        if (card.id > maxId) {
+          maxId = card.id;
+        }
+      }
+    );
+    ffg_data = new Array(maxId);
+    ffg.cards.forEach(
+      (card) => {
+        card.name = card.name.replace(/\<\/?[a-z]+\>/gi, '');
+        card["metadata"] = this.getMetadataByFFG(card.id);
+        if (card.statistics) {
+          card.statistics.forEach(
+            (statistic) => {
+              // Search xws stat metadata.
+              let xwsEntry = this.data.stats[0].find((stat) => { return stat.ffg == statistic.statistic_id });
+              if (xwsEntry) {
+                statistic.xws = xwsEntry.xws;
+              } else {
+                console.log("Could not find stat", statistic);
+              }
+            }
+          )
+        };
+        ffg_data[card.id] = card;
+      }
+    )
+    this.ffg_data = ffg_data;
+    this.storage.set('ffg_data', this.ffg_data);
+  }
+
   download_ffg_data() {
     this.http.get("https://squadbuilder.fantasyflightgames.com/api/cards").subscribe(
       (ffg) => {
         if (ffg) {
           this.status("ffg_downloading", "Downloading FFG Squadbuilder Data... received!");
-          this.ffg_data = ffg;
-          this.storage.set('ffg_data', this.ffg_data);
+          this.store_ffg_data(ffg);
           console.log("FFG Squadbuilder Data", this.ffg_data);
           // Continue to image loading
           this.load_images();
@@ -556,27 +590,7 @@ export class XwingDataService {
   }
 
   getCardByFFG(ffg: number) {
-    let card = this.ffg_data.cards.find((card) => { return card.id == ffg });
-    if (!card) {
-      return null;
-    }
-    // Strip formatting tags
-    card.name = card.name.replace(/\<\/?[a-z]+\>/gi, '');
-    card["metadata"] = this.getMetadataByFFG(ffg);
-    if (card.statistics) {
-      card.statistics.forEach(
-        (statistic) => {
-          // Search xws stat metadata.
-          let xwsEntry = this.data.stats[0].find((stat) => { return stat.ffg == statistic.statistic_id });
-          if (xwsEntry) {
-            statistic.xws = xwsEntry.xws;
-          } else {
-            console.log("Could not find stat", statistic);
-          }
-        }
-      )
-    }
-    return card;
+    return this.ffg_data[ffg];
   }
 
   getFFGCardStat(ffg: number, stat: string) {

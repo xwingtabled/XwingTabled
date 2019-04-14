@@ -93,7 +93,7 @@ export class MainPage implements OnInit {
   }
 
   goToSquadron(index) {
-    if (index == this.squadronNum) {
+    if (index == this.squadronNum || !this.state.squadrons[index]) {
       return;
     }
     this.router.navigateByUrl(this.squadronRoute(index));

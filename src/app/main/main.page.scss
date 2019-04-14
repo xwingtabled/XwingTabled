@@ -144,7 +144,7 @@ ion-fab-button[data-desc]::after {
     overflow-y: hidden;
     position: relative;
     height: 2.5em;
-    padding-left: 0.25em;
+    padding-left: 0.1em;
     padding-right: 0.25em;
     padding-top: 0.25em;
     background-color: #1f1f1f;
@@ -167,6 +167,7 @@ ion-fab-button[data-desc]::after {
         padding-right: 1em;
         line-height: 1em;
         vertical-align: text-bottom;
+        margin-right: 0.1em;
     }
     div:hover:not(.active) {
         cursor: pointer;
@@ -186,6 +187,11 @@ ion-fab-button[data-desc]::after {
     i.fa-times:hover {
         cursor: pointer;
         text-decoration: underline;
+    }
+    .squad-control {
+        float: right;
+        margin-right: 0em;
+        border-radius: 0em;
     }
 }
 
