@@ -33,7 +33,8 @@ export class XwingIconComponent implements OnInit {
     "configuration" : "config",
     "force-power" : "forcepower",
     "galacticrepublic" : "republic",
-    "separatistalliance" : "separatists"
+    "separatistalliance" : "separatists",
+    "resistance" : "rebel-outline"
   };
 
   static icon_class_template = "xwing-miniatures-font xwing-miniatures-font-TEMPLATE";
