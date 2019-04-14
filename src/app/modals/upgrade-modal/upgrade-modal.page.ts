@@ -38,9 +38,8 @@ export class UpgradeModalPage implements OnInit {
       this.squadronNum = parseInt(routeSquadronNum);
       this.pilotNum = parseInt(routePilotNum);
       this.ffg = parseInt(routeFFG);
+      this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg);
     }
-    this.pilot = this.state.getPilotState(this.squadronNum, this.pilotNum);
-    this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg); 
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
     }

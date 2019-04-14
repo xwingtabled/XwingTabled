@@ -15,7 +15,6 @@ export class PhoneUpgradeComponent implements OnInit {
   @Input() ffg: number;
   upgrade: any = { };
   sides: any[] = [ ];
-  chargeStat: any = null;
 
   constructor(public dataService: XwingDataService, 
               private modalController: ModalController,
@@ -28,11 +27,13 @@ export class PhoneUpgradeComponent implements OnInit {
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
     }
+  }
+
+  getChargeStat() {
     if ("charges" in this.upgrade) {
-      this.chargeStat = this.dataService.getCardStatObject(
-        this.upgrade.sides[0].ffg, "charge", this.upgrade.charges
-      );
+      return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "charge", this.upgrade.charges);
     }
+    return null;
   }
 
   avatar() {

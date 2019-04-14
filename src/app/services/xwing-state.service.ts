@@ -51,22 +51,27 @@ export class XwingStateService {
     squadron.pointsDestroyed = 0;
     squadron.damagediscard = [ ];
     squadron.damagedeck = this.dataService.getDamageDeck();
-    this.shuffleDamageDeck(squadron);
+    this.shuffleDamageDeck(squadronNum);
     squadron.pilots.forEach(
       (pilot) => {
         pilot.damagecards = [ ];
         pilot.conditions = [ ];
-        pilot.pointsDestroyed = 0;
-        pilot.stats.forEach(
-          (stat) => {
-            stat.remaining = stat.value;
-          }
-        )
+        if ("shields" in pilot) {
+          pilot.shields = this.dataService.getStatTotal(pilot, "shields");
+        }
+        if ("force" in pilot) {
+          pilot.force = this.dataService.getStatTotal(pilot, "force");
+        }
+        if ("charges" in pilot) {
+          let chargeStat = this.dataService.getFFGCardStat(pilot.ffg, "charge");
+          pilot.charges = chargeStat.value;
+        }
         pilot.upgrades.forEach(
           (upgrade) => {
             upgrade.side = 0;
-            if (upgrade.sides[0].charges) {
-              upgrade.sides[0].charges.remaining = upgrade.sides[0].charges.value;
+            if ("charges" in upgrade) {
+              let chargeStat = this.dataService.getFFGCardStat(upgrade.sides[0].ffg, "charge");
+              upgrade.charges = chargeStat.value
             }
           }
         )
@@ -126,6 +131,7 @@ export class XwingStateService {
     for (let i = 0; i < pilot.upgrades.length; i++) {
       if (pilot.upgrades[i].sides[0].ffg == upgradeFFG) {
         pilot.upgrades[i] = newData;
+        pilot.upgrades = JSON.parse(JSON.stringify(pilot.upgrades));
         return;
       }
     }
@@ -166,6 +172,7 @@ export class XwingStateService {
             recoverCharges(upgrade);
           }
         )
+        pilot.upgrades = JSON.parse(JSON.stringify(pilot.upgrades));
       }
     );
     this.snapshot();

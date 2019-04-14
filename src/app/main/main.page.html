@@ -29,7 +29,7 @@
   </div>
 </div>
 <ion-content padding>
-  <squadron *ngIf="squadron" [squadron]="squadron" [squadronNum]="squadronNum"></squadron>
+  <squadron *ngIf="squadron" [squadron]="state.squadrons[squadronNum]" [squadronNum]="squadronNum"></squadron>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

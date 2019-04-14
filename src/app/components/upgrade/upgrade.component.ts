@@ -13,8 +13,8 @@ import { XwingStateService } from '../../services/xwing-state.service';
 export class UpgradeComponent implements OnInit {
   @Input() squadronNum: number;
   @Input() pilotNum: number;
-  @Input() ffg: number;
-  upgrade: any = { };
+  @Input() upgrade: any;
+  ffg: number;
   img_class: string = "img-alt";
   img_urls: string[] = [ "", "" ];
   artwork: boolean = true;
@@ -34,7 +34,7 @@ export class UpgradeComponent implements OnInit {
     const modal = await this.modalController.create({
       component: UpgradeModalPage,
       componentProps: {
-        ffg: this.upgrade.sides[this.upgrade.side].ffg,
+        upgrade: this.upgrade,
         pilotNum: this.pilotNum,
         squadronNum: this.squadronNum
       }
@@ -53,7 +53,8 @@ export class UpgradeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg);
+    //this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg);
+    this.ffg = this.upgrade.sides[this.upgrade.side].ffg;
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
       this.dataService.get_image_by_url(this.sides[i].image).then(
@@ -62,6 +63,17 @@ export class UpgradeComponent implements OnInit {
         }
       )
     }
+  }
+
+  getChargeStat() {
+    if ("charges" in this.upgrade) {
+      return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "charge", this.upgrade.charges);
+    }
+    return null;
+  }
+
+  getForceStat() {
+    return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "force", this.upgrade.charges);
   }
 
   showOverlay() {
@@ -76,8 +88,8 @@ export class UpgradeComponent implements OnInit {
       -1
     );
     this.isConfiguration = this.getIsConfiguration();
-    return this.chargeStat || 
-            this.forceStat || 
+    return this.getChargeStat() || 
+            this.getForceStat() || 
             this.isConfiguration || 
             this.sides[this.upgrade.side].metadata.grants;
   }
