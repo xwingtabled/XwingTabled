@@ -31,7 +31,9 @@ export class XwingIconComponent implements OnInit {
     "galacticempire" : "empire",
     "scumandvillainy" : "scum",
     "configuration" : "config",
-    "force-power" : "forcepower"
+    "force-power" : "forcepower",
+    "galacticrepublic" : "republic",
+    "separatistalliance" : "separatists"
   };
 
   static icon_class_template = "xwing-miniatures-font xwing-miniatures-font-TEMPLATE";

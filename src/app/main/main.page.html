@@ -1,7 +1,9 @@
 <div class="squadron-toolbar">
   <div *ngFor="let squadron of getSquadronTabs()" 
+    (click)="goToSquadron(squadron.index)"
     [class]="squadron.active ? 'active' : ''">
     <xwing-icon [name]="squadron.faction"></xwing-icon>{{ squadron.name }} ({{squadron.pointsDestroyed}}/{{squadron.pointTotal}})
+    <i *ngIf="squadron.active" class="fa fa-times" (click)="closeSquadron(squadron.index)"></i>
   </div>
 </div>
 <ion-content padding>
@@ -34,7 +36,7 @@
       </ion-card-content>
     </ion-card>
   </div>
-  <squadron *ngIf="squadron" [squadronNum]="squadronNum"></squadron>
+  <squadron *ngIf="squadron" [squadron]="squadron" [squadronNum]="squadronNum"></squadron>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

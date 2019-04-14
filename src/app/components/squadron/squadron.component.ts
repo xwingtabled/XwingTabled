@@ -15,7 +15,7 @@ import { NgZone } from '@angular/core';
 })
 export class SquadronComponent implements OnInit {
   @Input() squadronNum: number;
-  squadron: any;
+  @Input() squadron: any;
 
   constructor(public dataService: XwingDataService, 
       public modalController: ModalController, 
@@ -27,7 +27,6 @@ export class SquadronComponent implements OnInit {
       private ngZone: NgZone) { }
     
   ngOnInit() {
-    this.squadron = this.state.squadrons[this.squadronNum];
   }
 
   getPoints() {

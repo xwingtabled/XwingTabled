@@ -71,28 +71,51 @@ export class MainPage implements OnInit {
 
   getSquadronTabs() {
     let squadronTabs = [ ];
-    this.state.squadrons.forEach(
-      (squadron) => {
-        let squadronTab = { 
-          name: squadron.name,
-          faction: squadron.faction,
-          active: false,
-          pointsDestroyed: 0,
-          pointTotal: 0
-        };
-        squadron.pilots.forEach(
-          (pilot) => {
-            squadronTab.pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
-            squadronTab.pointTotal += this.dataService.getPilotPoints(pilot);
-          }
-        )
-        squadronTabs.push(squadronTab);
-      }
-    )
-    if (squadronTabs.length > 0 && squadronTabs[this.squadronNum]) {
-      squadronTabs[this.squadronNum].active = true;
+    for (let i = 0; i < this.state.squadrons.length; i++) {
+      let squadron = this.state.squadrons[i];
+      let squadronTab = { 
+        name: squadron.name,
+        faction: squadron.faction,
+        index: i,
+        active: i == this.squadronNum,
+        pointsDestroyed: 0,
+        pointTotal: 0
+      };
+      squadron.pilots.forEach(
+        (pilot) => {
+          squadronTab.pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
+          squadronTab.pointTotal += this.dataService.getPilotPoints(pilot);
+        }
+      )
+      squadronTabs.push(squadronTab);
     }
     return squadronTabs;
+  }
+
+  squadronRoute(index) {
+    return "/squadron/" + index;
+  }
+
+  goToSquadron(index) {
+    if (index == this.squadronNum) {
+      return;
+    }
+    this.router.navigateByUrl(this.squadronRoute(index));
+  }
+
+  closeSquadron(index) {
+    this.state.squadrons.splice(index, 1);
+    this.state.snapshot();
+    if (this.state.squadrons.length == 0) {
+      this.router.navigateByUrl("/");
+    }
+    let destination = this.squadronNum;
+    if (this.squadronNum >= this.state.squadrons.length) {
+      destination = this.state.squadrons.length - 1;
+      this.router.navigateByUrl(this.squadronRoute(destination));
+    } else {
+      this.squadron = this.state.squadrons[this.squadronNum];
+    }
   }
 
   getPoints() {

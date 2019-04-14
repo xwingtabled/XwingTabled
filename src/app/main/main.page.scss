@@ -156,12 +156,19 @@ ion-fab-button[data-desc]::after {
         line-height: 1em;
         vertical-align: text-bottom;
     }
-    div:hover {
+    div:hover:not(.active) {
         cursor: pointer;
         text-decoration: underline;
     }
     div.active {
         background-color: white;
         color: #1f1f1f;
+    }
+    i.fa-times {
+        margin-left: 0.25em;
+    }
+    i.fa-times:hover {
+        cursor: pointer;
+        text-decoration: underline;
     }
 }
