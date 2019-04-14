@@ -74,21 +74,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    ion-card {
+    .card {
+        overflow: hidden;
+        border-radius: 0.5em;
+        box-shadow: 0.1em 0.1em 0.25em #888888;
         width: 33%;
+        .card-content {
+            padding: 0.5em 1em 1em 1em;
+        }
+        .card-title {
+            font-size: 1.25em;
+            font-weight: bolder;
+        }
     }
 }
 
 .card-container-phone-portrait {
     @extend .card-container;
-    ion-card {
+    .card {
+        border-radius: 0em;
         width: 100%;
+        height: 100%;
     }
 }
 
 .card-container-phone-landscape {
     @extend .card-container-phone-portrait;
-    ion-card {
+    .card {
         width: 50%;
         img {
             display: none;
@@ -171,4 +183,20 @@ ion-fab-button[data-desc]::after {
         cursor: pointer;
         text-decoration: underline;
     }
+}
+
+.squadron-link {
+    text-decoration: none;
+    color: #1f1f1f;
+    cursor: pointer;
+    xwing-icon {
+        position: relative;
+        top: -0.05em;
+        display: inline-block;
+        width: 1.5em;
+    }
+    margin-bottom: 0.25em;
+}
+.squadron-link:hover span {
+    text-decoration: underline;
 }

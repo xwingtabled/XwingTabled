@@ -1,41 +1,31 @@
 <div class="squadron-toolbar">
-  <div *ngFor="let squadron of getSquadronTabs()" 
-    (click)="goToSquadron(squadron.index)"
-    [class]="squadron.active ? 'active' : ''">
-    <xwing-icon [name]="squadron.faction"></xwing-icon>{{ squadron.name }} ({{squadron.pointsDestroyed}}/{{squadron.pointTotal}})
-    <i *ngIf="squadron.active" class="fa fa-times" (click)="closeSquadron(squadron.index)"></i>
+  <div *ngFor="let squadron of state.squadrons" 
+    (click)="goToSquadron(squadron.squadronNum)"
+    [class]="squadron.squadronNum == squadronNum ? 'active' : ''">
+    <xwing-icon [name]="squadron.faction"></xwing-icon>{{ squadron.name }} 
+    ({{ state.getSquadronPointsDestroyed(squadron.squadronNum) }} / 
+    {{ state.getSquadronPointTotal(squadron.squadronNum) }})
+    <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="closeSquadron(squadron.Num)"></i>
+  </div>
+</div>
+<div *ngIf="!squadron" [class]="'card-container' + layout.getClass()">
+  <div class="card">
+    <img src="assets/img/splash.png">
+    <div class="card-content">
+      <span class="card-title">X-Wing Tabled</span><br /><br />
+      <div *ngIf="state.squadrons.length == 0">To begin, 
+        <a href="#" (click)="xwsAddButton()">add a squadron</a>.
+      </div>
+      <div *ngFor="let squadron of state.squadrons" 
+        (click)="goToSquadron(squadron.squadronNum)"
+        class="squadron-link">
+        <xwing-icon [name]="squadron.faction"></xwing-icon>
+        <span>{{ squadron.name }}</span>
+      </div>
+    </div>
   </div>
 </div>
 <ion-content padding>
-  <div *ngIf="!squadron" [class]="'card-container' + layout.getClass()">
-    <ion-card>
-      <img src="assets/img/splash.png">
-      <ion-card-header>
-        <ion-card-title>
-          X-Wing Tabled
-        </ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <div *ngIf="dataService.initialized">
-          To begin, add a squadron.
-        </div>
-        <div *ngIf="!dataService.initialized">
-          <div class="progress-bar-container">
-            <progress-bar 
-              [progress]="data_progress" 
-              [color]="'#488aff'">
-            </progress-bar>
-          </div>
-          {{ data_message }}
-          <div class="ion-text-right">
-            <ion-button *ngIf="retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
-            <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
-            <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button> 
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  </div>
   <squadron *ngIf="squadron" [squadron]="squadron" [squadronNum]="squadronNum"></squadron>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>

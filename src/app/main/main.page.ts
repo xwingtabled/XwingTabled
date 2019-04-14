@@ -30,7 +30,7 @@ export class MainPage implements OnInit {
   image_button: boolean = false;
   image_button_disabled: boolean = false;
 
-  squadronNum: number;
+  squadronNum: number = -1;
   squadron: any = null;
 
   constructor(public modalController: ModalController, 
@@ -66,30 +66,25 @@ export class MainPage implements OnInit {
       this.squadronNum = parseInt(squadronNumParam);
       this.squadron = this.state.squadrons[this.squadronNum];
     }
-    console.log("Entered main view", this.squadron);
   }
 
-  getSquadronTabs() {
-    let squadronTabs = [ ];
-    for (let i = 0; i < this.state.squadrons.length; i++) {
-      let squadron = this.state.squadrons[i];
-      let squadronTab = { 
-        name: squadron.name,
-        faction: squadron.faction,
-        index: i,
-        active: i == this.squadronNum,
-        pointsDestroyed: 0,
-        pointTotal: 0
-      };
-      squadron.pilots.forEach(
-        (pilot) => {
-          squadronTab.pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
-          squadronTab.pointTotal += this.dataService.getPilotPoints(pilot);
-        }
-      )
-      squadronTabs.push(squadronTab);
-    }
-    return squadronTabs;
+  getPointsDestroyed(squadron) {
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPointsDestroyed(pilot);
+      }
+    )
+    return points;
+  }
+
+  getPointTotal(squadron) {
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPilotPoints(pilot);
+      }
+    )
   }
 
   squadronRoute(index) {
@@ -101,6 +96,7 @@ export class MainPage implements OnInit {
       return;
     }
     this.router.navigateByUrl(this.squadronRoute(index));
+    return;
   }
 
   closeSquadron(index) {
@@ -108,11 +104,13 @@ export class MainPage implements OnInit {
     this.state.snapshot();
     if (this.state.squadrons.length == 0) {
       this.router.navigateByUrl("/");
+      return;
     }
     let destination = this.squadronNum;
     if (this.squadronNum >= this.state.squadrons.length) {
       destination = this.state.squadrons.length - 1;
       this.router.navigateByUrl(this.squadronRoute(destination));
+      return;
     } else {
       this.squadron = this.state.squadrons[this.squadronNum];
     }
@@ -253,6 +251,7 @@ export class MainPage implements OnInit {
                 this.data_button_disabled = false;
                 this.image_button = false;
                 this.image_button_disabled = false;
+                this.state.reset();
                 this.dataService.reset();
               }
             )
@@ -263,7 +262,7 @@ export class MainPage implements OnInit {
           cssClass: 'secondary' }
       ]
     });
-    return await alert.present();
+    await alert.present();
   }
 
   async askRechargeRecurring() {

@@ -98,6 +98,28 @@ export class XwingStateService {
     return upgrade;
   }
 
+  getSquadronPointsDestroyed(squadronNum: number) {
+    let squadron = this.squadrons[squadronNum];
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPointsDestroyed(pilot);
+      }
+    )
+    return points;
+  }
+
+  getSquadronPointTotal(squadronNum: number) {
+    let squadron = this.squadrons[squadronNum];
+    let points = 0;
+    squadron.pilots.forEach(
+      (pilot) => {
+        points += this.dataService.getPilotPoints(pilot);
+      }
+    )
+    return points;
+  }
+
   setUpgradeState(squadronNum: number, pilotNum: any, upgradeFFG: number, newData: any) {
     let pilot = this.getPilotState(squadronNum, pilotNum);
     newData = JSON.parse(JSON.stringify(newData));
@@ -186,7 +208,9 @@ export class XwingStateService {
     squadron.damagedeck = this.dataService.getDamageDeck();
     squadron.damagediscard = [ ];
     this.squadrons.push(squadron);
-    this.shuffleDamageDeck(this.squadrons.length - 1);
+    let squadronNum = this.squadrons.length - 1;
+    squadron.squadronNum = squadronNum;
+    this.shuffleDamageDeck(squadronNum);
     this.initialized = true;
     console.log("Squadron added", squadron);
     this.snapshot();
