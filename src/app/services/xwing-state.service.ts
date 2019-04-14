@@ -188,6 +188,7 @@ export class XwingStateService {
     this.squadrons.push(squadron);
     this.shuffleDamageDeck(this.squadrons.length - 1);
     this.initialized = true;
+    console.log("Squadron added", squadron);
     this.snapshot();
   }
 

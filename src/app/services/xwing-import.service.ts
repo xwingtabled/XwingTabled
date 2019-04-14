@@ -244,6 +244,8 @@ export class XwingImportService {
   processXws(squadron: any) {
     let squadPoints = 0;
     let squadronData = {
+      name: squadron.name,
+      faction: squadron.faction,
       damagediscard: [ ],
       damagedeck: this.dataService.getDamageDeck(),
       pilots: [ ]

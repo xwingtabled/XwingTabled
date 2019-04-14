@@ -69,6 +69,32 @@ export class MainPage implements OnInit {
     console.log("Entered main view", this.squadron);
   }
 
+  getSquadronTabs() {
+    let squadronTabs = [ ];
+    this.state.squadrons.forEach(
+      (squadron) => {
+        let squadronTab = { 
+          name: squadron.name,
+          faction: squadron.faction,
+          active: false,
+          pointsDestroyed: 0,
+          pointTotal: 0
+        };
+        squadron.pilots.forEach(
+          (pilot) => {
+            squadronTab.pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
+            squadronTab.pointTotal += this.dataService.getPilotPoints(pilot);
+          }
+        )
+        squadronTabs.push(squadronTab);
+      }
+    )
+    if (squadronTabs.length > 0 && squadronTabs[this.squadronNum]) {
+      squadronTabs[this.squadronNum].active = true;
+    }
+    return squadronTabs;
+  }
+
   getPoints() {
     if (!this.state.squadrons[this.squadronNum].pilots) {
       return "";

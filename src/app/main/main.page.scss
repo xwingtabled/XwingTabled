@@ -113,9 +113,9 @@
 
 ion-fab-button[data-desc] {
     position: relative;
-  }
+}
   
-  ion-fab-button[data-desc]::after {
+ion-fab-button[data-desc]::after {
     position: absolute;
     content: attr(data-desc);
     z-index: 1;
@@ -126,4 +126,42 @@ ion-fab-button[data-desc] {
     border-radius: 5px;
     color: var(--ion-color-dark);
     box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12);
-  }
+}
+
+.squadron-toolbar {
+    overflow-y: hidden;
+    position: relative;
+    height: 2.5em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    padding-top: 0.25em;
+    background-color: #1f1f1f;
+    xwing-icon {
+        margin-right: 0.25em;
+        line-height: 1em;
+        vertical-align: baseline;
+        position: relative;
+        top: -0.15em;
+    }
+    div {
+        position: relative;
+        background-color: #444444;
+        color: #aaaaaa;
+        height: 200%;
+        display: inline-block;
+        border-radius: 0.5em;
+        padding-top: 0.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+        line-height: 1em;
+        vertical-align: text-bottom;
+    }
+    div:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+    div.active {
+        background-color: white;
+        color: #1f1f1f;
+    }
+}
