@@ -4,7 +4,7 @@
     {{ state.squadrons[squadronNum].name }} 
     ({{ state.getSquadronPointsDestroyed(squadronNum) }} / 
     {{ state.getSquadronPointTotal(squadronNum) }})
-    <i class="fa fa-times" (click)="closeSquadron(squadronNum)"></i> 
+    <i class="fa fa-times" (click)="askClose()"></i> 
   </div>
   <div 
     *ngIf="state.squadrons.length > 1" 
@@ -28,7 +28,7 @@
     <xwing-icon [name]="squadron.faction"></xwing-icon>{{ squadron.name }} 
     ({{ state.getSquadronPointsDestroyed(squadron.squadronNum) }} / 
     {{ state.getSquadronPointTotal(squadron.squadronNum) }})
-    <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="closeSquadron(squadron.Num)"></i>
+    <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="askClose()"></i>
   </div>
   <div (click)="xwsAddButton()" class="active hover squad-control">
     <i class="fa fa-plus"></i>

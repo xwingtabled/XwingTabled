@@ -324,6 +324,28 @@ export class MainPage implements OnInit {
     return await alert.present(); 
   }
 
+  async askClose() {
+    const alert = await this.alertController.create({
+      header: 'Close squadron?',
+      message: 'This will close the current squadron',
+      buttons: [
+        { text: 'OK',
+          handler: () => { 
+            this.ngZone.run(
+              () => {
+                this.closeSquadron(this.squadronNum);
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present(); 
+  }
+
  
   async askReset() {
     const alert = await this.alertController.create({
