@@ -110,13 +110,13 @@
 
 .card-container-tablet {
     @extend .card-container;
-}
-
-.card-container-tablet-portrait {
-    @extend .card-container;
     ion-card {
         width: 66%;
     }
+}
+
+.card-container-tablet-portrait {
+    @extend .card-container-tablet;
 }
 
 .card-container-tablet-landscape {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { Observable, from, onErrorResumeNext, of, zip } from 'rxjs';
-import { concatMap, flatMap, tap, catchError } from 'rxjs/operators';
+import { concatMap, mergeMap, flatMap, tap, catchError } from 'rxjs/operators';
 import { Events } from '@ionic/angular';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -23,17 +23,16 @@ export class XwingDataService {
   // Should be hotlinked?
   hotlink: boolean = true;
 
-  // key/filename pairs
-  image_map: any = { };
-
   // base64urls for native, hotlinks for mobile
-
   image_urls: any = { };
   manifest_url: string = "https://raw.githubusercontent.com/jychuah/XwingTabled/master/scripts/manifest.json";
+
+  unavailable: string[ ] = [ 'https://sb-cdn.fantasyflightgames.com/card_art/Card_art_XW_U_158b.jpg' ];
 
   // Json Data
   data: any = { };
   ffg_data: any = [ ];
+  stored_filenames: string[] = [ ];
 
   constructor(private storage: Storage, private http: HttpProvider, private events: Events, 
               private platform: Platform, private file: File, private fileTransfer: FileTransfer,
@@ -59,7 +58,6 @@ export class XwingDataService {
   async reset() {
     // Delete all locally stored DB data (not images)
     this.initialized = false;
-    this.image_map = { };
     this.image_urls = { };
     this.data = { };
     this.ffg_data = { };
@@ -162,7 +160,6 @@ export class XwingDataService {
   download_manifest() {
     // Download the current manifest from xwing-data2
     this.status("manifest_downloading", "Downloading current manifest...");
-    console.log("Downloading from", this.manifest_url)
     this.http.get(this.manifest_url).subscribe(
       (manifest) => {
         if (manifest) {
@@ -216,7 +213,7 @@ export class XwingDataService {
     )
   }
 
-  create_file_list(manifest: any, extension: string) {
+  create_file_list(manifest: any, extensions: string[]) {
     // "Flatten" a JSON dictionary, keeping only string values with a file extension
     let unpack_queue = [ ];
     let download_list = [ ];
@@ -232,9 +229,13 @@ export class XwingDataService {
         try {
           // If the item is a string, see if it matches our extension
           if (typeof item == "string") {
-            if (item.endsWith(extension)) {
-              download_list.push(item);
-            }
+            extensions.forEach(
+              (extension) => {
+                if (item.endsWith(extension)) {
+                  download_list.push(item);
+                }
+              }
+            )
           } else if (item instanceof Array) {
             // If it's an array, push all values to the back of the unpack queue
             item.forEach(
@@ -251,7 +252,6 @@ export class XwingDataService {
             Object.entries(item).forEach(
               ([ key, value ]) => {
                 if (value == undefined) {
-                  // console.log("Empty value in ", item);
                 } else {
                   unpack_queue.push(value);
                 }
@@ -274,62 +274,9 @@ export class XwingDataService {
     return tokens[tokens.length - 1];
   }
 
-  download(urls: string[], options: any = {}) {
-    // Helper function to sequentially download files
-    this.progress =  0;
-    this.downloading = true;
-    let done: number = 0;
-    let url_obs = from(urls);
-    let download_obs = from(urls).pipe(
-      concatMap(
-        url => this.http.get(url, { }, options).pipe(
-          catchError(error => { 
-            console.log("HTTP get error", error);
-            return of(undefined)
-          })
-        )
-      ),
-    );
-    let zipped = zip(url_obs, download_obs, (url, response) => ({ url, response}));
-    return zipped.pipe(
-      tap( result => {
-        done = done + 1;
-        this.progress = (done / urls.length) * 100;
-      })
-    )
-  }
-
   mangle_name(name: string) : string {
     // Canonicalizes names: T-65 X-Wing => t65xwing
     return name.replace(/\s/g, '').replace(/\-/g, '').toLowerCase();
-  }
-
-  store_response(url: string, response: any) {
-    let key = this.url_to_key_name(url);
-    let value = response;
-    this.storage.set(key, value);
-  }
-
-  create_data_file_list(manifest: any, extension: string) {
-    // Create a list of data files to download. Skip ships.json since it no longer
-    // exists in xwing-data2
-    let files = this.create_file_list(manifest, extension);
-    let filtered = [ ];
-    files.forEach(
-      (item) => {
-        if (item != "data/ships/ships.json") {
-          filtered.push(item);
-        }
-      }
-    )
-    return filtered;
-  }
-
-  url_to_key_name(url: string) : string {
-    // Extract file.json from end of URL and strip to friendly keyname
-    let url_elements = url.split('/');
-    let name = url_elements[url_elements.length - 1];
-    return this.mangle_name(name).replace(/.json$/, '').replace(/.png$/, '').replace(/.jpg$/, '');
   }
 
   getDamageDeck() {
@@ -665,20 +612,14 @@ export class XwingDataService {
     // from a manifest.
     let filenames = [ ];
 
-    this.create_file_list(manifest, ".png").forEach(
+    this.create_file_list(manifest, [ ".png", ".jpg" ]).forEach(
       (url) => {
-        filenames.push(this.url_to_filename(url));
+        let filename = this.url_to_filename(url);
+        if (!filenames.includes(filename)) {
+          filenames.push(filename);
+        }
       }
     );
-    this.create_file_list(manifest, ".jpg").forEach(
-      (url) => {
-        filenames.push(this.url_to_filename(url));
-      }
-    )
-
-    for (let i = 0; i < filenames[i].length; i++) {
-      filenames[i] = this.url_to_filename(filenames[i]);
-    }
 
     // Find the app's cacheDirectory
     this.file.resolveDirectoryUrl(this.file.cacheDirectory).then(
@@ -693,47 +634,46 @@ export class XwingDataService {
     )
   }
 
-  async get_image_by_key(key: string) : Promise<string> {
-    // Image loader helper method
-    // Given a image keyname, find its associated URL
-    if (this.image_urls[key]) {
-      // For hotlinked images, this should always be filled
-      return this.image_urls[key];
-    }
-    // If an image_url[key] is empty, that means we must load from disk and cache it for later
-    let base64url = await this.file.readAsDataURL(this.file.cacheDirectory, this.image_map[key]);
-    this.image_urls[key] = this.sanitizer.bypassSecurityTrustUrl(base64url);
-    return this.image_urls[key];
-  }
-
   async get_image_by_url(url: string) : Promise<string> {
     // Get an image via its URL
-    return await this.get_image_by_key(this.url_to_key_name(url));
+
+    // If an image_ur
+    if (!this.image_urls[url] && this.platform.is('cordova')) {
+      let filename = this.url_to_filename(url);
+      let base64url = await this.file.readAsDataURL(this.file.cacheDirectory, filename);
+      this.image_urls[url] = this.sanitizer.bypassSecurityTrustUrl(base64url);
+    }
+
+    return this.image_urls[url];
   }
 
   load_files_from_directory(directory: any, filenames: string[]) {
-    console.log("filenames", filenames);
-    this.file.listDir(this.file.cacheDirectory, './').then(
+    this.stored_filenames = [ ];
+    this.unavailable.forEach(
+      (unavailable) => {
+        let index = filenames.indexOf(this.url_to_filename(unavailable));
+        if (index > -1) {
+          filenames.splice(index, 1);
+        }
+      }
+    )
+    this.file.listDir(this.file.cacheDirectory, '').then(
       (entries) => {
-        console.log("Files in cache directory", entries);
         let hits = 0;
         entries.forEach(
           (fileEntry) => {
-            let key = this.url_to_key_name(fileEntry.nativeURL);
-            this.image_map[key] = fileEntry.nativeURL;
             if (filenames.includes(fileEntry.name)) {
+              this.stored_filenames.push(fileEntry.name);
               hits += 1;
             }
           }
         )
         this.status("loading_images_complete", "Loading images complete"); 
         if (hits < filenames.length) {
-          console.log("Missing images:", (filenames.length - hits));
           this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded"); 
         } else {
           this.initialized = true;
           this.status("images_complete", "All X-Wing artwork loaded");
-          console.log("X-Wing Image Data", this.image_map);
         }
       }
     );
@@ -744,96 +684,84 @@ export class XwingDataService {
     // files are any .png or .jpg that do not appear in the image_map, which
     // should have been loaded during load_files_from_directory
     let missing_files = [ ];
-    this.create_file_list(manifest, ".png").forEach(
+    this.create_file_list(manifest,[ ".png", ".jpg" ]).forEach(
       (url) => {
-        if (!this.image_map[this.url_to_key_name(url)]) {
+        if (!this.stored_filenames.includes(this.url_to_filename(url))) {
           missing_files.push(url);
         }
       }
     );
-    this.create_file_list(manifest, ".jpg").forEach(
-      (url) => {
-        if (!this.image_map[this.url_to_key_name(url)]) {
-          missing_files.push(url);
-        }
-      }
-    );
+    console.log("Missing files", missing_files);
     return missing_files;
   }
 
   hotlink_images(manifest: any) {
     // Hotlink any images in our image_urls structure directly to FFG.
-    this.create_file_list(manifest, ".png").forEach(
+    this.create_file_list(manifest, [ ".png", ".jpg" ]).forEach(
       (url) => {
-        this.image_urls[this.url_to_key_name(url)] = url;
-      }
-    )
-    this.create_file_list(manifest, ".jpg").forEach(
-      (url) => {
-        this.image_urls[this.url_to_key_name(url)] = url;
+        this.image_urls[url] = url;
       }
     )
     // Notify Main Page that loading images has finished
     this.status("loading_images_complete", "Loading images complete");
     this.status("images_complete", "X-Wing artwork hotlinked");
     this.initialized = true;
-    console.log("X-Wing Images hotlinked URLS", this.image_urls);
   }
 
-  download_missing_images(manifest: any) {
+  download_missing_images() {
     // Sequentially ownload missing images from FFG image-cdn
-
+    let downloads = { ffg: this.ffg_data, manifest: this.data };
     // Create a list of images to download
-    let missing = [ ]
-    let urls = this.missing_file_list(manifest);
+    let urls = this.missing_file_list(downloads);
+
+    this.unavailable.forEach(
+      (unavailable) => {
+        let index = urls.indexOf(this.url_to_filename(unavailable));
+        if (index > -1) {
+          urls.splice(index, 1);
+        }
+      }
+    )
 
     // Create a sequence of ( { urls, fileEntry })
-    let url_obs = from(urls);
+    //let url_obs = from(urls);
     let file_obs = from(urls).pipe(
       concatMap(
-        url => {
-          console.log("Downloading url", url, "to", this.file.cacheDirectory);
-          //return this.transfer.download(url, this.file.cacheDirectory + this.url_to_filename(url))
-          return this.http.downloadFile(url, this.file.cacheDirectory + this.url_to_filename(url));
-        }
-      ),
-      catchError(
-        error => {
-          console.log("download error", error);
-          return of(undefined)
-        }
+        url => from(this.http.downloadFile(url, this.file.cacheDirectory + this.url_to_filename(url))).pipe(
+          catchError(error => of(undefined))
+        )
       )
     );
-    let zipped = zip(url_obs, file_obs, (url, fileEntry) => ({ url, fileEntry}));
+    //let zipped = zip(url_obs, file_obs, (url, fileEntry) => ({ url, fileEntry}));
     let done = 0;
+    let missing = 0;
 
     // Subscribe to the downloads
-    zipped.subscribe(
-      (result) => {
-        let key = this.url_to_key_name(result.url);
+    file_obs.subscribe(
+      (fileEntry) => {
         done = done + 1;
         this.progress = (done / urls.length) * 100;
         // Check each download
-        if (result.fileEntry) {
+        if (fileEntry) {
+          let filename = this.url_to_filename(fileEntry.name);
           // If a fileEntry is present, mark it as downloaded in our image_map
-          this.status("image_download", "Downloaded " + key);
-          this.image_map[key] = this.url_to_filename(result.url);
+          this.status("image_download", "Downloaded " + filename);
+          this.stored_filenames.push(filename);
         } else {
           // Otherwise mark it is missing
-          this.status("image_download", "Unable to download " + key);
-          missing.push(key);
+          missing += 1;
+          this.status("image_download", "Unable to download a file");
         }
       },
       (error) => { },
       () => {
-        if (missing.length) {
+        if (missing > 0) {
           // If there are images that could not be downloaded, inform the Main Page
           this.status("image_download_incomplete", "Unable to download one or more images");
         } else {
           // Otherwise we are good to go. Mark the service as initialized!
           this.status("image_download_complete", "X-Wing artwork has been downloaded");
           this.initialized = true;
-          console.log("X-Wing Image Data", this.image_map);
         }
       }
     );

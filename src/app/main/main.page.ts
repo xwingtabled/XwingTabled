@@ -29,6 +29,7 @@ export class MainPage implements OnInit {
   data_button_disabled: boolean = false;
   image_button: boolean = false;
   image_button_disabled: boolean = false;
+  continue_button: boolean = false;
 
   squadronNum: number = -1;
   squadron: any = null;
@@ -196,11 +197,17 @@ export class MainPage implements OnInit {
       await this.loadState();
     }
     if (event.status == "image_download_incomplete") {
-      this.image_button = true;
+      this.image_button = false;
+      this.image_button_disabled = false;
+      this.continue_button = true;
     }
     if (event.status == "image_download_complete") {
       await this.loadState();
     }
+  }
+
+  continueAnyway() {
+    this.dataService.initialized = true;
   }
 
   async loadState() {
@@ -226,7 +233,7 @@ export class MainPage implements OnInit {
 
   downloadArtwork() {
     this.image_button_disabled = true;
-    this.dataService.download_missing_images(this.dataService.ffg_data);
+    this.dataService.download_missing_images();
   }
 
   async damageDeck() {

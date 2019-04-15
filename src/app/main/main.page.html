@@ -80,6 +80,7 @@
           <ion-button *ngIf="retry_button" [disabled]="retry_button_disabled" (click)="retryManifest()">Retry Download</ion-button>
           <ion-button *ngIf="data_button" [disabled]="data_button_disabled" (click)="downloadData()">Download Data</ion-button>
           <ion-button *ngIf="image_button" [disabled]="image_button_disabled" (click)="downloadArtwork()">Download Artwork</ion-button> 
+          <ion-button *ngIf="continue_button" (click)="continueAnyway()">Continue</ion-button>
         </div>
       </div>
     </div>
