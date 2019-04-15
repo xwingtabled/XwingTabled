@@ -676,6 +676,10 @@ export class XwingDataService {
       }
     )
 
+    for (let i = 0; i < filenames[i].length; i++) {
+      filenames[i] = this.url_to_filename(filenames[i]);
+    }
+
     // Find the app's cacheDirectory
     this.file.resolveDirectoryUrl(this.file.cacheDirectory).then(
       (value) => {
@@ -708,66 +712,31 @@ export class XwingDataService {
   }
 
   load_files_from_directory(directory: any, filenames: string[]) {
-    // Do a quick file check for a list of images in a directory
-
-    // Create a ({filename, status}) sequence
-    let filenames_obs = from(filenames);
-    let filereader_obs = from(filenames).pipe(
-      flatMap(
-        filename => from(
-          this.file.checkFile(this.file.cacheDirectory, filename)
+    console.log("filenames", filenames);
+    this.file.listDir(this.file.cacheDirectory, './').then(
+      (entries) => {
+        console.log("Files in cache directory", entries);
+        let hits = 0;
+        entries.forEach(
+          (fileEntry) => {
+            let key = this.url_to_key_name(fileEntry.nativeURL);
+            this.image_map[key] = fileEntry.nativeURL;
+            if (filenames.includes(fileEntry.name)) {
+              hits += 1;
+            }
+          }
         )
-      ),
-      catchError(
-        error => {
-          return of(undefined)
-        }
-      )
-    );
-    let zipped = zip(
-      filenames_obs, filereader_obs,
-      ((filename, status) => ({ filename, status }))
-    );
-
-    let done = 0;
-    let missing = [ ];
-
-    // Subscribe to the sequence
-    zipped.subscribe(
-      (item) => {
-        // Mark progress that a file has been checked
-        done = done + 1;
-        this.progress = (done / filenames.length) * 100;
-        let key = this.url_to_key_name(item.filename);
-
-        if (item.status) {
-          // If a file is present, record its filename in our image_map
-          this.image_map[key] = item.filename;
-          //this.status("image_loaded", "Found image " + item.filename);
-        } else {
-          // If it's missing, mark it as missing
-          this.status("image_loaded", "Missing image " + item.filename);
-          missing.push(item.filename);
-        }
-      },
-      (error) => { 
-        console.log("image loader error", error);
-      },
-      () => {
-        // Notify Main Page that loading images has finished
         this.status("loading_images_complete", "Loading images complete"); 
-        if (missing.length) {
-          // If there are missing images, notify the Main Page so the user can be prompted to download it
-          // This should trigger download_missing_images()
-          this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded");
+        if (hits < filenames.length) {
+          console.log("Missing images:", (filenames.length - hits));
+          this.status("images_missing", "Some X-Wing artwork is missing and must be downloaded"); 
         } else {
-          // If there are no missing images, then mark this service as initialized!
           this.initialized = true;
           this.status("images_complete", "All X-Wing artwork loaded");
           console.log("X-Wing Image Data", this.image_map);
         }
       }
-    )
+    );
   }
 
   missing_file_list(manifest: any) : string[ ] {
@@ -822,7 +791,11 @@ export class XwingDataService {
     let url_obs = from(urls);
     let file_obs = from(urls).pipe(
       concatMap(
-        url => this.transfer.download(url, this.file.cacheDirectory + this.url_to_filename(url))
+        url => {
+          console.log("Downloading url", url, "to", this.file.cacheDirectory);
+          //return this.transfer.download(url, this.file.cacheDirectory + this.url_to_filename(url))
+          return this.http.downloadFile(url, this.file.cacheDirectory + this.url_to_filename(url));
+        }
       ),
       catchError(
         error => {

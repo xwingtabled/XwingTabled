@@ -13,4 +13,8 @@ export class HttpNativeProvider {
 
         return from(responseData);
     }
+
+    public downloadFile(url: string, path: string) {
+        return this.http.downloadFile(url, { }, { }, path);
+    }
 }

@@ -226,7 +226,7 @@ export class MainPage implements OnInit {
 
   downloadArtwork() {
     this.image_button_disabled = true;
-    this.dataService.download_missing_images(this.dataService.data);
+    this.dataService.download_missing_images(this.dataService.ffg_data);
   }
 
   async damageDeck() {

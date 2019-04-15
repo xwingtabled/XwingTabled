@@ -21,4 +21,8 @@ export class HttpProvider {
     get(url: string, params?: any, options: any = {}) {
         return this.http.get(url, params, options);
     }
+
+    downloadFile(url: string, filepath: string) {
+        return this.nativeHttp.downloadFile(url, filepath);
+    }
 }
