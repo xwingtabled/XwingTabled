@@ -110,7 +110,7 @@
 
 .card-container-tablet {
     @extend .card-container;
-    ion-card {
+    .card {
         width: 66%;
     }
 }
