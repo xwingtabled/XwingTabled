@@ -111,7 +111,7 @@
 .card-container-tablet {
     @extend .card-container;
     .card {
-        width: 66%;
+        width: 50%;
     }
 }
 
@@ -121,6 +121,9 @@
 
 .card-container-tablet-landscape {
     @extend .card-container;
+    .card {
+        width: 33%;
+    }
 }
 
 ion-fab-button[data-desc] {
