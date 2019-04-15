@@ -197,7 +197,7 @@ export class XwingStateService {
   snapshotCheck() {
     if (this.snapshots.length) {
       let lastSnapshot = this.snapshots[this.snapshots.length - 1];
-      if (JSON.stringify(lastSnapshot.squadron) != JSON.stringify(this.squadrons)) {
+      if (JSON.stringify(lastSnapshot.squadrons) != JSON.stringify(this.squadrons)) {
         this.snapshot();
       }
     }
