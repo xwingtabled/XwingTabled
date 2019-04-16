@@ -48,7 +48,7 @@
     <i class="fa fa-caret-left"></i>
   </div>
 </div>
-<div *ngIf="state.initialized && !squadron" [class]="'card-container' + layout.getClass()">
+<div *ngIf="!state.initialized || !squadron" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
@@ -88,7 +88,7 @@
 </div>
 <ion-content padding>
   <squadron *ngIf="squadron" [squadron]="squadron"></squadron>
-  <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>
     </ion-fab-button>
@@ -96,13 +96,13 @@
       <ion-fab-button (click)="resetData()" data-desc="Nuke local data">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="xwsAddButton()" data-desc="Import squadron">
+      <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
           <ion-icon name="add"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
         <i class="fa fa-power-off"></i>
       </ion-fab-button>
-      <ion-fab-button *ngIf="state.snapshots.length > 1" (click)="askUndo()" data-desc="Undo">
+      <ion-fab-button *ngIf="squadronUUID && state.snapshots.length > 1" (click)="askUndo()" data-desc="Undo">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" 

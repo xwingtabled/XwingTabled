@@ -31,7 +31,7 @@ export class MainPage implements OnInit {
   image_button_disabled: boolean = false;
   continue_button: boolean = false;
 
-  squadronUUID: string = "";
+  squadronUUID: string;
   squadron: any = null;
 
   constructor(public modalController: ModalController, 
@@ -66,7 +66,9 @@ export class MainPage implements OnInit {
 
   ionViewDidEnter() {
     this.state.snapshotCheck();
-
+    if(this.squadronUUID && !this.squadron) {
+      this.router.navigateByUrl("/");
+    }
   }
 
   getPointsDestroyed(squadron) {
