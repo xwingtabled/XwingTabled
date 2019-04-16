@@ -15,7 +15,7 @@ import { NgZone } from '@angular/core';
   styleUrls: ['./pilot.component.scss']
 })
 export class PilotComponent implements OnInit {
-  @Input() squadronNum: number;
+  @Input() squadronUUID: number;
   @Input() pilot: any;
   pilotNum: number;
   groups: any[][] = [];
@@ -199,8 +199,8 @@ export class PilotComponent implements OnInit {
     const modal = await this.modalController.create({
       component: PilotModalPage,
       componentProps: {
-        pilotNum: this.pilotNum,
-        squadronNum: this.squadronNum
+        squadronUUID: this.squadronUUID,
+        pilotUUID: this.pilot.uuid
       }
     });
     await modal.present();
@@ -212,7 +212,7 @@ export class PilotComponent implements OnInit {
 
   showPilot() {
     if (this.layout.isPhone()) {
-      let url = '/squadron/' + this.squadronNum + '/pilot/' + this.pilotNum;
+      let url = '/squadron/' + this.squadronUUID + '/pilot/' + this.pilotNum;
       this.router.navigateByUrl(url);
     } else {
       this.presentPilotModal();

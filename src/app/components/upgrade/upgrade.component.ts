@@ -11,8 +11,8 @@ import { XwingStateService } from '../../services/xwing-state.service';
   styleUrls: ['./upgrade.component.scss']
 })
 export class UpgradeComponent implements OnInit {
-  @Input() squadronNum: number;
-  @Input() pilotNum: number;
+  @Input() squadronUUID: string;
+  @Input() pilotUUID: string;
   @Input() upgrade: any;
   ffg: number;
   img_class: string = "img-alt";
@@ -34,9 +34,9 @@ export class UpgradeComponent implements OnInit {
     const modal = await this.modalController.create({
       component: UpgradeModalPage,
       componentProps: {
-        upgrade: this.upgrade,
-        pilotNum: this.pilotNum,
-        squadronNum: this.squadronNum
+        squadronUUID: this.squadronUUID,
+        pilotUUID: this.pilotUUID,
+        ffg: this.upgrade.sides[this.upgrade.side].ffg,
       }
     });
     await modal.present();
@@ -65,15 +65,28 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
-  getChargeStat() {
-    if ("charges" in this.upgrade) {
-      return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "charge", this.upgrade.charges);
+  getStatValue(stat: string) {
+    let statData = this.dataService.getFFGCardStat(this.upgrade.sides[0].ffg, stat);
+    if (!statData) {
+      return 0;
     }
-    return null;
+    return statData.value;
+  }
+
+  isRecurring(stat: string) {
+    let statData = this.dataService.getFFGCardStat(this.upgrade.sides[0].ffg, stat);
+    if (!statData) {
+      return false;
+    }
+    return statData.recurring;
+  }
+
+  getChargeStat() {
+    return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "charge", this.upgrade.charges);
   }
 
   getForceStat() {
-    return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "force", this.upgrade.charges);
+    return this.dataService.getCardStatObject(this.upgrade.sides[0].ffg, "force", this.upgrade.force);
   }
 
   showOverlay() {
@@ -88,8 +101,8 @@ export class UpgradeComponent implements OnInit {
       -1
     );
     this.isConfiguration = this.getIsConfiguration();
-    return this.getChargeStat() || 
-            this.getForceStat() || 
+    return 'charges' in this.upgrade || 
+            'force' in this.upgrade || 
             this.isConfiguration || 
             this.sides[this.upgrade.side].metadata.grants;
   }

@@ -10,16 +10,16 @@ const routes: Routes = [
     loadChildren: './main/main.module#MainPageModule' 
   },
   {
-    path: 'squadron/:squadronNum',
+    path: 'squadron/:squadronUUID',
     loadChildren: './main/main.module#MainPageModule'
   },
   {
-    path: 'squadron/:squadronNum/pilot/:pilotNum',
+    path: 'squadron/:squadronUUID/pilot/:pilotUUID',
     component: PilotModalPage,
     canActivate: [ModalGuard]
   },
   {
-    path: 'squadron/:squadronNum/pilot/:pilotNum/upgrade/:ffg',
+    path: 'squadron/:squadronUUID/pilot/:pilotUUID/upgrade/:ffg',
     component: UpgradeModalPage,
     canActivate: [ModalGuard]
   },

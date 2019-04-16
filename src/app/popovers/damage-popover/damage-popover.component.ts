@@ -10,7 +10,7 @@ import { XwingStateService } from '../../services/xwing-state.service';
 })
 export class DamagePopoverComponent implements OnInit {
   card;
-  squadronNum: number;
+  squadronUUID: string;
   squadron: any;
 
   constructor(private popoverController: PopoverController, 
@@ -18,7 +18,7 @@ export class DamagePopoverComponent implements OnInit {
               private state: XwingStateService) { }
 
   ngOnInit() {
-    this.squadron = this.state.squadrons[this.squadronNum];
+    this.squadron = this.state.getSquadron(this.squadronUUID);
   }
 
   mutateCard() {
@@ -53,7 +53,7 @@ export class DamagePopoverComponent implements OnInit {
             }
           )
           // Move discarded cards to damage discard pile
-          this.state.discard(this.squadronNum, this.card);
+          this.state.discard(this.squadronUUID, this.card);
         }
       }
     )

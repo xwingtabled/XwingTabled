@@ -16,11 +16,15 @@
     @extend .pilot;
     padding-left: 1vw;
 }
-.pilot-phone-portrait {
+.pilot-phone {
     @extend .pilot;
+    margin-bottom: 0.25em;
+}
+.pilot-phone-portrait {
+    @extend .pilot-phone;
 }
 .pilot-phone-landscape {
-    @extend .pilot;
+    @extend .pilot-phone;
 }
 .pilot-header {
     padding-left: 0.5vh;
@@ -262,10 +266,20 @@
     font-size: 2vh;
     padding-left: 0.5em;
 }
+.phone-upgrades {
+    ion-list {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+}
 .phone-upgrades-phone-portrait {
+    @extend .phone-upgrades;
     display: block;
 }
 .phone-upgrades-phone-landscape {
+    @extend .phone-upgrades;
     display: inline-block;
     width: 50%;
 }

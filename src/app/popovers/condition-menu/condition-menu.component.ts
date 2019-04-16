@@ -10,8 +10,8 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./condition-menu.component.scss']
 })
 export class ConditionMenuComponent implements OnInit {
-  squadronNum: number;
-  pilotNum: number;
+  squadronUUID: string;
+  pilotUUID: string;
   squadron: any;
   pilot: any;
   conditions: any[] = [];
@@ -70,8 +70,8 @@ export class ConditionMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.squadron = this.state.squadrons[this.squadronNum];
-    this.pilot = this.state.getPilotState(this.squadronNum, this.pilotNum);
+    this.squadron = this.state.getSquadron(this.squadronUUID);
+    this.pilot = this.state.getPilot(this.squadronUUID, this.pilotUUID);
     this.dataService.data.conditions.forEach(
       (condition) => {
         // Make a copy of each condition object

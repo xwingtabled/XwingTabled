@@ -9,7 +9,7 @@ import { XwingStateService } from '../../services/xwing-state.service';
   styleUrls: ['./damage-deck-actions.component.scss']
 })
 export class DamageDeckActionsComponent implements OnInit {
-  squadronNum: number;
+  squadronUUID: string;
   squadron: any;
   constructor(private events: Events, 
               private toastController: ToastController,
@@ -17,7 +17,7 @@ export class DamageDeckActionsComponent implements OnInit {
               public state: XwingStateService) { }
 
   ngOnInit() {
-    this.squadron = this.state.squadrons[this.squadronNum];
+    this.squadron = this.state.getSquadron(this.squadronUUID);
   }
 
   async toastDamageDeck(text: string) {
@@ -31,12 +31,12 @@ export class DamageDeckActionsComponent implements OnInit {
 
   async shuffleDiscarded() {
     await this.popoverController.dismiss();
-    this.state.shuffleDamageDiscard(this.squadronNum);
+    this.state.shuffleDamageDiscard(this.squadronUUID);
   }
 
   async shuffleDeck() {
     await this.popoverController.dismiss();
-    this.state.shuffleDamageDeck(this.squadronNum);
+    this.state.shuffleDamageDeck(this.squadronUUID);
   }
 
 }

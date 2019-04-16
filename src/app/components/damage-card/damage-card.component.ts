@@ -8,7 +8,7 @@ import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-pop
 })
 export class DamageCardComponent implements OnInit {
   @Input() card: any = { };
-  @Input() squadronNum: number;
+  @Input() squadronUUID: string;
   constructor(private popoverController: PopoverController) { }
 
   ngOnInit() {
@@ -19,7 +19,7 @@ export class DamageCardComponent implements OnInit {
       component: DamagePopoverComponent,
       componentProps: {
         card: this.card,
-        squadron: this.squadronNum
+        squadronUUID: this.squadronUUID
       }
     });
     return await popover.present();

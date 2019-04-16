@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./phone-upgrade.component.scss']
 })
 export class PhoneUpgradeComponent implements OnInit {
-  @Input() squadronNum: number;
-  @Input() pilotNum: number;
+  @Input() squadronUUID: string;
+  @Input() pilotUUID: string;
   @Input() ffg: number;
   upgrade: any = { };
   sides: any[] = [ ];
@@ -23,7 +23,7 @@ export class PhoneUpgradeComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg);
+    this.upgrade = this.state.getUpgrade(this.squadronUUID, this.pilotUUID, this.ffg);
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
     }
@@ -47,8 +47,8 @@ export class PhoneUpgradeComponent implements OnInit {
   }
 
   showUpgrade() {
-    let url = '/squadron/' + this.squadronNum +'/pilot/' 
-              + this.pilotNum + "/upgrade/" 
+    let url = '/squadron/' + this.squadronUUID +'/pilot/' 
+              + this.pilotUUID + "/upgrade/" 
               + this.upgrade.sides[this.upgrade.side].ffg; 
     this.router.navigateByUrl(url);
   }

@@ -1,54 +1,54 @@
-<div *ngIf="layout.getClass().includes('phone')" class="squadron-toolbar">
-  <div class='active' *ngIf="state.squadrons[squadronNum]">
-    <xwing-icon [name]="state.squadrons[squadronNum].faction"></xwing-icon>
-    {{ state.squadrons[squadronNum].name }} 
-    ({{ state.getSquadronPointsDestroyed(squadronNum) }} / 
-    {{ state.getSquadronPointTotal(squadronNum) }})
+<div *ngIf="state.initialized && layout.getClass().includes('phone')" class="squadron-toolbar">
+  <div class='active' *ngIf="squadron">
+    <xwing-icon [name]="squadron.faction"></xwing-icon>
+    {{ squadron.name }} 
+    ({{ state.getSquadronPointsDestroyed(squadron.uuid) }} / 
+    {{ state.getSquadronPointTotal(squadron.uuid) }})
     <i class="fa fa-times" (click)="askClose()"></i> 
   </div>
   <div 
     *ngIf="state.squadrons.length > 1" 
-    [class]="state.squadrons[squadronNum + 1] ? 'active hover squad-control' : 'squad-control'"
-    (click)="goToSquadron(squadronNum + 1)"
+    [class]="nextSquadron() ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(nextSquadron())"
     style="float: right;">
     <i class="fa fa-caret-right"></i>
   </div>
   <div 
     *ngIf="state.squadrons.length > 1" 
-    [class]="state.squadrons[squadronNum - 1] ? 'active hover squad-control' : 'squad-control'"
-    (click)="goToSquadron(squadronNum - 1)"
+    [class]="previousSquadron() ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(previousSquadron())"
     style="float: right;">
     <i class="fa fa-caret-left"></i>
   </div>
 </div>
-<div *ngIf="!layout.getClass().includes('phone')" class="squadron-toolbar">
-  <div *ngFor="let squadron of state.squadrons" 
-    (click)="goToSquadron(squadron.squadronNum)"
-    [class]="squadron.squadronNum == squadronNum ? 'active' : ''">
-    <xwing-icon [name]="squadron.faction"></xwing-icon>{{ squadron.name }} 
-    ({{ state.getSquadronPointsDestroyed(squadron.squadronNum) }} / 
-    {{ state.getSquadronPointTotal(squadron.squadronNum) }})
-    <i *ngIf="squadron.squadronNum == squadronNum" class="fa fa-times" (click)="askClose()"></i>
+<div *ngIf="state.initialized && !layout.getClass().includes('phone')" class="squadron-toolbar">
+  <div *ngFor="let squadronItem of state.squadrons" 
+    (click)="goToSquadron(squadronItem)"
+    [class]="squadron && squadronItem.uuid.includes(squadronUUID) ? 'active' : ''">
+    <xwing-icon [name]="squadronItem.faction"></xwing-icon>{{ squadronItem.name }} 
+    ({{ state.getSquadronPointsDestroyed(squadronItem.uuid) }} / 
+    {{ state.getSquadronPointTotal(squadronItem.uuid) }})
+    <i *ngIf="squadronItem.uuid.includes(squadronUUID)" class="fa fa-times" (click)="askClose()"></i>
   </div>
   <div (click)="xwsAddButton()" class="active hover squad-control">
     <i class="fa fa-plus"></i>
   </div>
   <div 
     *ngIf="state.squadrons.length > 1" 
-    [class]="state.squadrons[squadronNum + 1] ? 'active hover squad-control' : 'squad-control'"
-    (click)="goToSquadron(squadronNum + 1)"
+    [class]="nextSquadron() ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(nextSquadron())"
     style="float: right;">
     <i class="fa fa-caret-right"></i>
   </div>
   <div 
     *ngIf="state.squadrons.length > 1" 
-    [class]="state.squadrons[squadronNum - 1] ? 'active hover squad-control' : 'squad-control'"
-    (click)="goToSquadron(squadronNum - 1)"
+    [class]="previousSquadron() ? 'active hover squad-control' : 'squad-control'"
+    (click)="goToSquadron(previousSquadron())"
     style="float: right;">
     <i class="fa fa-caret-left"></i>
   </div>
 </div>
-<div *ngIf="!state.squadrons[squadronNum]" [class]="'card-container' + layout.getClass()">
+<div *ngIf="state.initialized && !squadron" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
@@ -61,11 +61,11 @@
         <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
           Saved squadrons
         </div>
-        <div *ngFor="let squadron of state.squadrons" 
-          (click)="goToSquadron(squadron.squadronNum)"
+        <div *ngFor="let squadronItem of state.squadrons" 
+          (click)="goToSquadron(squadronItem)"
           class="squadron-link">
-          <xwing-icon [name]="squadron.faction"></xwing-icon>
-          <span>{{ squadron.name }}</span>
+          <xwing-icon [name]="squadronItem.faction"></xwing-icon>
+          <span>{{ squadronItem.name }}</span>
         </div>
       </div>
       <div *ngIf="!dataService.initialized">
@@ -87,7 +87,7 @@
   </div>
 </div>
 <ion-content padding>
-  <squadron *ngIf="state.squadrons[squadronNum]" [squadron]="state.squadrons[squadronNum]" [squadronNum]="squadronNum"></squadron>
+  <squadron *ngIf="squadron" [squadron]="squadron"></squadron>
   <ion-fab *ngIf="dataService.initialized" vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

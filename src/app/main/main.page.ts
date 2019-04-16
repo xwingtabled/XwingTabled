@@ -31,7 +31,7 @@ export class MainPage implements OnInit {
   image_button_disabled: boolean = false;
   continue_button: boolean = false;
 
-  squadronNum: number = -1;
+  squadronUUID: string = "";
   squadron: any = null;
 
   constructor(public modalController: ModalController, 
@@ -43,7 +43,6 @@ export class MainPage implements OnInit {
               private alertController: AlertController,
               private ngZone: NgZone,
               private toastController: ToastController,
-              private storage: Storage,
               private http: HttpProvider,
               private loadingCtrl: LoadingController,
               public state: XwingStateService,
@@ -52,11 +51,11 @@ export class MainPage implements OnInit {
               public layout: LayoutService) { }
 
   ngOnInit() {
-    let squadronNumParam = this.route.snapshot.paramMap.get("squadronNum");
-    if (squadronNumParam) {
-      this.squadronNum = parseInt(squadronNumParam);
-      this.squadron = this.state.squadrons[this.squadronNum];
+    this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
+    if (this.squadronUUID && this.state.squadrons.length > 0) {
+      this.squadron = this.state.getSquadron(this.squadronUUID);
     }
+
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -89,19 +88,46 @@ export class MainPage implements OnInit {
     )
   }
 
-  squadronRoute(index) {
-    return "/squadron/" + index;
+  nextSquadron() {
+    if (!this.squadron) {
+      return null;
+    }
+    let index = this.state.getSquadronIndex(this.squadron.uuid) + 1;
+    if (index >= this.state.squadrons.length) {
+      return null;
+    }
+    return this.state.squadrons[index];
   }
 
-  goToSquadron(index) {
-    if (index == this.squadronNum || !this.state.squadrons[index]) {
+  previousSquadron() {
+    if (!this.squadron) {
+      return null;
+    }
+    let index = this.state.getSquadronIndex(this.squadron.uuid) - 1;
+    if (index < 0) {
+      return null;
+    }
+    return this.state.squadrons[index];
+  }
+
+  squadronRoute(uuid: string) {
+    return "/squadron/" + uuid;
+  }
+
+  goToSquadron(squadron: any) {
+    if (!squadron) {
       return;
     }
-    this.router.navigateByUrl(this.squadronRoute(index));
+    let uuid = squadron.uuid;
+    if (uuid == this.squadronUUID) {
+      return;
+    }
+    this.router.navigateByUrl(this.squadronRoute(uuid.substring(0, 8)));
     return;
   }
 
-  closeSquadron(index) {
+  closeSquadron(uuid: string) {
+    let index = this.state.getSquadronIndex(uuid);
     this.state.squadrons.splice(index, 1);
     for (let i = 0; i < this.state.squadrons.length; i++) {
       this.state.squadrons[i].squadronNum = i;
@@ -111,30 +137,13 @@ export class MainPage implements OnInit {
       this.router.navigateByUrl("/");
       return;
     }
-    let destination = this.squadronNum;
-    if (this.squadronNum >= this.state.squadrons.length) {
-      destination = this.state.squadrons.length - 1;
-      this.router.navigateByUrl(this.squadronRoute(destination));
-      return;
-    } else {
-      this.squadron = this.state.squadrons[this.squadronNum];
+    if (index >= this.state.squadrons.length) {
+      index = this.state.squadrons.length - 1;
     }
+    let destination = this.state.squadrons[index].uuid;
+    this.router.navigateByUrl(this.squadronRoute(destination));
   }
 
-  getPoints() {
-    if (!this.state.squadrons[this.squadronNum].pilots) {
-      return "";
-    }
-    let pointsDestroyed = 0;
-    let totalPoints = 0;
-    this.state.squadrons[this.squadronNum].pilots.forEach(
-      (pilot) => {
-        pointsDestroyed += this.dataService.getPointsDestroyed(pilot);
-        totalPoints += this.dataService.getPilotPoints(pilot);
-      }
-    )
-    return "( " + pointsDestroyed + " / " + totalPoints + " )";
-  }
 
   async data_event_handler(event: any) {
     this.data_message = event.message;
@@ -217,7 +226,7 @@ export class MainPage implements OnInit {
     if (this.state.snapshots && this.state.snapshots.length) {
       this.toastUndo(this.state.getLastSnapshotTime());
     }
-    this.squadron = this.state.squadrons[this.squadronNum];
+    this.squadron = this.state.getSquadron(this.squadronUUID);
   }
 
   retryDownload() {
@@ -240,7 +249,7 @@ export class MainPage implements OnInit {
     const popover = await this.popoverController.create({
       component: DamageDeckActionsComponent,
       componentProps: {
-        squadronNum: this.squadronNum
+        squadronUUID: this.squadronUUID
       },
     });
     return await popover.present();
@@ -286,7 +295,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.state.rechargeAllRecurring(this.squadronNum);
+                this.state.rechargeAllRecurring(this.squadronUUID);
               }
             )
           }
@@ -340,7 +349,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.closeSquadron(this.squadronNum);
+                this.closeSquadron(this.squadronUUID);
               }
             )
           }
@@ -363,7 +372,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               async () => {
-                this.state.resetSquadron(this.squadronNum);
+                this.state.resetSquadron(this.squadronUUID);
                 const toast = await this.toastController.create({
                   message: 'Squadrons reset',
                   duration: 2000,
@@ -406,7 +415,7 @@ export class MainPage implements OnInit {
       if (data.ffg) {
         let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + data.ffg + "/";
     
-        this.http.get(url).subscribe(
+        await this.http.get(url).subscribe(
           (data) => {
             this.state.addSquadron(this.importService.processFFG(data))
           },
@@ -421,7 +430,7 @@ export class MainPage implements OnInit {
           }
         );
 
-        this.state.addSquadron(this.importService.processFFG(data.ffg));
+        //this.state.addSquadron(this.importService.processFFG(data.ffg));
       }
       if (data.yasb) {
         this.state.addSquadron(this.importService.processYasb(data.yasb));
@@ -430,8 +439,8 @@ export class MainPage implements OnInit {
         let squadron = data.xws;
         this.state.addSquadron(this.importService.processXws(squadron));
       }
-      let newSquadronNum = this.state.squadrons.length - 1;
-      let url = '/squadron/' + newSquadronNum;
+      let newSquadronUUID = this.state.squadrons[this.state.squadrons.length - 1].uuid;
+      let url = '/squadron/' + newSquadronUUID.substring(0, 8);
       this.router.navigateByUrl(url);
     } catch (e) {
       console.log(e);

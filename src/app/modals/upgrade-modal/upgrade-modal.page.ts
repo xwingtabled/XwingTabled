@@ -11,8 +11,8 @@ import { Location } from '@angular/common';
   styleUrls: ['./upgrade-modal.page.scss'],
 })
 export class UpgradeModalPage implements OnInit {
-  squadronNum: number;
-  pilotNum: number;
+  squadronUUID: string;
+  pilotUUID: string;
   ffg: number;
   pilot: any;
   upgrade: any = { };
@@ -30,16 +30,16 @@ export class UpgradeModalPage implements OnInit {
               private location: Location) { }
 
   ngOnInit() {
-    let routeSquadronNum = this.route.snapshot.paramMap.get("squadronNum");
-    let routePilotNum = this.route.snapshot.paramMap.get("pilotNum");
-    let routeFFG = this.route.snapshot.paramMap.get("ffg");
-    if (routePilotNum && routeFFG) {
+    let squadronUUIDParam = this.route.snapshot.paramMap.get("squadronUUID");
+    let pilotUUIDParam = this.route.snapshot.paramMap.get("pilotUUID");
+    let ffgParam = this.route.snapshot.paramMap.get("ffg");
+    if (squadronUUIDParam && pilotUUIDParam && ffgParam) {
       this.useAngularRouter = true;
-      this.squadronNum = parseInt(routeSquadronNum);
-      this.pilotNum = parseInt(routePilotNum);
-      this.ffg = parseInt(routeFFG);
-      this.upgrade = this.state.getUpgradeState(this.squadronNum, this.pilotNum, this.ffg);
+      this.squadronUUID = squadronUUIDParam;
+      this.pilotUUID = pilotUUIDParam;
+      this.ffg = parseInt(ffgParam);
     }
+    this.upgrade = this.state.getUpgrade(this.squadronUUID, this.pilotUUID, this.ffg);
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);
     }
@@ -56,9 +56,8 @@ export class UpgradeModalPage implements OnInit {
     }
   }
 
-  chargeChange(data: any) {
-    this.upgrade.charges = data;
-    this.state.setUpgradeState(this.squadronNum, this.pilotNum, this.ffg, this.upgrade);
+  chargeChange(remaining: number) {
+    this.upgrade.charges = remaining;
   }
 
   flipCard() {
@@ -67,7 +66,6 @@ export class UpgradeModalPage implements OnInit {
     } else {
       this.upgrade.side = 0;
     }
-    this.state.setUpgradeState(this.squadronNum, this.pilotNum, this.ffg, this.upgrade);
   }
 
   dismiss() {
