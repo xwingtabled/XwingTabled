@@ -28,6 +28,23 @@ export class XwingStateService {
     this.initialized = false;
   }
 
+  integrityCheck() {
+    this.squadrons.forEach(
+      (squadron) => {
+        if (!squadron.uuid) {
+          squadron.uuid = this.getSquadronId();
+        }
+        squadron.pilots.forEach(
+          (pilot) => {
+            if (!pilot.uuid) {
+              pilot.uuid = uuidv4().substring(0, 8);
+            }
+          }
+        )
+      }
+    )
+  }
+
   async restoreFromDisk() {
     await this.storage.ready();
     let snapshots = await this.storage.get("snapshots");
@@ -38,6 +55,7 @@ export class XwingStateService {
       if (lastSnapshot.squadrons) {
         this.squadrons = lastSnapshot.squadrons;
       }
+      this.integrityCheck();
       console.log("Squadrons restored", this.squadrons);
       this.initialized = true;
     } else {

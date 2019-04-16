@@ -212,7 +212,7 @@ export class PilotComponent implements OnInit {
 
   showPilot() {
     if (this.layout.isPhone()) {
-      let url = '/squadron/' + this.squadronUUID + '/pilot/' + this.pilotNum;
+      let url = '/squadron/' + this.squadronUUID + '/pilot/' + this.pilot.uuid;
       this.router.navigateByUrl(url);
     } else {
       this.presentPilotModal();

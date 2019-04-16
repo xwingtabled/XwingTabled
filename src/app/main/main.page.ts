@@ -257,7 +257,7 @@ export class MainPage implements OnInit {
     return await popover.present();
   }
 
-  async resetData(squadron: any) {
+  async resetData() {
     const alert = await this.alertController.create({
       header: 'Clear data cache?',
       message: 'You are about to reset your data cache. You may have to re-download some data.',
