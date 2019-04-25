@@ -79,6 +79,10 @@
         border-radius: 0.5em;
         box-shadow: 0.1em 0.1em 0.25em #888888;
         width: 33%;
+        background-color: #ffffff;
+        img {
+            border: 0.3em solid black;
+        }
         .card-content {
             padding: 0.5em 1em 1em 1em;
         }
@@ -111,19 +115,19 @@
 .card-container-tablet {
     @extend .card-container;
     .card {
-        width: 50%;
+        width: 5in;
     }
 }
 
 .card-container-tablet-portrait {
     @extend .card-container-tablet;
+    .card {
+        width: 50%;
+    }
 }
 
 .card-container-tablet-landscape {
-    @extend .card-container;
-    .card {
-        width: 33%;
-    }
+    @extend .card-container-tablet;
 }
 
 ion-fab-button[data-desc] {
@@ -177,7 +181,7 @@ ion-fab-button[data-desc]::after {
         text-decoration: underline;
     }
     div.active {
-        background-color: white;
+        background-color: var(--ion-background-color);
         color: #1f1f1f;
     }
     div.hover {
