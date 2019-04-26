@@ -36,6 +36,7 @@
     "@ionic/angular": "^4.1.2",
     "@ionic/core": "^4.1.2",
     "@ionic/storage": "^2.2.0",
+    "@webcomponents/custom-elements": "^1.2.4",
     "angular-progress-bar": "^1.0.9",
     "arraybuffer-to-string": "^1.0.2",
     "cordova-android": "7.1.4",

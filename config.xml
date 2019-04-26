@@ -89,8 +89,8 @@
     <plugin name="cordova-plugin-buildinfo" spec="2.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
     <universal-links>
-        <host name="DYNAMIC_LINK_DOMAIN" scheme="https" />
-        <host name="AUTH_DOMAIN" scheme="https">
+        <host name="xwingtabled.page.link" scheme="https" />
+        <host name="xwingtabled.firebaseapp.com" scheme="https">
             <path url="/__/auth/callback" />
         </host>
     </universal-links>

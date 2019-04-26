@@ -95,6 +95,9 @@
       <ion-fab-button (click)="resetData()" data-desc="Nuke local data">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
+      <ion-fab-button (click)="login()" data-desc="Log in">
+        <ion-icon name="log-in"></ion-icon>
+      </ion-fab-button>
       <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
           <ion-icon name="add"></ion-icon>
       </ion-fab-button>

@@ -8,12 +8,13 @@ import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../popovers/damage-deck-actions/damage-deck-actions.component';
 import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { XwingStateService } from '../services/xwing-state.service';
 import { XwingImportService } from '../services/xwing-import.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { auth } from 'firebase/app';
 
 @Component({
   selector: 'app-main',
@@ -48,7 +49,8 @@ export class MainPage implements OnInit {
               public state: XwingStateService,
               private importService: XwingImportService,
               private route: ActivatedRoute,
-              public layout: LayoutService) { }
+              public layout: LayoutService,
+              public afAuth: AngularFireAuth) { }
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
@@ -453,5 +455,21 @@ export class MainPage implements OnInit {
       });
       toast.present();
     }
+  }
+
+  login() {
+    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider()).then(
+      () => {
+        return this.afAuth.auth.getRedirectResult();
+      }
+    ).then(
+      (result) => {
+        console.log("Login result", result);
+      }
+    ).catch(
+      (error) => {
+        console.log("Auth error", error);
+      }
+    );
   }
 }

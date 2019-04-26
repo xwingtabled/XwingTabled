@@ -26,6 +26,10 @@ import { AboutPageModule } from './about/about.module';
 import { XwingStateService } from './services/xwing-state.service';
 import { XwingImportService } from './services/xwing-import.service';
 import { ModalGuard } from './modal-guard';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from '../environments/environment';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +46,10 @@ import { ModalGuard } from './modal-guard';
     XwingModule,
     ModalModule,
     PopoverModule,
-    AboutPageModule
+    AboutPageModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule
   ],
   providers: [
     StatusBar,
