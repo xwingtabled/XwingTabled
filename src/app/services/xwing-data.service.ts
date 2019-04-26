@@ -25,7 +25,7 @@ export class XwingDataService {
 
   // base64urls for native, hotlinks for mobile
   image_urls: any = { };
-  manifest_url: string = "https://raw.githubusercontent.com/jychuah/XwingTabled/master/scripts/manifest.json";
+  manifest_url: string = "https://raw.githubusercontent.com/xwingtabled/XwingTabled/master/scripts/manifest.json";
 
   unavailable: string[ ] = [ 'https://sb-cdn.fantasyflightgames.com/card_art/Card_art_XW_U_158b.jpg' ];
 
