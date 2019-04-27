@@ -5,6 +5,7 @@ import { LayoutService } from '../../services/layout.service';
 import { XwingStateService } from '../../services/xwing-state.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from '@angular/common';
+import { Events } from '@ionic/angular';
 @Component({
   selector: 'app-upgrade-modal',
   templateUrl: './upgrade-modal.page.html',
@@ -27,7 +28,8 @@ export class UpgradeModalPage implements OnInit {
               private route: ActivatedRoute,
               public state: XwingStateService,
               public router: Router,
-              private location: Location) { }
+              private location: Location,
+              private events: Events) { }
 
   ngOnInit() {
     let squadronUUIDParam = this.route.snapshot.paramMap.get("squadronUUID");
@@ -39,6 +41,15 @@ export class UpgradeModalPage implements OnInit {
       this.pilotUUID = pilotUUIDParam;
       this.ffg = parseInt(ffgParam);
     }
+    this.initialize();
+    this.events.subscribe(this.state.topic,
+      (data) => {
+        this.initialize();
+      }
+    );
+  }
+
+  initialize() {
     this.upgrade = this.state.getUpgrade(this.squadronUUID, this.pilotUUID, this.ffg);
     for (let i = 0; i < this.upgrade.sides.length; i++) {
       this.sides[i] = this.dataService.getCardByFFG(this.upgrade.sides[i].ffg);

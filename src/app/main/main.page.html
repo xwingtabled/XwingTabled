@@ -55,7 +55,7 @@
       <div *ngIf="dataService.initialized">
         <div *ngIf="state.squadrons.length == 0">This app is a card and token 
           manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
-          <a href="#" (click)="xwsAddButton()">import a squadron</a>.
+          <span (click)="xwsAddButton()" class="card-link">import a squadron</span>.
         </div>
         <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
           Saved squadrons

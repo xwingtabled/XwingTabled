@@ -27,6 +27,7 @@ export class XwingStateService {
     this.squadrons = [ ];
     this.snapshots = [ ];
     this.initialized = false;
+    this.notify();
   }
 
   integrityCheck() {
@@ -58,6 +59,7 @@ export class XwingStateService {
       }
       this.integrityCheck();
       console.log("Squadrons restored", this.squadrons);
+      this.notify();
       this.initialized = true;
     } else {
       this.initialized = false;
@@ -100,6 +102,11 @@ export class XwingStateService {
       }
     )
     this.snapshot();
+    this.notify();
+  }
+
+  notify() {
+    this.events.publish(this.topic, this.squadrons);
   }
 
   getPilot(squadronUUID: string, pilotUUID: string) {
@@ -217,7 +224,7 @@ export class XwingStateService {
     let snapshot = this.snapshots.pop();
     this.squadrons = snapshot.squadrons;
     this.snapshot();
-    this.events.publish(this.topic, this.squadrons);
+    this.notify();
     return snapshot.time;
   }
 

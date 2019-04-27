@@ -64,6 +64,15 @@ export class PilotModalPage implements OnInit {
       this.useAngularRouter = true;
     }
 
+    this.initialize();
+    this.events.subscribe(this.state.topic,
+      (data) => {
+        this.initialize();
+      }
+    );
+  }
+
+  initialize() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
     this.pilot = this.state.getPilot(this.squadronUUID, this.pilotUUID);
 
@@ -88,6 +97,7 @@ export class PilotModalPage implements OnInit {
         }
       );
     }
+
   }
 
   toggleDial() {

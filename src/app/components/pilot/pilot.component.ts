@@ -58,10 +58,21 @@ export class PilotComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initialize();
+    this.events.subscribe(
+      this.state.topic,
+      (data) => {
+        this.initialize();
+      }
+    );
+  }
+
+  initialize() {
     this.pilotNum = this.pilot.num;
     this.data = this.dataService.getCardByFFG(this.pilot.ffg);
     let numGroups = this.pilot.upgrades.length >= 9 ? 3 : 2;
     let groupSize = Math.ceil(this.pilot.upgrades.length / numGroups);
+    this.groups = [ ];
     for (let i = 0; i < numGroups; i++) {
       let group: any[] = [];
       for (let j = 0; j < groupSize; j++) {
@@ -101,30 +112,6 @@ export class PilotComponent implements OnInit {
       }
     }
     return 0;
-  }
-
-  createTokens(stat, tokenType) {
-    let tokens = [ ];
-    if (!stat) {
-      return tokens;
-    }
-    for (let i = 0; i < stat.remaining; i++) {
-      tokens.push(
-        {
-          name: tokenType,
-          css: tokenType
-        }
-      )
-    }
-    for (let i = 0; i < stat.value - stat.remaining; i++) {
-      tokens.push(
-        {
-          name: tokenType,
-          css: tokenType + ' spent'
-        }
-      )
-    }
-    return tokens;
   }
 
   generateStat(stat: string) {
@@ -168,30 +155,6 @@ export class PilotComponent implements OnInit {
     }
 
     return true;
-  }
-
-  createMiniTokenDisplay() {
-    let tokens = [ ]
-    // Find stats with tokens to display
-    tokens = tokens.concat(
-      this.createTokens(
-        this.pilot.stats.find((stat) => stat.type == 'shields'),
-        'shield'
-      )
-    );
-    tokens = tokens.concat(
-      this.createTokens(
-        this.pilot.stats.find((stat) => stat.type == 'charges'),
-        'charge'
-      )
-    );
-    tokens = tokens.concat(
-      this.createTokens(
-        this.pilot.stats.find((stat) => stat.type == 'force'),
-        'force'
-      )
-    );
-    return tokens;
   }
 
   async presentPilotModal() {
