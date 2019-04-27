@@ -52,9 +52,7 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
-    if (this.squadronUUID && this.state.squadrons.length > 0) {
-      this.squadron = this.state.getSquadron(this.squadronUUID);
-    }
+    this.loadSquadron();
 
     this.events.subscribe(
       this.dataService.topic,
@@ -62,6 +60,20 @@ export class MainPage implements OnInit {
         await this.data_event_handler(event);
       }
     );
+
+    this.events.subscribe(
+      this.state.topic, 
+      (event) => {
+        console.log("squadron state broadcast received");
+        this.loadSquadron();
+      }
+    )
+  }
+
+  loadSquadron() {
+    if (this.squadronUUID && this.state.squadrons.length > 0) {
+      this.squadron = this.state.getSquadron(this.squadronUUID);
+    }
   }
 
   ionViewDidEnter() {

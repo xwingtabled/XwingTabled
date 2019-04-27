@@ -14,6 +14,7 @@ export class XwingStateService {
   public initialized: boolean = false;
   public squadrons: any[ ] = [ ];
   public snapshots: any[ ] = [ ];
+  public topic: string = "state:update";
 
   constructor(public dataService: XwingDataService,
               private events: Events,
@@ -216,6 +217,7 @@ export class XwingStateService {
     let snapshot = this.snapshots.pop();
     this.squadrons = snapshot.squadrons;
     this.snapshot();
+    this.events.publish(this.topic, this.squadrons);
     return snapshot.time;
   }
 
