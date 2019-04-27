@@ -14,7 +14,7 @@ import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from '@angular/common';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faChevronCircleUp, faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-pilot-modal',
@@ -29,6 +29,8 @@ export class PilotModalPage implements OnInit {
   img_url: string = null;
   data: any = null;
   faBars = faBars;
+  faChevronCircleUp = faChevronCircleUp;
+  faChevronCircleDown = faChevronCircleDown;
   expanded: boolean = false;
   useAngularRouter: boolean = false;
   tab: string = "tokens";
@@ -62,6 +64,15 @@ export class PilotModalPage implements OnInit {
       this.useAngularRouter = true;
     }
 
+    this.initialize();
+    this.events.subscribe(this.state.topic,
+      (data) => {
+        this.initialize();
+      }
+    );
+  }
+
+  initialize() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
     this.pilot = this.state.getPilot(this.squadronUUID, this.pilotUUID);
 
@@ -86,6 +97,7 @@ export class PilotModalPage implements OnInit {
         }
       );
     }
+
   }
 
   toggleDial() {

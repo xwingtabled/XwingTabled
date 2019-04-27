@@ -261,6 +261,9 @@ export class XwingImportService {
     squadron.pilots.forEach(
       (pilot) => {
         // Generate a pilot object
+        if (!pilot.id) {
+          pilot.id = pilot.name;
+        }
         let pilotData = this.getPilotStateObject(pilot, squadron.faction);
 
         this.applyXwsShims(squadron);
