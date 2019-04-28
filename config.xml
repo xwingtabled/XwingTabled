@@ -87,18 +87,8 @@
     <plugin name="cordova-plugin-advanced-http" spec="2.0.1" />
     <plugin name="cordova-plugin-file-transfer" spec="1.7.1" />
     <plugin name="cordova-plugin-buildinfo" spec="2.0.2" />
-    <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
-    <universal-links>
-        <host name="xwingtabled.page.link" scheme="https" />
-        <host name="xwingtabled.firebaseapp.com" scheme="https">
-            <path url="/__/auth/callback" />
-        </host>
-    </universal-links>
-    <preference name="AndroidLaunchMode" value="singleTask" />
-    <plugin name="cordova-universal-links-plugin" spec="git+https://github.com/xwingtabled/cordova-universal-links-plugin.git" />
-    <plugin name="cordova-plugin-browsertab" spec="git+https://github.com/xwingtabled/cordova-plugin-browsertab.git">
-        <variable name="CUSTOM_TAB_COLOR_RGB" value="#ffffff" />
-        <variable name="ANDROID_SUPPORT_TABS_VERSION" value="26.+" />
+    <plugin name="cordova-plugin-googleplus" spec="7.0.1">
+        <variable name="PLAY_SERVICES_VERSION" value="11.8.0" />
     </plugin>
     <engine name="android" spec="7.1.4" />
 </widget>

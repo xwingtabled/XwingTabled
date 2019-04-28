@@ -30,6 +30,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,7 +68,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     HTTP,
     FileTransfer,
     ToastController,
-    ModalGuard
+    ModalGuard,
+    GooglePlus
   ],
   bootstrap: [AppComponent]
 })

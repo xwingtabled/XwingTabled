@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 @Component({
   selector: 'app-main',
@@ -50,7 +51,8 @@ export class MainPage implements OnInit {
               private importService: XwingImportService,
               private route: ActivatedRoute,
               public layout: LayoutService,
-              public afAuth: AngularFireAuth) { }
+              public afAuth: AngularFireAuth,
+              public gplus: GooglePlus) { }
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
@@ -469,19 +471,49 @@ export class MainPage implements OnInit {
     }
   }
 
+
+  async nativeGoogleLogin(): Promise<firebase.User> {
+    try {
+
+      const gplusUser = await this.gplus.login({
+        'webClientId': '709154274494-m1m5u7fbcpbmk65h9l5segon0tvjdo0u.apps.googleusercontent.com',
+        'offline': true,
+        'scopes': 'profile email'
+      });
+      let credential = await auth.GoogleAuthProvider.credential(gplusUser.idToken);
+      console.log("Login credential", credential);
+      let user = await this.afAuth.auth.signInWithCredential(credential);
+      console.log("Login user", user);
+      return user;
+    } catch(err) {
+      console.log("Login error", err);
+    }
+  }
+
+  async webGoogleLogin(): Promise<void> {
+    try {
+      const provider = new auth.GoogleAuthProvider();
+      const credential = await this.afAuth.auth.signInWithPopup(provider);
+    } catch(err) {
+      console.log(err)
+    }
+  
+  }
+
   login() {
-    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider()).then(
-      () => {
-        return this.afAuth.auth.getRedirectResult();
-      }
-    ).then(
-      (result) => {
-        console.log("Login result", result);
-      }
-    ).catch(
-      (error) => {
-        console.log("Auth error", error);
-      }
-    );
+    if (this.platform.is('cordova')) {
+      this.nativeGoogleLogin().then(
+        (result) => {
+          console.log("Login success", result);
+          console.log(this.afAuth.auth.currentUser);
+        }
+      );
+    } else {
+      this.webGoogleLogin();
+    }
+  }
+
+  logout() {
+    this.afAuth.auth.signOut();
   }
 }
