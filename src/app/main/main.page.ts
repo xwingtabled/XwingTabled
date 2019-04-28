@@ -66,7 +66,6 @@ export class MainPage implements OnInit {
     this.events.subscribe(
       this.state.topic, 
       (event) => {
-        console.log("squadron state broadcast received");
         this.loadSquadron();
       }
     )
@@ -75,6 +74,11 @@ export class MainPage implements OnInit {
   loadSquadron() {
     if (this.squadronUUID && this.state.squadrons.length > 0) {
       this.squadron = this.state.getSquadron(this.squadronUUID);
+    } else {
+      this.squadron = null;
+    }
+    if (!this.squadron) {
+      this.router.navigateByUrl("/");
     }
   }
 
@@ -144,20 +148,16 @@ export class MainPage implements OnInit {
 
   closeSquadron(uuid: string) {
     let index = this.state.getSquadronIndex(uuid);
-    this.state.squadrons.splice(index, 1);
-    for (let i = 0; i < this.state.squadrons.length; i++) {
-      this.state.squadrons[i].squadronNum = i;
-    }
-    this.state.snapshot();
-    if (this.state.squadrons.length == 0) {
+    if (this.state.squadrons.length == 1) {
       this.router.navigateByUrl("/");
-      return;
     }
+    index = index + 1;
     if (index >= this.state.squadrons.length) {
       index = this.state.squadrons.length - 1;
     }
     let destination = this.state.squadrons[index].uuid;
     this.router.navigateByUrl(this.squadronRoute(destination));
+    this.state.closeSquadron(uuid);
   }
 
 

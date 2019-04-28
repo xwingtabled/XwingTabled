@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Control Panel
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Settings</ion-label>
+    </ion-list-header>
+    <ion-item *ngIf="firebase.user">
+      <ion-avatar slot="start">
+        <img src="{{ firebase.user.photoURL }}">
+      </ion-avatar>
+      <ion-label>
+        <h2>Signed in as {{ firebase.user.email }}</h2>
+        <p>Logging out will end squadron syncing.</p>
+      </ion-label>
+      <ion-icon name="log-out" slot="end" (click)="logout()"></ion-icon>
+    </ion-item>
+    <ion-item *ngIf="!firebase.user">
+      <ion-label>
+        <h2>Sign in with Google</h2>
+        <p>Your squadrons will be synced and viewable to others.</p> 
+      </ion-label>
+      <ion-icon name="log-in" slot="end" (click)="login()"></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h2>Reset Local Data</h2>
+        <p>
+          This will delete X-Wing metadata, images and squadrons. 
+        </p>
+      </ion-label>
+      <ion-icon name="nuclear" slot="end" (click)="resetData()"></ion-icon>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Saved Squadrons</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let squadronItem of state.squadrons">
+      <ion-avatar slot="start">
+        <span class="squadron-icon">
+          <xwing-icon [name]="squadronItem.faction"></xwing-icon>
+        </span>
+      </ion-avatar>
+      <ion-label>
+        {{ squadronItem.name }}
+      </ion-label>
+      <ion-icon name="close-circle" (click)="closeSquadron(squadronItem.uuid)"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>
