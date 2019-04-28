@@ -15,6 +15,7 @@ export class XwingStateService {
   public squadrons: any[ ] = [ ];
   public snapshots: any[ ] = [ ];
   public topic: string = "state:update";
+  public currentSquadronUUID: string = null;
 
   constructor(public dataService: XwingDataService,
               private events: Events,
@@ -266,6 +267,12 @@ export class XwingStateService {
       }
     }
     return -1;
+  }
+
+  importSquadron(squadron: any) {
+    this.squadrons.push(squadron);
+    this.initialized = true;
+    this.snapshot();
   }
 
   addSquadron(squadron: any) {

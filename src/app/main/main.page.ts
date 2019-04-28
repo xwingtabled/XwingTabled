@@ -53,7 +53,8 @@ export class MainPage implements OnInit {
               public firebase: FirebaseService) { }
 
   ngOnInit() {
-    this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
+    this.state.currentSquadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
+    this.squadronUUID = this.state.currentSquadronUUID;
     this.loadSquadron();
 
     this.events.subscribe(
@@ -72,8 +73,8 @@ export class MainPage implements OnInit {
   }
 
   loadSquadron() {
-    if (this.squadronUUID && this.state.squadrons.length > 0) {
-      this.squadron = this.state.getSquadron(this.squadronUUID);
+    if (this.state.currentSquadronUUID && this.state.squadrons.length > 0) {
+      this.squadron = this.state.getSquadron(this.state.currentSquadronUUID);
     } else {
       this.squadron = null;
     }

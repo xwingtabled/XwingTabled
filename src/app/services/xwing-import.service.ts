@@ -302,7 +302,7 @@ export class XwingImportService {
     this.firebase.retrieveSquadron(uuid).then(
       (data) => {
         console.log("X-Wing Tabled Squadron Data", data.data());
-        this.state.addSquadron(data.data());
+        this.state.importSquadron(data.data());
         this.firebase.subscribeSquadron(uuid);
       },
       async (error) => {
