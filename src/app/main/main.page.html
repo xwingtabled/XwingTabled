@@ -92,11 +92,17 @@
       <ion-icon name="more"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top" class="labels">
+      <ion-fab-button (click)="home()" data-desc="Squadron List">
+        <xwing-ship [name]="'t65xwing'"></xwing-ship>
+      </ion-fab-button>
       <ion-fab-button (click)="resetData()" data-desc="Nuke local data">
         <ion-icon name="nuclear"></ion-icon>
       </ion-fab-button>
       <ion-fab-button (click)="login()" data-desc="Log in">
         <ion-icon name="log-in"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="logout()" data-desc="Log out">
+        <ion-icon name="log-out"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
           <ion-icon name="add"></ion-icon>
