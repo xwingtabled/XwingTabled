@@ -53,28 +53,34 @@ export class MainPage implements OnInit {
               public firebase: FirebaseService) { }
 
   ngOnInit() {
-    this.state.currentSquadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
-    this.squadronUUID = this.state.currentSquadronUUID;
+    this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
     this.loadSquadron();
 
+    this.events.unsubscribe(
+      this.dataService.topic
+    )
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
         await this.data_event_handler(event);
       }
     );
+    
+    this.events.unsubscribe(
+      this.state.topic,
+      this.loadSquadron
+    );
 
     this.events.subscribe(
       this.state.topic, 
-      (event) => {
-        this.loadSquadron();
-      }
-    )
+      this.loadSquadron
+    );
   }
 
   loadSquadron() {
-    if (this.state.currentSquadronUUID && this.state.squadrons.length > 0) {
-      this.squadron = this.state.getSquadron(this.state.currentSquadronUUID);
+    if (!this) return;
+    if (this.squadronUUID && this.state.squadrons.length > 0) {
+      this.squadron = this.state.getSquadron(this.squadronUUID);
     } else {
       this.squadron = null;
     }
@@ -143,6 +149,10 @@ export class MainPage implements OnInit {
     if (uuid == this.squadronUUID) {
       return;
     }
+    this.events.unsubscribe(
+      this.state.topic,
+      this.loadSquadron
+    );
     this.router.navigateByUrl(this.squadronRoute(uuid.substring(0, 8)));
     return;
   }

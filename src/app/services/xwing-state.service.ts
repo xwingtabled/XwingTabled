@@ -133,6 +133,9 @@ export class XwingStateService {
 
   getPilot(squadronUUID: string, pilotUUID: string) {
     let squadron = this.getSquadron(squadronUUID);
+    if (!squadron) {
+      return null;
+    }
     return squadron.pilots.find(pilot => pilot.uuid == pilotUUID); 
   }
 

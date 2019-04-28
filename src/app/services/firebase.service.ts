@@ -47,7 +47,6 @@ export class FirebaseService {
     let doc = this.afStore.doc("squadrons/" + uuid);
     doc.valueChanges().subscribe(
       (squadron) => {
-        console.log("Squadron updated from cloud", squadron);
         this.state.updateSquadron(squadron);
       }
     )
