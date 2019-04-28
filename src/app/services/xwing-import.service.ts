@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
 import { XwingDataService } from './xwing-data.service';
+import { XwingStateService } from './xwing-state.service';
 import { HttpProvider } from '../providers/http.provider';
 import { PilotModalPage } from '../modals/pilot-modal/pilot-modal.page';
-
+import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
+import { ModalController, PopoverController, LoadingController, ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class XwingImportService {
   constructor(public dataService: XwingDataService,
-              private http: HttpProvider) {
+              public state: XwingStateService,
+              private http: HttpProvider,
+              private modalController: ModalController,
+              private toastController: ToastController,
+              private router: Router) {
   }
 
   mangleUpgradeArray(pilot: any) {
@@ -288,5 +295,52 @@ export class XwingImportService {
     }
 
     return squadronData;
+  }
+
+  async presentXwsModal() {
+    const modal = await this.modalController.create({
+      component: XwsModalPage
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (!data) return;
+    try {
+      if (data.ffg) {
+        let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + data.ffg + "/";
+    
+        await this.http.get(url).subscribe(
+          (data) => {
+            this.state.addSquadron(this.processFFG(data))
+          },
+          async (error) => {
+            console.log("Unable to get FFG SquadBuilder data", error);
+            const toast = await this.toastController.create({
+              message: "ERROR: Unable to load FFG Squad",
+              duration: 5000,
+              position: 'bottom'
+            });
+            toast.present();
+          }
+        );
+      }
+      if (data.yasb) {
+        this.state.addSquadron(this.processYasb(data.yasb));
+      }
+      if (data.xws) {
+        let squadron = data.xws;
+        this.state.addSquadron(this.processXws(squadron));
+      }
+      let newSquadronUUID = this.state.squadrons[this.state.squadrons.length - 1].uuid;
+      let url = '/squadron/' + newSquadronUUID.substring(0, 8);
+      this.router.navigateByUrl(url);
+    } catch (e) {
+      console.log(e);
+      const toast = await this.toastController.create({
+        message: e,
+        duration: 2000,
+        position: 'bottom'
+      });
+      toast.present();
+    }
   }
 }

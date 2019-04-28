@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, PopoverController, LoadingController } from '@ionic/angular';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
+import { SettingsModalPage } from '../modals/settings-modal/settings-modal.page';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { Events } from '@ionic/angular';
@@ -8,12 +9,12 @@ import { AlertController } from '@ionic/angular';
 import { DamageDeckActionsComponent } from '../popovers/damage-deck-actions/damage-deck-actions.component';
 import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { HttpProvider } from '../providers/http.provider';
 import { XwingStateService } from '../services/xwing-state.service';
 import { XwingImportService } from '../services/xwing-import.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
+import { FirebaseService } from '../services/firebase.service';
 
 @Component({
   selector: 'app-main',
@@ -48,7 +49,8 @@ export class MainPage implements OnInit {
               public state: XwingStateService,
               private importService: XwingImportService,
               private route: ActivatedRoute,
-              public layout: LayoutService) { }
+              public layout: LayoutService,
+              public firebase: FirebaseService) { }
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
@@ -64,7 +66,6 @@ export class MainPage implements OnInit {
     this.events.subscribe(
       this.state.topic, 
       (event) => {
-        console.log("squadron state broadcast received");
         this.loadSquadron();
       }
     )
@@ -73,6 +74,11 @@ export class MainPage implements OnInit {
   loadSquadron() {
     if (this.squadronUUID && this.state.squadrons.length > 0) {
       this.squadron = this.state.getSquadron(this.squadronUUID);
+    } else {
+      this.squadron = null;
+    }
+    if (!this.squadron) {
+      this.router.navigateByUrl("/");
     }
   }
 
@@ -142,20 +148,16 @@ export class MainPage implements OnInit {
 
   closeSquadron(uuid: string) {
     let index = this.state.getSquadronIndex(uuid);
-    this.state.squadrons.splice(index, 1);
-    for (let i = 0; i < this.state.squadrons.length; i++) {
-      this.state.squadrons[i].squadronNum = i;
-    }
-    this.state.snapshot();
-    if (this.state.squadrons.length == 0) {
+    if (this.state.squadrons.length == 1) {
       this.router.navigateByUrl("/");
-      return;
     }
+    index = index + 1;
     if (index >= this.state.squadrons.length) {
       index = this.state.squadrons.length - 1;
     }
     let destination = this.state.squadrons[index].uuid;
     this.router.navigateByUrl(this.squadronRoute(destination));
+    this.state.closeSquadron(uuid);
   }
 
 
@@ -269,34 +271,7 @@ export class MainPage implements OnInit {
     return await popover.present();
   }
 
-  async resetData() {
-    const alert = await this.alertController.create({
-      header: 'Clear data cache?',
-      message: 'You are about to reset your data cache. You may have to re-download some data.',
-      buttons: [
-        { text: 'OK',
-          handler: () => {
-            this.ngZone.run(
-              () => {
-                this.data_progress = 0;
-                this.data_message = "X-Wing Tabled";
-                this.data_button = false;
-                this.data_button_disabled = false;
-                this.image_button = false;
-                this.image_button_disabled = false;
-                this.state.reset();
-                this.dataService.reset();
-              }
-            )
-          }
-        },
-        { text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary' }
-      ]
-    });
-    await alert.present();
-  }
+
 
   async askRecharge() {
     const alert = await this.alertController.create({
@@ -415,55 +390,14 @@ export class MainPage implements OnInit {
   }
 
   xwsAddButton() {
-    this.presentXwsModal();
+    //this.presentXwsModal();
+    this.importService.presentXwsModal();
   }
 
-  async presentXwsModal() {
+  async presentSettingsModal() {
     const modal = await this.modalController.create({
-      component: XwsModalPage
+      component: SettingsModalPage
     });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (!data) return;
-    try {
-      if (data.ffg) {
-        let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + data.ffg + "/";
-    
-        await this.http.get(url).subscribe(
-          (data) => {
-            this.state.addSquadron(this.importService.processFFG(data))
-          },
-          async (error) => {
-            console.log("Unable to get FFG SquadBuilder data", error);
-            const toast = await this.toastController.create({
-              message: "ERROR: Unable to load FFG Squad",
-              duration: 5000,
-              position: 'bottom'
-            });
-            toast.present();
-          }
-        );
-
-        //this.state.addSquadron(this.importService.processFFG(data.ffg));
-      }
-      if (data.yasb) {
-        this.state.addSquadron(this.importService.processYasb(data.yasb));
-      }
-      if (data.xws) {
-        let squadron = data.xws;
-        this.state.addSquadron(this.importService.processXws(squadron));
-      }
-      let newSquadronUUID = this.state.squadrons[this.state.squadrons.length - 1].uuid;
-      let url = '/squadron/' + newSquadronUUID.substring(0, 8);
-      this.router.navigateByUrl(url);
-    } catch (e) {
-      console.log(e);
-      const toast = await this.toastController.create({
-        message: e,
-        duration: 2000,
-        position: 'bottom'
-      });
-      toast.present();
-    }
+    return await modal.present();
   }
 }

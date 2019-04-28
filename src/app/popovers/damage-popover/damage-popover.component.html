@@ -5,10 +5,10 @@
         {{ card.title }}
       </div>
       <div class="damage-type">
-        {{ card.type }}
+        {{ cardData.type }}
       </div>
       <div class="damage-text">
-          <xwing-text [text]="card.text"></xwing-text>
+          <xwing-text [text]="cardData.text"></xwing-text>
       </div>
     </div>
     <div *ngIf="!card.exposed" class="damage-card-back">

@@ -31,7 +31,7 @@ export class XwingDataService {
 
   // Json Data
   data: any = { };
-  ffg_data: any = [ ];
+  ffg_data: any[ ] = [ ];
   stored_filenames: string[] = [ ];
 
   constructor(private storage: Storage, private http: HttpProvider, private events: Events, 
@@ -60,7 +60,7 @@ export class XwingDataService {
     this.initialized = false;
     this.image_urls = { };
     this.data = { };
-    this.ffg_data = { };
+    this.ffg_data = [ ];
     await this.storage.clear();
     this.check_manifest();
   }
@@ -279,22 +279,29 @@ export class XwingDataService {
     return name.replace(/\s/g, '').replace(/\-/g, '').toLowerCase();
   }
 
+  getDamageCardData(title: string) {
+    return JSON.parse(JSON.stringify(this.data.damagedecks[0].cards.find((card) => card.title == title)));
+  }
+
+  getConditionCardData(xws: string) {
+    return JSON.parse(JSON.stringify(this.data.conditions.find((card) => card.xws == xws)));
+  }
+
+  getConditionArtwork(xws: string) {
+    let condition = this.data.conditions.find((card) => card.xws == xws);
+    return this.ffg_data[condition.ffg].image;
+  }
+
   getDamageDeck() {
     let deck = [];
     let cards = { };
     this.data.damagedecks[0].cards.forEach(
       (card) => {
         for (let i = 0; i < card.amount; i++) {
-          let initials = "";
-          card.title.split(' ').forEach(
-            (word) => {
-              initials = initials + word[0];
-            }
-          )
           if (!cards[card.title]) {
             cards[card.title] = [ ];
           }
-          cards[card.title].push({ title: card.title, type: card.type, text: card.text, initials: initials });
+          cards[card.title].push({ title: card.title, exposed: false });
         }
       }
     )
@@ -313,18 +320,6 @@ export class XwingDataService {
     console.log("Generating damage deck", deck);
 
     return deck;
-  }
-
-  getCondition(xwsCondition: string) {
-    let conditionObj = null;
-    this.data.conditions.forEach(
-      (condition) => {
-        if (condition.xws == xwsCondition) {
-          conditionObj = JSON.parse(JSON.stringify(condition));
-        }
-      }
-    )
-    return conditionObj;
   }
 
   getPilot(faction: string, xwsShip: string, xwsPilot: string) {

@@ -4,7 +4,7 @@
   </div>
   <img [src]="img_url">
   <div class="condition-text">
-    <xwing-text [text]="condition.ability"></xwing-text>
+    <xwing-text [text]="conditionData.ability"></xwing-text>
   </div>
   <ion-button *ngIf="condition.pilotDamageCard" expand="full" (click)="assignPilotDamage()">Assign {{ condition.pilotDamageCard.title }}</ion-button>
   <ion-button expand="full" (click)="removeCondition()">Remove</ion-button>

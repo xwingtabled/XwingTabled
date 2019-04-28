@@ -105,8 +105,23 @@ export class XwingStateService {
     this.notify();
   }
 
+  closeSquadron(uuid: string) {
+    let index = this.getSquadronIndex(uuid);
+    this.squadrons.splice(index, 1);
+    this.snapshot();
+    this.notify();
+  }
+
   notify() {
     this.events.publish(this.topic, this.squadrons);
+  }
+
+  getDamageCard(squadronUUID: string, pilotUUID: string, cardIndex: number) {
+    return this.getPilot(squadronUUID, pilotUUID).damagecards[cardIndex];
+  }
+
+  getCondition(squadronUUID: string, pilotUUID: string, cardIndex: number) {
+    return this.getPilot(squadronUUID, pilotUUID).conditions[cardIndex];
   }
 
   getPilot(squadronUUID: string, pilotUUID: string) {

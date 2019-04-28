@@ -86,5 +86,9 @@
     <plugin name="cordova-sqlite-storage" spec="2.5.1" />
     <plugin name="cordova-plugin-advanced-http" spec="2.0.1" />
     <plugin name="cordova-plugin-file-transfer" spec="1.7.1" />
+    <plugin name="cordova-plugin-buildinfo" spec="2.0.2" />
+    <plugin name="cordova-plugin-googleplus" spec="7.0.1">
+        <variable name="PLAY_SERVICES_VERSION" value="11.8.0" />
+    </plugin>
     <engine name="android" spec="7.1.4" />
 </widget>

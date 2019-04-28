@@ -98,5 +98,4 @@ export class XwsModalPage implements OnInit {
   ok() {
     this.modal.dismiss(this.xwsData);
   }
-
 }
