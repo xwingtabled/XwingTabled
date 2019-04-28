@@ -1,18 +1,24 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { XwingDataService } from '../../services/xwing-data.service';
+import { XwingStateService } from '../../services/xwing-state.service';
 @Component({
   selector: 'app-condition-popover',
   templateUrl: './condition-popover.component.html',
   styleUrls: ['./condition-popover.component.scss']
 })
 export class ConditionPopoverComponent implements OnInit {
-  pilot;
-  condition;
+  cardIndex: number;
+  pilotUUID: string;
+  squadronUUID: string;
+  condition: any = { };
+  conditionData: any = { };
+  pilot: any = { };
   img_url: string = "";
   
   constructor(private popoverController: PopoverController,
-              private dataService: XwingDataService) { }
+              private dataService: XwingDataService,
+              private state: XwingStateService) { }
 
   async assignPilotDamage() {
     await this.popoverController.dismiss();
@@ -29,13 +35,14 @@ export class ConditionPopoverComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.condition);
-    this.dataService.get_image_by_url(this.condition.artwork).then(
+    this.condition = this.state.getCondition(this.squadronUUID, this.pilotUUID, this.cardIndex);
+    this.conditionData = this.dataService.getConditionCardData(this.condition.xws);
+    this.pilot = this.state.getPilot(this.squadronUUID, this.pilotUUID);
+    this.dataService.get_image_by_url(this.conditionData.artwork).then(
       (url) => {
         this.img_url = url;
       }
     )
     
   }
-
 }

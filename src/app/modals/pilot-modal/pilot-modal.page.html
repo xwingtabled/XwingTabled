@@ -64,10 +64,14 @@
           class="token-set"></xws-token-display>
       </div> 
       <div [class]="'damage-cards' + layout.getClass()">
-        <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
+        <xws-condition *ngFor="let condition of pilot.conditions; index as i" 
+          [squadronUUID]="squadronUUID"
+          [pilotUUID]="pilotUUID" 
+          [cardIndex]="i"></xws-condition>
         <xws-damage-card 
-          *ngFor="let card of pilot.damagecards" 
-          [card]="card" 
+          *ngFor="let card of pilot.damagecards; index as i" 
+          [cardIndex]="i"
+          [pilotUUID]="pilotUUID" 
           [squadronUUID]="squadronUUID"></xws-damage-card> 
       </div>
     </div>
@@ -98,10 +102,14 @@
           class="token-set"></xws-token-display>
       </div> 
       <div [class]="'damage-cards' + layout.getClass()">
-        <xws-condition *ngFor="let condition of pilot.conditions" [pilot]="pilot" [condition]="condition"></xws-condition>
+        <xws-condition *ngFor="let condition of pilot.conditions; index as i" 
+          [squadronUUID]="squadronUUID"
+          [pilotUUID]="pilotUUID" 
+          [cardIndex]="i"></xws-condition>
         <xws-damage-card 
-          *ngFor="let card of pilot.damagecards" 
-          [card]="card" 
+          *ngFor="let card of pilot.damagecards; index as i" 
+          [cardIndex]="i"
+          [pilotUUID]="pilotUUID" 
           [squadronUUID]="squadronUUID"></xws-damage-card> 
       </div>
     </div>

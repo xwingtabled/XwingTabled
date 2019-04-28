@@ -279,6 +279,14 @@ export class XwingDataService {
     return name.replace(/\s/g, '').replace(/\-/g, '').toLowerCase();
   }
 
+  getDamageCardData(title: string) {
+    return JSON.parse(JSON.stringify(this.data.damagedecks[0].find((card) => card.title == title)));
+  }
+
+  getConditionCardData(xws: string) {
+    return JSON.parse(JSON.stringify(this.data.conditions.find((card) => card.xws == xws)));
+  }
+
   getDamageDeck() {
     let deck = [];
     let cards = { };
@@ -313,18 +321,6 @@ export class XwingDataService {
     console.log("Generating damage deck", deck);
 
     return deck;
-  }
-
-  getCondition(xwsCondition: string) {
-    let conditionObj = null;
-    this.data.conditions.forEach(
-      (condition) => {
-        if (condition.xws == xwsCondition) {
-          conditionObj = JSON.parse(JSON.stringify(condition));
-        }
-      }
-    )
-    return conditionObj;
   }
 
   getPilot(faction: string, xwsShip: string, xwsPilot: string) {

@@ -116,6 +116,14 @@ export class XwingStateService {
     this.events.publish(this.topic, this.squadrons);
   }
 
+  getDamageCard(squadronUUID: string, pilotUUID: string, cardIndex: number) {
+    return this.getPilot(squadronUUID, pilotUUID).damagecards[cardIndex];
+  }
+
+  getCondition(squadronUUID: string, pilotUUID: string, cardIndex: number) {
+    return this.getPilot(squadronUUID, pilotUUID).conditions[cardIndex];
+  }
+
   getPilot(squadronUUID: string, pilotUUID: string) {
     let squadron = this.getSquadron(squadronUUID);
     return squadron.pilots.find(pilot => pilot.uuid == pilotUUID); 

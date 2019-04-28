@@ -81,7 +81,7 @@ export class ConditionMenuComponent implements OnInit {
         let conditionObj = JSON.parse(JSON.stringify(condition));
         this.conditions.push(conditionObj);
         // Load artwork and store using xws as the key
-        this.dataService.get_image_by_url(conditionObj.artwork).then(
+        this.dataService.get_image_by_url(conditionObj.image).then(
           (url) => {
             this.img_urls[conditionObj.xws] = url;
           }
