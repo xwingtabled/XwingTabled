@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, PopoverController, LoadingController } from '@ionic/angular';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
+import { SettingsModalPage } from '../modals/settings-modal/settings-modal.page';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
 import { Events } from '@ionic/angular';
@@ -270,34 +271,7 @@ export class MainPage implements OnInit {
     return await popover.present();
   }
 
-  async resetData() {
-    const alert = await this.alertController.create({
-      header: 'Clear data cache?',
-      message: 'You are about to reset your data cache. You may have to re-download some data.',
-      buttons: [
-        { text: 'OK',
-          handler: () => {
-            this.ngZone.run(
-              () => {
-                this.data_progress = 0;
-                this.data_message = "X-Wing Tabled";
-                this.data_button = false;
-                this.data_button_disabled = false;
-                this.image_button = false;
-                this.image_button_disabled = false;
-                this.state.reset();
-                this.dataService.reset();
-              }
-            )
-          }
-        },
-        { text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary' }
-      ]
-    });
-    await alert.present();
-  }
+
 
   async askRecharge() {
     const alert = await this.alertController.create({
@@ -419,6 +393,13 @@ export class MainPage implements OnInit {
     this.presentXwsModal();
   }
 
+  async presentSettingsModal() {
+    const modal = await this.modalController.create({
+      component: SettingsModalPage
+    });
+    return await modal.present();
+  }
+
   async presentXwsModal() {
     const modal = await this.modalController.create({
       component: XwsModalPage
@@ -466,17 +447,5 @@ export class MainPage implements OnInit {
       });
       toast.present();
     }
-  }
-
-  home() {
-    this.router.navigateByUrl("/");
-  }
-
-  login() {
-    this.firebase.login();
-  }
-
-  logout() {
-    this.firebase.logout();
   }
 }
