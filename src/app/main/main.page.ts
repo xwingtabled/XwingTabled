@@ -54,7 +54,9 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
-    this.loadSquadron();
+    if (this.squadronUUID) {
+      this.squadron = this.state.getSquadron(this.squadronUUID);
+    }
 
     this.events.unsubscribe(
       this.dataService.topic
@@ -65,35 +67,10 @@ export class MainPage implements OnInit {
         await this.data_event_handler(event);
       }
     );
-    
-    this.events.unsubscribe(
-      this.state.topic,
-      this.loadSquadron
-    );
-
-    this.events.subscribe(
-      this.state.topic, 
-      this.loadSquadron
-    );
-  }
-
-  loadSquadron() {
-    if (!this) return;
-    if (this.squadronUUID && this.state.squadrons.length > 0) {
-      this.squadron = this.state.getSquadron(this.squadronUUID);
-    } else {
-      this.squadron = null;
-    }
-    if (!this.squadron) {
-      this.router.navigateByUrl("/");
-    }
   }
 
   ionViewDidEnter() {
-    this.state.snapshotCheck();
-    if(this.squadronUUID && !this.squadron) {
-      this.router.navigateByUrl("/");
-    }
+
   }
 
   getPointsDestroyed(squadron) {
@@ -149,10 +126,6 @@ export class MainPage implements OnInit {
     if (uuid == this.squadronUUID) {
       return;
     }
-    this.events.unsubscribe(
-      this.state.topic,
-      this.loadSquadron
-    );
     this.router.navigateByUrl(this.squadronRoute(uuid.substring(0, 8)));
     return;
   }
