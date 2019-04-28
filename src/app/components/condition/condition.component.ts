@@ -33,8 +33,7 @@ export class ConditionComponent implements OnInit {
 
   ngOnInit() {
     this.condition = this.state.getCondition(this.squadronUUID, this.pilotUUID, this.cardIndex);
-    let conditionData = this.dataService.getConditionCardData(this.condition.xws);
-    this.dataService.get_image_by_url(conditionData.artwork).then(
+    this.dataService.get_image_by_url(this.dataService.getConditionArtwork(this.condition.xws)).then(
       (url) => {
         this.img_url = url;
       }

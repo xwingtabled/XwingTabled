@@ -28,16 +28,21 @@ export class ConditionMenuComponent implements OnInit {
   async assignCondition() {
     let existing = this.pilot.conditions.find((condition) => condition.xws == this.selected_condition.xws);
     if (!existing) {
+      let condition = {
+        name: this.selected_condition.name,
+        xws: this.selected_condition.xws 
+      };
       if (this.selected_condition.xws == this.darksideXws && this.selected_condition.pilotDamageCard) {
         this.selected_condition.pilotDamageCard.exposed = true;
+        condition['pilotDamageCard'] = JSON.parse(JSON.stringify(this.selected_condition.pilotDamageCard));
         let index = this.squadron.damagedeck.indexOf(this.selected_condition.pilotDamageCard);
         this.squadron.damagedeck.splice(index, 1);
       }
-      this.pilot.conditions.push(this.selected_condition);
+      this.pilot.conditions.push(condition);
       return this.popoverController.dismiss();
     } else {
       const toast = await this.toastController.create({
-        message: this.pilot.pilot.name + ' already has ' + this.selected_condition.name,
+        message: 'This pilot already has ' + this.selected_condition.name,
         duration: 2000,
         position: 'middle'
       });
@@ -58,6 +63,7 @@ export class ConditionMenuComponent implements OnInit {
       }
     )
   }
+
   changeEvent(event) {
     this.selected_condition = this.conditions.find((condition) => condition.xws == event.detail.value);
     if (this.selected_condition.xws == this.darksideXws) {
@@ -81,7 +87,7 @@ export class ConditionMenuComponent implements OnInit {
         let conditionObj = JSON.parse(JSON.stringify(condition));
         this.conditions.push(conditionObj);
         // Load artwork and store using xws as the key
-        this.dataService.get_image_by_url(conditionObj.image).then(
+        this.dataService.get_image_by_url(this.dataService.getConditionArtwork(conditionObj.xws)).then(
           (url) => {
             this.img_urls[conditionObj.xws] = url;
           }

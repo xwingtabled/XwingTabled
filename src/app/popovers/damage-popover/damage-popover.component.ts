@@ -14,14 +14,17 @@ export class DamagePopoverComponent implements OnInit {
   squadronUUID: string;
   squadron: any;
   card: any = { };
+  cardData: any = { };
 
   constructor(private popoverController: PopoverController, 
               private ngZone: NgZone,
-              private state: XwingStateService) { }
+              private state: XwingStateService,
+              private dataService: XwingDataService) { }
 
   ngOnInit() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
     this.card = this.state.getDamageCard(this.squadronUUID, this.pilotUUID, this.cardIndex);
+    this.cardData = this.dataService.getDamageCardData(this.card.title);
   }
 
 
