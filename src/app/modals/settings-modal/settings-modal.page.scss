@@ -10,6 +10,9 @@ ion-avatar {
     xwing-icon {
         font-size: 1.75em;
     }
+    xwing-ship {
+        font-size: 2.25em;
+    }
 }
 
 .squadron-icon {
@@ -21,4 +24,15 @@ ion-avatar {
         margin-left: auto;
         margin-right: auto;
     }
+    xwing-ship {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.squadron-link {
+    cursor: pointer;
+}
+.squadron-link:hover {
+    text-decoration: underline;
 }

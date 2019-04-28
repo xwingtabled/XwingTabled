@@ -390,7 +390,8 @@ export class MainPage implements OnInit {
   }
 
   xwsAddButton() {
-    this.presentXwsModal();
+    //this.presentXwsModal();
+    this.importService.presentXwsModal();
   }
 
   async presentSettingsModal() {
@@ -398,54 +399,5 @@ export class MainPage implements OnInit {
       component: SettingsModalPage
     });
     return await modal.present();
-  }
-
-  async presentXwsModal() {
-    const modal = await this.modalController.create({
-      component: XwsModalPage
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (!data) return;
-    try {
-      if (data.ffg) {
-        let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + data.ffg + "/";
-    
-        await this.http.get(url).subscribe(
-          (data) => {
-            this.state.addSquadron(this.importService.processFFG(data))
-          },
-          async (error) => {
-            console.log("Unable to get FFG SquadBuilder data", error);
-            const toast = await this.toastController.create({
-              message: "ERROR: Unable to load FFG Squad",
-              duration: 5000,
-              position: 'bottom'
-            });
-            toast.present();
-          }
-        );
-
-        //this.state.addSquadron(this.importService.processFFG(data.ffg));
-      }
-      if (data.yasb) {
-        this.state.addSquadron(this.importService.processYasb(data.yasb));
-      }
-      if (data.xws) {
-        let squadron = data.xws;
-        this.state.addSquadron(this.importService.processXws(squadron));
-      }
-      let newSquadronUUID = this.state.squadrons[this.state.squadrons.length - 1].uuid;
-      let url = '/squadron/' + newSquadronUUID.substring(0, 8);
-      this.router.navigateByUrl(url);
-    } catch (e) {
-      console.log(e);
-      const toast = await this.toastController.create({
-        message: e,
-        duration: 2000,
-        position: 'bottom'
-      });
-      toast.present();
-    }
   }
 }

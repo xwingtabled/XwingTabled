@@ -7,11 +7,10 @@ import { NgZone } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { XwingStateService } from '../../services/xwing-state.service';
 import { FirebaseService } from '../../services/firebase.service';
+import { XwingImportService } from '../../services/xwing-import.service';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from '@angular/common';
-
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './settings-modal.page.html',
@@ -27,7 +26,9 @@ export class SettingsModalPage implements OnInit {
               private ngZone: NgZone,
               public modalController: ModalController,
               public layout: LayoutService,
-              public firebase: FirebaseService) { }
+              public firebase: FirebaseService,
+              public router: Router,
+              public importService: XwingImportService) { }
 
   ngOnInit() {
 
@@ -57,8 +58,18 @@ export class SettingsModalPage implements OnInit {
     await alert.present();
   }
 
+  goToSquadron(uuid: string) {
+    this.modalController.dismiss();
+    this.router.navigateByUrl("/squadron/" + uuid.substring(0, 8));
+  }
+
   closeSquadron(uuid: string) {
     this.state.closeSquadron(uuid);
+  }
+
+  async import() {
+    await this.modalController.dismiss();
+    await this.importService.presentXwsModal();
   }
 
   logout() {
@@ -67,5 +78,9 @@ export class SettingsModalPage implements OnInit {
 
   login() {
     this.firebase.login();
+  }
+
+  dismiss() {
+    this.modalController.dismiss();
   }
 }

@@ -102,7 +102,7 @@
       <ion-fab-button (click)="presentSettingsModal()" data-desc="Control Panel">
         <ion-icon name="settings"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
+      <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
           <ion-icon name="add"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
