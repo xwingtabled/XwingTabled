@@ -241,17 +241,9 @@ function stripText(manifest) {
 }
 
 
-function injectConditionArtwork(data, xwsCondition, artwork) {
-    data.conditions.forEach(
-        (condition) => {
-            if (condition.xws == xwsCondition && artwork) {
-                condition.artwork = artwork;
-            }
-            if (condition.xws == "rattled") {
-                condition.artwork = "https://sb-cdn.fantasyflightgames.com/card_art/74ca7444aec38cb0034b67b04f6aaa76.jpg";
-            }
-        }
-    )
+function injectConditionAssociatedFFG(data, xwsCondition, ffg) {
+    let condition = data.conditions.find((condition) => condition.xws == xwsCondition);
+    condition.ffg = ffg;
 }
 
 function searchConditions(data) {
@@ -264,7 +256,7 @@ function searchConditions(data) {
                             if (pilot.conditions) {
                                 pilot.conditions.forEach(
                                     (condition) => {
-                                        injectConditionArtwork(data, condition, pilot.artwork);
+                                        injectConditionAssociatedFFG(data, condition, pilot.ffg);
                                     }
                                 )
                             }
@@ -283,7 +275,7 @@ function searchConditions(data) {
                         if (side.conditions) {
                             side.conditions.forEach(
                                 (condition) => {
-                                    injectConditionArtwork(data, condition, side.artwork);
+                                    injectConditionAssociatedFFG(data, condition, side.ffg);
                                 }
                             )
                         }
