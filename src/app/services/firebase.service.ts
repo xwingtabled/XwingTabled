@@ -3,23 +3,55 @@ import { Platform } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { XwingStateService } from './xwing-state.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
-    public user: firebase.User = null;
+  public user: firebase.User = null;
 
-    constructor(private platform: Platform,
-                public afAuth: AngularFireAuth,
-                public gplus: GooglePlus) { 
-        this.afAuth.authState.subscribe(
-            (user) => {
-                this.user = user;
-            }
-        )
+  constructor(private platform: Platform,
+              public afAuth: AngularFireAuth,
+              public gplus: GooglePlus,
+              public afStore: AngularFirestore,
+              public state: XwingStateService) { 
+      this.afAuth.authState.subscribe(
+          (user) => {
+              this.user = user;
+          }
+      )
+  }
+
+  async pushSquadron(squadron: any) {
+    if (!this.user.uid) {
+      throw Error("Not logged in");
     }
+    if (!squadron.uid) {
+      squadron.uid = this.user.uid;
+    }
+    if (squadron.uid != this.user.uid) {
+      throw Error("Not your squadron");
+    }
+    let doc = this.afStore.doc("squadrons/" + squadron.uuid);
+    return await doc.set(squadron);
+  }
 
+  async retrieveSquadron(uuid: string) : Promise<firebase.firestore.DocumentSnapshot> {
+    let doc = this.afStore.doc("squadrons/" + uuid);
+    return await doc.get().toPromise();
+  }
+
+  async subscribeSquadron(uuid: string) {
+    let doc = this.afStore.doc("squadrons/" + uuid);
+    doc.valueChanges().subscribe(
+      (squadron) => {
+        console.log("Squadron updated from cloud", squadron);
+        this.state.updateSquadron(squadron);
+      }
+    )
+  }
     
   async nativeGoogleLogin(): Promise<firebase.User> {
     const gplusUser = await this.gplus.login({

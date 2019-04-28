@@ -160,6 +160,16 @@ export class MainPage implements OnInit {
     this.state.closeSquadron(uuid);
   }
 
+  pushSquadron() {
+    this.firebase.pushSquadron(this.squadron).then(
+      (result) => {
+        console.log("Push successful");
+      },
+      (error) => {
+        console.log("Error", error);
+      }
+    );
+  }
 
   async data_event_handler(event: any) {
     this.data_message = event.message;
@@ -354,7 +364,7 @@ export class MainPage implements OnInit {
  
   async askReset() {
     const alert = await this.alertController.create({
-      header: 'Reset all squadrons?',
+      header: 'Reset squadrons?',
       message: 'All charges, force and shields will be restored, damage cards shuffled and conditions removed.',
       buttons: [
         { text: 'OK',

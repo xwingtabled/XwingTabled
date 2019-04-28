@@ -15,33 +15,40 @@ export class XwsModalPage implements OnInit {
   ngOnInit() {
   }
 
-  processXws(value: string) : boolean {
-    try {
-      this.xwsData = { xws: JSON.parse(value) };
-      return true;
-    } catch(error) {
-      return false;
-    } 
-  }
-
-  processFFGSquadBuilder(value: string) : boolean {
+  processURLUUID(value: string, url: string, xwsDataField: string) : boolean {
     if (!value || value.length == 0) {
       return false;
     }
-    let isSquadBuilder = value.includes("https://squadbuilder.fantasyflightgames.com");
-    let matchArray = value.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
+    let isURL = value.includes(url);
+    if (!isURL) {
+      return false;
+    }
+    let matchArray = value.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/); 
     let uuid = null;
     if (matchArray && matchArray.length) {
       uuid = matchArray[0];
+    } else {
+      return false;
     }
-    if (isSquadBuilder && uuid) {
-      this.xwsData = { ffg: uuid };
+    if (isURL && uuid) {
+      this.xwsData = { };
+      this.xwsData[xwsDataField] = uuid;
+      return true;
+    } else {
+      return false;
     }
-    return isSquadBuilder;
+    return false;
+  }
+
+  processXwingTabled(value: string) : boolean {
+    return this.processURLUUID(value, "https://xwingtabled.github.io/cloud/", "xwingtabled");
+  }
+
+  processFFGSquadBuilder(value: string) : boolean {
+    return this.processURLUUID(value, "https://squadbuilder.fantasyflightgames.com", "ffg");
   }
 
   processYasb(value: string) : boolean {
-
     let pilotRegex = /(\d+:(\-?\d*\,?)*)+(\:U\.\-?\d+)?/g;
     if (!value || value.length == 0) {
       return false;
@@ -86,9 +93,21 @@ export class XwsModalPage implements OnInit {
     return false;
   }
 
+  processXws(value: string) : boolean {
+    try {
+      this.xwsData = { xws: JSON.parse(value) };
+      return true;
+    } catch(error) {
+      return false;
+    } 
+  }
+
   textChange($event) {
     let value = $event.detail.value;
-    this.dataValid = this.processXws(value) || this.processFFGSquadBuilder(value) || this.processYasb(value);
+    this.dataValid = this.processXwingTabled(value) 
+      || this.processXws(value) 
+      || this.processFFGSquadBuilder(value) 
+      || this.processYasb(value);
   }
 
   cancel() {
