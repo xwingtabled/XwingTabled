@@ -60,7 +60,7 @@ export class SettingsModalPage implements OnInit {
 
   goToSquadron(uuid: string) {
     this.modalController.dismiss();
-    this.router.navigateByUrl("/squadron/" + uuid.substring(0, 8));
+    this.router.navigateByUrl("/squadron/" + uuid);
   }
 
   closeSquadron(uuid: string) {

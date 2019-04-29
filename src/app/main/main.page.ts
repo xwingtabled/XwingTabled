@@ -133,7 +133,7 @@ export class MainPage implements OnInit {
     if (uuid == this.squadronUUID) {
       return;
     }
-    this.router.navigateByUrl(this.squadronRoute(uuid.substring(0, 8)));
+    this.router.navigateByUrl(this.squadronRoute(uuid));
     return;
   }
 

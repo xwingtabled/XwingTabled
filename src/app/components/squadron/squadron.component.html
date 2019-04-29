@@ -2,7 +2,7 @@
     <div class="squadron-fullwidth">
         <xws-pilot 
             *ngFor="let pilot of squadron.pilots" 
-            [squadronUUID]="squadron.uuid.substring(0, 8)"
+            [squadronUUID]="squadron.uuid"
             [pilot]="pilot" 
             class="pilot-minwidth"></xws-pilot>
     </div>

@@ -358,7 +358,7 @@ export class XwingImportService {
         this.state.addSquadron(this.processXws(squadron));
       }
       let newSquadronUUID = this.state.squadrons[this.state.squadrons.length - 1].uuid;
-      let url = '/squadron/' + newSquadronUUID.substring(0, 8);
+      let url = '/squadron/' + newSquadronUUID;
       this.router.navigateByUrl(url);
     } catch (e) {
       console.log(e);
