@@ -246,3 +246,14 @@ ion-fab-button[data-desc]::after {
     font-style: italic;
     margin-bottom: 0.5em;
 }
+
+.squadron-missing {
+    border: 0.05em solid black;
+    text-align: center;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+    font-weight: bold;
+    margin-bottom: 1em;
+}

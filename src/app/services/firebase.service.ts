@@ -69,9 +69,13 @@ export class FirebaseService {
     return credential;
   }
 
-  login() {
+  loggedIn() : boolean {
+    return this.afAuth.auth.currentUser != null;
+  }
+
+  async login() {
     if (this.platform.is('cordova')) {
-      this.nativeGoogleLogin().then(
+      await this.nativeGoogleLogin().then(
         (result) => {
           console.log("Native Login Success", this.afAuth.auth.currentUser);
         },
@@ -80,7 +84,7 @@ export class FirebaseService {
         }
       );
     } else {
-      this.webGoogleLogin().then(
+      await this.webGoogleLogin().then(
         (result) => {
           console.log("Web Login Success", this.afAuth.auth.currentUser);
         },

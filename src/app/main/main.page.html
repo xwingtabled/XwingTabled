@@ -64,6 +64,16 @@
           manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
           <span (click)="xwsAddButton()" class="card-link">import a squadron</span>.
         </div>
+        <div *ngIf="squadronUUID" class="squadron-missing">
+          <span><ion-icon name="warning"></ion-icon>
+            &nbsp;
+            <span *ngIf="firebase.loggedIn()">Unable to find this squadron locally or online</span>
+            <span *ngIf="!firebase.loggedIn()">
+              Unable to find this squadron locally. You may need to
+              <span (click)="loginAndRetry()" class="card-link">log in</span> 
+              to view this squadron if it is online.</span>
+            </span>
+        </div>
         <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
           Saved squadrons
         </div>

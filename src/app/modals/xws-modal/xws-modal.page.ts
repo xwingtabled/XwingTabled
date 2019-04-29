@@ -41,7 +41,7 @@ export class XwsModalPage implements OnInit {
   }
 
   processXwingTabled(value: string) : boolean {
-    return this.processURLUUID(value, "https://xwingtabled.github.io/cloud/", "xwingtabled");
+    return this.processURLUUID(value, "https://xwingtabled.github.io/squadron/", "xwingtabled");
   }
 
   processFFGSquadBuilder(value: string) : boolean {

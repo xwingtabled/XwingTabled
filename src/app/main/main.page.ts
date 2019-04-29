@@ -236,6 +236,32 @@ export class MainPage implements OnInit {
     this.dataService.initialized = true;
   }
 
+  async loginAndRetry() {
+    try {
+      await this.firebase.login();
+      await this.loadOnlineSquadron();
+    } catch {
+      console.log("Unable to load squadron with UUID after logging in", this.squadronUUID);
+    }
+  }
+
+  async loadOnlineSquadron() {
+    const loading = await this.loadingCtrl.create({
+      message: "Looking for squadron online"
+    });
+    await loading.present();
+    try {
+      let result = await this.firebase.retrieveSquadron(this.squadronUUID);
+      if (result.exists) {
+        this.squadron = result.data();
+        this.state.importSquadron(this.squadron);
+      }
+    } catch {
+      console.log("Unable to load squadron with UUID after retrying", this.squadronUUID);
+    }
+    return await this.loadingCtrl.dismiss();
+  }
+
   async loadState() {
     console.log("Restoring...");
     await this.state.restoreFromDisk();
@@ -244,6 +270,13 @@ export class MainPage implements OnInit {
       this.toastUndo(this.state.getLastSnapshotTime());
     }
     this.squadron = this.state.getSquadron(this.squadronUUID);
+    try {
+      if (!this.squadron) {
+        await this.loadOnlineSquadron();
+      }
+    } catch (err) {
+      console.log("Error while checking for online squadron", err);
+    }
   }
 
   retryDownload() {
