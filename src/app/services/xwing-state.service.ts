@@ -226,7 +226,6 @@ export class XwingStateService {
     this.snapshots.push({ time: new Date().toISOString(), 
                           squadrons: JSON.parse(JSON.stringify(this.squadrons))});
     this.storage.set("snapshots", this.snapshots);
-    console.log("snapshot created", this.snapshots);
     const toast = await this.toastController.create({
       message: "Snapshot created " + this.getLastSnapshotTime(),
       duration: 2000,
@@ -305,7 +304,6 @@ export class XwingStateService {
       newDeck.push(card);
     }
     squadron.damagedeck = newDeck;
-    console.log("Damage deck shuffled", squadron.damagedeck);
     this.snapshot();
     const toast = await this.toastController.create({
       message: "Damage Deck shuffled",

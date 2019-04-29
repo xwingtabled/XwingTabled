@@ -54,23 +54,30 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
-    if (this.squadronUUID) {
-      this.squadron = this.state.getSquadron(this.squadronUUID);
-    }
+  }
 
-    this.events.unsubscribe(
-      this.dataService.topic
-    )
+  ionViewWillEnter() {
+    this.squadron = this.state.getSquadron(this.squadronUUID);
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
         await this.data_event_handler(event);
       }
     );
+
+    this.events.subscribe(
+      this.state.topic,
+      (event) => {
+        if (this.squadronUUID) {
+          this.squadron = this.state.getSquadron(this.squadronUUID);
+        } 
+      }
+    )
   }
 
-  ionViewDidEnter() {
-
+  ionViewWillLeave() {
+    this.events.unsubscribe(this.dataService.topic);
+    this.events.unsubscribe(this.state.topic);
   }
 
   getPointsDestroyed(squadron) {
