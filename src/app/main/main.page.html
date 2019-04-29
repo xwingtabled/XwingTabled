@@ -105,7 +105,7 @@
       <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadron" (click)="pushSquadron()" data-desc="Push squadron">
+      <ion-fab-button *ngIf="false && squadron" (click)="pushSquadron()" data-desc="Push squadron">
         <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
