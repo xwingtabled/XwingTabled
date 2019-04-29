@@ -537,13 +537,13 @@ to represent the company, product, or service to which they refer.**
 @fortawesome/angular-fontawesome
 MIT
 
+@angular/fire
+MIT
+
 @angular/fire/firestore
 MIT
 
 firebase/firestore
-
-@angular/fire
-MIT
 
 @angular/fire/auth
 MIT
