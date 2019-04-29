@@ -1,43 +1,20 @@
-<div *ngIf="state.initialized && layout.getClass().includes('phone')" class="squadron-toolbar">
-  <div class='active squadron-tab' *ngIf="squadron">
-    <xwing-icon [name]="squadron.faction"></xwing-icon>
-    <div class="squadron-title">
-      {{ squadron.name }} 
-      ({{ state.getSquadronPointsDestroyed(squadron.uuid) }} / 
-      {{ state.getSquadronPointTotal(squadron.uuid) }})
+<div *ngIf="state.initialized" class="squadron-toolbar">
+  <ng-container *ngFor="let squadronItem of state.squadrons">
+    <div *ngIf="!layout.getClass().includes('phone') || squadronItem.uuid.includes(squadronUUID)"
+      (click)="goToSquadron(squadronItem)"
+      [class]="squadron && squadronItem.uuid.includes(squadronUUID) ? 'active squadron-tab' : 'squadron-tab'">
+      <xwing-icon [name]="squadronItem.faction"></xwing-icon>
+      <div class="squadron-title">
+        {{ squadronItem.name }} 
+        ({{ state.getSquadronPointsDestroyed(squadronItem.uuid) }} / 
+        {{ state.getSquadronPointTotal(squadronItem.uuid) }})
+      </div>
+      <div class="squadron-close">
+        <ion-icon *ngIf="squadronItem.uuid.includes(squadronUUID)" name="close-circle" (click)="askClose()"></ion-icon>
+      </div>
     </div>
-    <div class="squadron-close"><ion-icon name="close-circle" (click)="askClose()"></ion-icon></div>
-  </div>
-  <div 
-    *ngIf="state.squadrons.length > 1" 
-    [class]="nextSquadron() ? 'active hover squad-control squadron-tab' : 'squad-control squadron-tab'"
-    (click)="goToSquadron(nextSquadron())"
-    style="float: right;">
-    <ion-icon name="arrow-dropright"></ion-icon>
-  </div>
-  <div 
-    *ngIf="state.squadrons.length > 1" 
-    [class]="previousSquadron() ? 'active hover squad-control squadron-tab' : 'squad-control squadron-tab'"
-    (click)="goToSquadron(previousSquadron())"
-    style="float: right;">
-    <ion-icon name="arrow-dropleft"></ion-icon>
-  </div>
-</div>
-<div *ngIf="state.initialized && !layout.getClass().includes('phone')" class="squadron-toolbar">
-  <div *ngFor="let squadronItem of state.squadrons" 
-    (click)="goToSquadron(squadronItem)"
-    [class]="squadron && squadronItem.uuid.includes(squadronUUID) ? 'active squadron-tab' : 'squadron-tab'">
-    <xwing-icon [name]="squadronItem.faction"></xwing-icon>
-    <div class="squadron-title">
-      {{ squadronItem.name }} 
-      ({{ state.getSquadronPointsDestroyed(squadronItem.uuid) }} / 
-      {{ state.getSquadronPointTotal(squadronItem.uuid) }})
-    </div>
-    <div class="squadron-close">
-      <ion-icon *ngIf="squadronItem.uuid.includes(squadronUUID)" name="close-circle" (click)="askClose()"></ion-icon>
-    </div>
-  </div>
-  <div (click)="xwsAddButton()" class="active hover squadron-tab squad-control">
+  </ng-container>
+  <div *ngIf="!layout.getClass().includes('phone')" (click)="xwsAddButton()" class="active hover squadron-tab squad-control">
     <ion-icon name="add-circle"></ion-icon>
   </div>
   <div 
@@ -115,7 +92,7 @@
       <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadron" (click)="pushSquadron()" data-desc="Push squadron">
+      <ion-fab-button *ngIf="false && squadron" (click)="pushSquadron()" data-desc="Push squadron">
         <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
