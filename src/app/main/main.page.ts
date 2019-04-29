@@ -137,29 +137,18 @@ export class MainPage implements OnInit {
     return;
   }
 
-  closeSquadron(uuid: string) {
-    let index = this.state.getSquadronIndex(uuid);
-    if (this.state.squadrons.length == 1) {
+  closeSquadron() {
+    let index = this.state.getSquadronIndex(this.squadronUUID);
+    this.state.closeSquadron(this.squadronUUID);
+    if (this.state.squadrons.length == 0) {
       this.router.navigateByUrl("/");
+      return;
     }
-    index = index + 1;
     if (index >= this.state.squadrons.length) {
       index = this.state.squadrons.length - 1;
     }
-    let destination = this.state.squadrons[index].uuid;
-    this.router.navigateByUrl(this.squadronRoute(destination));
-    this.state.closeSquadron(uuid);
-  }
-
-  pushSquadron() {
-    this.firebase.pushSquadron(this.squadron).then(
-      (result) => {
-        console.log("Push successful");
-      },
-      (error) => {
-        console.log("Error", error);
-      }
-    );
+    let newUUID = this.state.squadrons[index].uuid;
+    this.router.navigateByUrl(this.squadronRoute(newUUID));
   }
 
   async data_event_handler(event: any) {
@@ -372,7 +361,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.closeSquadron(this.squadronUUID);
+                this.closeSquadron();
               }
             )
           }
