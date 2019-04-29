@@ -103,10 +103,13 @@
         <ion-icon name="settings"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
-          <ion-icon name="add"></ion-icon>
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="squadron" (click)="pushSquadron()" data-desc="Push squadron">
+        <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
-        <i class="fa fa-power-off"></i>
+        <ion-icon name="power"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadronUUID && state.snapshots.length > 1" (click)="askUndo()" data-desc="Undo">
         <ion-icon name="undo"></ion-icon>

@@ -54,8 +54,10 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
-    this.loadSquadron();
+  }
 
+  ionViewWillEnter() {
+    this.squadron = this.state.getSquadron(this.squadronUUID);
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -64,29 +66,18 @@ export class MainPage implements OnInit {
     );
 
     this.events.subscribe(
-      this.state.topic, 
+      this.state.topic,
       (event) => {
-        this.loadSquadron();
+        if (this.squadronUUID) {
+          this.squadron = this.state.getSquadron(this.squadronUUID);
+        } 
       }
     )
   }
 
-  loadSquadron() {
-    if (this.squadronUUID && this.state.squadrons.length > 0) {
-      this.squadron = this.state.getSquadron(this.squadronUUID);
-    } else {
-      this.squadron = null;
-    }
-    if (!this.squadron) {
-      this.router.navigateByUrl("/");
-    }
-  }
-
-  ionViewDidEnter() {
-    this.state.snapshotCheck();
-    if(this.squadronUUID && !this.squadron) {
-      this.router.navigateByUrl("/");
-    }
+  ionViewWillLeave() {
+    this.events.unsubscribe(this.dataService.topic);
+    this.events.unsubscribe(this.state.topic);
   }
 
   getPointsDestroyed(squadron) {
@@ -160,6 +151,16 @@ export class MainPage implements OnInit {
     this.state.closeSquadron(uuid);
   }
 
+  pushSquadron() {
+    this.firebase.pushSquadron(this.squadron).then(
+      (result) => {
+        console.log("Push successful");
+      },
+      (error) => {
+        console.log("Error", error);
+      }
+    );
+  }
 
   async data_event_handler(event: any) {
     this.data_message = event.message;
@@ -354,7 +355,7 @@ export class MainPage implements OnInit {
  
   async askReset() {
     const alert = await this.alertController.create({
-      header: 'Reset all squadrons?',
+      header: 'Reset squadrons?',
       message: 'All charges, force and shields will be restored, damage cards shuffled and conditions removed.',
       buttons: [
         { text: 'OK',

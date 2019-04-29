@@ -15,6 +15,7 @@ export class XwingStateService {
   public squadrons: any[ ] = [ ];
   public snapshots: any[ ] = [ ];
   public topic: string = "state:update";
+  public currentSquadronUUID: string = null;
 
   constructor(public dataService: XwingDataService,
               private events: Events,
@@ -105,6 +106,12 @@ export class XwingStateService {
     this.notify();
   }
 
+  updateSquadron(squadron: any) {
+    let index = this.getSquadronIndex(squadron['uuid']);
+    this.squadrons[index] = squadron;
+    this.notify();
+  }
+
   closeSquadron(uuid: string) {
     let index = this.getSquadronIndex(uuid);
     this.squadrons.splice(index, 1);
@@ -126,6 +133,9 @@ export class XwingStateService {
 
   getPilot(squadronUUID: string, pilotUUID: string) {
     let squadron = this.getSquadron(squadronUUID);
+    if (!squadron) {
+      return null;
+    }
     return squadron.pilots.find(pilot => pilot.uuid == pilotUUID); 
   }
 
@@ -216,7 +226,6 @@ export class XwingStateService {
     this.snapshots.push({ time: new Date().toISOString(), 
                           squadrons: JSON.parse(JSON.stringify(this.squadrons))});
     this.storage.set("snapshots", this.snapshots);
-    console.log("snapshot created", this.snapshots);
     const toast = await this.toastController.create({
       message: "Snapshot created " + this.getLastSnapshotTime(),
       duration: 2000,
@@ -262,6 +271,12 @@ export class XwingStateService {
     return -1;
   }
 
+  importSquadron(squadron: any) {
+    this.squadrons.push(squadron);
+    this.initialized = true;
+    this.snapshot();
+  }
+
   addSquadron(squadron: any) {
     squadron.damagedeck = this.dataService.getDamageDeck();
     squadron.damagediscard = [ ];
@@ -289,7 +304,6 @@ export class XwingStateService {
       newDeck.push(card);
     }
     squadron.damagedeck = newDeck;
-    console.log("Damage deck shuffled", squadron.damagedeck);
     this.snapshot();
     const toast = await this.toastController.create({
       message: "Damage Deck shuffled",

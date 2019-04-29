@@ -174,7 +174,6 @@ export class XwingDataService {
           }
           // Our manifest is good to go.
           this.status("manifest_current", "Manifest is current.");
-          console.log("X-Wing Json Data", this.data);
           // Continue to download squadbuilder data
           this.load_images();
         }

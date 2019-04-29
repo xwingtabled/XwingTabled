@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { XwingDataService } from './xwing-data.service';
 import { XwingStateService } from './xwing-state.service';
+import { FirebaseService } from './firebase.service';
 import { HttpProvider } from '../providers/http.provider';
-import { PilotModalPage } from '../modals/pilot-modal/pilot-modal.page';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
-import { ModalController, PopoverController, LoadingController, ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,8 @@ export class XwingImportService {
               private http: HttpProvider,
               private modalController: ModalController,
               private toastController: ToastController,
-              private router: Router) {
+              private router: Router,
+              private firebase: FirebaseService) {
   }
 
   mangleUpgradeArray(pilot: any) {
@@ -297,6 +298,44 @@ export class XwingImportService {
     return squadronData;
   }
 
+  async importXwingTabled(uuid: string) {
+    this.firebase.retrieveSquadron(uuid).then(
+      (data) => {
+        console.log("X-Wing Tabled Squadron Data", data.data());
+        this.state.importSquadron(data.data());
+        this.firebase.subscribeSquadron(uuid);
+      },
+      async (error) => {
+        console.log("Unable to get X-Wing Tabled Squadron Data", error);
+        const toast = await this.toastController.create({
+          message: "ERROR: Unable to retrieve X-Wing Tabled Squadron",
+          duration: 5000,
+          position: 'bottom'
+        });
+        toast.present(); 
+      }
+    )
+  }
+
+  async importFFG(uuid: string) {
+    let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + uuid + "/";
+    
+    await this.http.get(url).subscribe(
+      (data) => {
+        this.state.addSquadron(this.processFFG(data))
+      },
+      async (error) => {
+        console.log("Unable to get FFG SquadBuilder data", error);
+        const toast = await this.toastController.create({
+          message: "ERROR: Unable to load FFG Squad",
+          duration: 5000,
+          position: 'bottom'
+        });
+        toast.present();
+      }
+    );
+  }
+
   async presentXwsModal() {
     const modal = await this.modalController.create({
       component: XwsModalPage
@@ -305,23 +344,11 @@ export class XwingImportService {
     const { data } = await modal.onWillDismiss();
     if (!data) return;
     try {
+      if (data.xwingtabled) {
+        await this.importXwingTabled(data.xwingtabled);
+      }
       if (data.ffg) {
-        let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + data.ffg + "/";
-    
-        await this.http.get(url).subscribe(
-          (data) => {
-            this.state.addSquadron(this.processFFG(data))
-          },
-          async (error) => {
-            console.log("Unable to get FFG SquadBuilder data", error);
-            const toast = await this.toastController.create({
-              message: "ERROR: Unable to load FFG Squad",
-              duration: 5000,
-              position: 'bottom'
-            });
-            toast.present();
-          }
-        );
+        await this.importFFG(data.ffg);
       }
       if (data.yasb) {
         this.state.addSquadron(this.processYasb(data.yasb));
