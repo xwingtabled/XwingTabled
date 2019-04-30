@@ -67,8 +67,8 @@ export class MainPage implements OnInit {
 
     this.events.subscribe(
       this.state.topic,
-      (event) => {
-        if (this.squadronUUID) {
+      (uuids) => {
+        if (this.squadronUUID && uuids.includes(this.squadronUUID)) {
           this.squadron = this.state.getSquadron(this.squadronUUID);
         } 
       }
@@ -244,20 +244,22 @@ export class MainPage implements OnInit {
       if (result.exists) {
         this.squadron = result.data();
         this.state.importSquadron(this.squadron);
+        this.firebase.subscribeSquadron(this.squadronUUID);
       }
     } catch {
-      console.log("Unable to load squadron with UUID after retrying", this.squadronUUID);
+      console.log("Unable to load squadron from firebase with UUID", this.squadronUUID);
     }
     return await this.loadingCtrl.dismiss();
   }
 
   async loadState() {
-    console.log("Restoring...");
+    console.log("Restoring squadrons from local storage");
     await this.state.restoreFromDisk();
-    console.log("Restored!");
     if (this.state.snapshots && this.state.snapshots.length) {
       this.toastUndo(this.state.getLastSnapshotTime());
     }
+    console.log("Syncing squadrons with Firebase");
+    await this.firebase.synchronize();
     this.squadron = this.state.getSquadron(this.squadronUUID);
     try {
       if (!this.squadron) {

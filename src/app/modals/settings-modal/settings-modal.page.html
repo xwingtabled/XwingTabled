@@ -38,7 +38,7 @@
     <ion-list-header>
       <ion-label>Settings</ion-label>
     </ion-list-header>
-    <ion-item *ngIf="false && firebase.user">
+    <ion-item *ngIf="firebase.user">
       <ion-avatar slot="start">
         <img src="{{ firebase.user.photoURL }}">
       </ion-avatar>
@@ -48,7 +48,7 @@
       </ion-label>
       <ion-icon name="log-out" slot="end" (click)="logout()"></ion-icon>
     </ion-item>
-    <ion-item *ngIf="false && !firebase.user">
+    <ion-item *ngIf="!firebase.user">
       <ion-label>
         <h2>Sign in with Google</h2>
         <p>Your squadrons will be synced and viewable to others.</p> 

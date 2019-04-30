@@ -15,6 +15,7 @@ import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from '@angular/common';
 import { faBars, faChevronCircleUp, faChevronCircleDown } from '@fortawesome/free-solid-svg-icons';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-pilot-modal',
@@ -46,14 +47,13 @@ export class PilotModalPage implements OnInit {
               private popoverController: PopoverController,
               private dataService: XwingDataService,
               public state: XwingStateService,
-              private alertController: AlertController,
               private events: Events,
               private ngZone: NgZone,
               public modalController: ModalController,
               public layout: LayoutService,
               private route: ActivatedRoute,
-              private router: Router,
-              private location: Location) { }
+              private location: Location,
+              private firebase: FirebaseService) { }
 
   ngOnInit() {
     let squadronUUIDParam = this.route.snapshot.paramMap.get("squadronUUID");
@@ -63,13 +63,23 @@ export class PilotModalPage implements OnInit {
       this.pilotUUID = pilotUUIDParam;
       this.useAngularRouter = true;
     }
-
     this.initialize();
+  }
+
+  ionViewWillEnter() {
     this.events.subscribe(this.state.topic,
       (data) => {
         this.initialize();
       }
     );
+  }
+
+  ionViewWillLeave() {
+    this.events.unsubscribe(this.state.topic);
+  }
+
+  push() {
+    this.firebase.pushSquadron(this.squadronUUID);
   }
 
   initialize() {
@@ -150,14 +160,17 @@ export class PilotModalPage implements OnInit {
 
   changeShields(remaining) {
     this.pilot.shields = remaining;
+    this.push();
   }
 
   changeCharges(remaining) {
     this.pilot.charges = remaining;
+    this.push();
   }
 
   changeForce(remaining) {
     this.pilot.force = remaining;
+    this.push();
   }
 
   fillManeuverChart(dial: string[]) {
@@ -232,12 +245,14 @@ export class PilotModalPage implements OnInit {
     if (!this.state.drawHit(this.squadronUUID, this.pilotUUID)) {
       this.presentDamageDeckEmpty();
     }
+    this.push();
   }
 
   drawCrit() {
     if (!this.state.drawCrit(this.squadronUUID, this.pilotUUID)) {
       this.presentDamageDeckEmpty();
     }
+    this.push();
   }
 
   async presentDamageDeckEmpty() {
@@ -261,6 +276,7 @@ export class PilotModalPage implements OnInit {
       }
     )
     this.pilot.damagecards = [ ];
+    this.push();
   }
 
   async assignIdNumber() {
@@ -272,8 +288,8 @@ export class PilotModalPage implements OnInit {
     });
     popover.onDidDismiss().then(
       (result) => {
-        console.log(result);
-        this.pilot.idNumber = result.data
+        this.pilot.idNumber = result.data;
+        this.push();
       }
     )
     await popover.present();  
@@ -287,6 +303,7 @@ export class PilotModalPage implements OnInit {
         cards: this.pilot.damagecards.filter((card) => !card.exposed),
         callback: (card) => {
           card.exposed = true;
+          this.push();
         }
       }
     });
@@ -313,6 +330,7 @@ export class PilotModalPage implements OnInit {
               }
             }
           );
+          this.push();
         }
       }
     });
@@ -343,6 +361,7 @@ export class PilotModalPage implements OnInit {
           this.pilot.damagecards.push(card);
           let index = this.squadron.damagedeck.indexOf(card);
           this.squadron.damagedeck.splice(index, 1);
+          this.push();
        }
       }
     });
@@ -413,10 +432,12 @@ export class PilotModalPage implements OnInit {
         let card = this.pilot.damagecards[index];
         card.exposed = true;
         this.mutateCard(card);
+        this.push();
         const popover = await this.popoverController.create({
           component: DamagePopoverComponent,
           componentProps: {
-            card: card,
+            cardIndex: index,
+            pilotUUID: this.pilotUUID,
             squadronUUID: this.squadronUUID
           }
         });

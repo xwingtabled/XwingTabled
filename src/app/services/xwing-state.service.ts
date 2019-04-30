@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { XwingDataService } from './xwing-data.service';
-import { Events } from '@ionic/angular';
+import { Events, LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { ToastController } from '@ionic/angular';
 import { NgZone } from '@angular/core';
+import { firestore } from 'firebase/app'
 
 import * as uuidv4 from 'uuid/v4';
 
@@ -21,7 +22,8 @@ export class XwingStateService {
               private events: Events,
               private storage: Storage,
               public toastController: ToastController,
-              public zone: NgZone) {
+              public zone: NgZone,
+              public loadingCtrl: LoadingController) {
   }
 
   reset() {
@@ -103,24 +105,39 @@ export class XwingStateService {
       }
     )
     this.snapshot();
-    this.notify();
+    this.notify([ uuid ]);
   }
 
   updateSquadron(squadron: any) {
     let index = this.getSquadronIndex(squadron['uuid']);
+    if (!this.squadrons[index]) {
+      return;
+    }
+    if (this.squadrons[index].timestamp.seconds && 
+        this.squadrons[index].timestamp.seconds + 2 > squadron.timestamp.seconds) {
+      return;
+    }
     this.squadrons[index] = squadron;
-    this.notify();
+    this.snapshot();
+    this.notify([ squadron.uuid ]);
   }
 
   closeSquadron(uuid: string) {
     let index = this.getSquadronIndex(uuid);
     this.squadrons.splice(index, 1);
     this.snapshot();
-    this.notify();
+    this.notify([ uuid ]);
   }
 
-  notify() {
-    this.events.publish(this.topic, this.squadrons);
+  notify(uuids: string[] = []) {
+    if (uuids.length == 0 && this.squadrons) {
+      this.squadrons.forEach(
+        (squadron) => {
+          uuids.push(squadron.uuid);
+        }
+      )
+    }
+    this.events.publish(this.topic, uuids);
   }
 
   getDamageCard(squadronUUID: string, pilotUUID: string, cardIndex: number) {
@@ -286,11 +303,12 @@ export class XwingStateService {
       }
     )
     squadron.uuid = this.getSquadronId();
+    squadron.timestamp = firestore.FieldValue.serverTimestamp();
     this.squadrons.push(squadron);
     this.shuffleDamageDeck(squadron.uuid);
     this.initialized = true;
-    console.log("Squadron added", squadron);
     this.snapshot();
+    this.notify([ squadron.uuid ]);
     return squadron;
   }
 

@@ -17,7 +17,6 @@ import { NgZone } from '@angular/core';
 export class PilotComponent implements OnInit {
   @Input() squadronUUID: number;
   @Input() pilot: any;
-  pilotNum: number;
   groups: any[][] = [];
   img_url: string = null;
   icon_url: string = null;
@@ -59,16 +58,9 @@ export class PilotComponent implements OnInit {
 
   ngOnInit() {
     this.initialize();
-    this.events.subscribe(
-      this.state.topic,
-      (data) => {
-        this.initialize();
-      }
-    );
   }
 
   initialize() {
-    this.pilotNum = this.pilot.num;
     this.data = this.dataService.getCardByFFG(this.pilot.ffg);
     let numGroups = this.pilot.upgrades.length >= 9 ? 3 : 2;
     let groupSize = Math.ceil(this.pilot.upgrades.length / numGroups);

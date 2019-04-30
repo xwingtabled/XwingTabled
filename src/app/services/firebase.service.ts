@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, LoadingController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
+import { auth, firestore } from 'firebase/app';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { XwingStateService } from './xwing-state.service';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -12,11 +12,14 @@ import { AngularFirestore } from '@angular/fire/firestore';
 export class FirebaseService {
   public user: firebase.User = null;
 
+  private pushes: any = { };
+
   constructor(private platform: Platform,
               public afAuth: AngularFireAuth,
               public gplus: GooglePlus,
               public afStore: AngularFirestore,
-              public state: XwingStateService) { 
+              public state: XwingStateService,
+              public loadingCtrl: LoadingController) { 
       this.afAuth.authState.subscribe(
           (user) => {
               this.user = user;
@@ -24,16 +27,29 @@ export class FirebaseService {
       )
   }
 
-  async pushSquadron(squadron: any) {
+  timestamp() {
+    return firestore.FieldValue.serverTimestamp();
+  }
+
+  async pushSquadron(uuid: string) {
     if (!this.user.uid) {
-      throw Error("Not logged in");
+      return;
+    }
+    let squadron = this.state.getSquadron(uuid);
+    if (!squadron) {
+      return;
     }
     if (!squadron.uid) {
       squadron.uid = this.user.uid;
     }
     if (squadron.uid != this.user.uid) {
-      throw Error("Not your squadron");
+      return;
     }
+    if (JSON.stringify(squadron) == this.pushes[squadron.uuid]) {
+      return;
+    }
+    squadron.timestamp = this.timestamp();
+    this.pushes[squadron.uuid] = JSON.stringify(squadron);
     let doc = this.afStore.doc("squadrons/" + squadron.uuid);
     return await doc.set(squadron);
   }
@@ -45,11 +61,43 @@ export class FirebaseService {
 
   async subscribeSquadron(uuid: string) {
     let doc = this.afStore.doc("squadrons/" + uuid);
-    doc.valueChanges().subscribe(
-      (squadron) => {
-        this.state.updateSquadron(squadron);
+    doc.snapshotChanges().subscribe(
+      (snapshot) => {
+        if (snapshot.payload.exists) {
+          this.state.updateSquadron(snapshot.payload.data())
+        } else {
+          console.log("UUID ceased to exist", uuid);
+        }
       }
     )
+  }
+
+  async synchronize() {
+    const loading = await this.loadingCtrl.create({
+      message: "Looking for squadron online"
+    });
+    await loading.present();
+    this.state.squadrons.forEach(
+      async (squadron) => {
+        try {
+          let result = await this.retrieveSquadron(squadron.uuid);
+          if (result.exists) {
+            let onlineSquadron = result.data();
+            if (onlineSquadron.timestamp.seconds > squadron.timestamp.seconds) {
+              console.log("Online squadron is newer", squadron.uuid);
+              this.state.updateSquadron(onlineSquadron);
+            }
+          } else {
+            await this.pushSquadron(squadron.uuid);
+          }
+          await this.subscribeSquadron(squadron.uuid);
+          console.log("Squadron synced", squadron.uuid);
+        } catch (err) {
+          console.log("Unable to sync squadron", squadron.uuid, err);
+        }
+      }
+    )
+    return await this.loadingCtrl.dismiss()
   }
     
   async nativeGoogleLogin(): Promise<firebase.User> {
@@ -70,7 +118,7 @@ export class FirebaseService {
   }
 
   loggedIn() : boolean {
-    return this.afAuth.auth.currentUser != null;
+    return this.user != null;
   }
 
   async login() {
