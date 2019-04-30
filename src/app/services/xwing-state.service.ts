@@ -370,7 +370,7 @@ export class XwingStateService {
 
   async importSquadron(uuid: string, squadron: Squadron) {
     this.squadrons[uuid] = squadron;
-    this.snapshots[uuid] = [ ];
+    this.snapshots[uuid] = [ JSON.parse(JSON.stringify(squadron)) ];
     this.initialized = true;
     await this.snapshot(uuid);
     return await this.subscribe(uuid);
