@@ -55,6 +55,7 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
+    this.squadronUUIDs = Object.keys(this.state.squadrons);
   }
 
   ionViewWillEnter() {
