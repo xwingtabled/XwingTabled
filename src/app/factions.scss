@@ -1,27 +1,45 @@
+.faction {
+    padding: 0.1em 0.1em 0.1em 0.1em;
+}
+
 .rebelalliance {
+    @extend .faction;
     color: red;
+    background-color: lightgrey;
 }
 
 .galacticempire {
-    color: blue;
+    @extend .faction;
+    color: white;
+    background-color: blue;
 }
 
 .scumandvillainy {
-    color: brown;
+    @extend .faction;
+    color: white;
+    background-color: brown;
 }
 
 .resistance {
+    @extend .faction;
     color: orange;
+    background-color: darkslategray;
 }
 
 .firstorder {
-    color: darkred;
+    @extend .faction;
+    color: red;
+    background-color: darkslategray;
 }
 
 .galacticrepublic {
-    color: purple;
+    @extend .faction;
+    color: darkred;
+    background-color: lightgoldenrodyellow;
 }
 
 .separatistalliance {
+    @extend .faction;
     color: darkblue;
+    background-color: lightgrey;
 }

@@ -7,6 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class XwingIconComponent implements OnInit {
   @Input() name: string = "";
+  @Input() faction: boolean = false;
+  static factions: string[] = [ "rebelalliance", "galacticempire", 
+    "scumandvillainy", "galacticrepublic", "separatistalliance",
+    "resistance", "firstorder"]
   static name_map = {
     "charges" : "charge",
     "Base All": "base-all",
@@ -62,7 +66,9 @@ export class XwingIconComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.icon_class = XwingIconComponent.getClass(this.name) + " " + this.name;
+    this.icon_class = XwingIconComponent.getClass(this.name);
+    if (this.faction) {
+      this.icon_class += " " + this.name;
+    }
   }
-
 }

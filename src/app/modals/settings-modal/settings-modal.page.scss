@@ -1,5 +1,6 @@
 @import '../../components/component.scss';
 @import '../modal.scss';
+@import '../../factions.scss';
 
 ion-icon.clickable:hover {
     color: black;
@@ -7,7 +8,10 @@ ion-icon.clickable:hover {
 }
 
 .offline {
-    color: lightgrey;
+    color: lightgrey !important;
+    background-color: inherit !important;
+    border: 1px solid lightgrey;
+    padding: 0.1em 0.1em 0.1em 0.1em;
 }
 
 
@@ -15,6 +19,7 @@ ion-icon.clickable:hover {
 ion-avatar {
     xwing-icon {
         font-size: 1.75em;
+
     }
     xwing-ship {
         font-size: 2.25em;

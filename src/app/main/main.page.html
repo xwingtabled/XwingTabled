@@ -3,7 +3,7 @@
     <div *ngIf="!layout.getClass().includes('phone') || squadronItem.uuid.includes(squadronUUID)"
       (click)="goToSquadron(squadronItem)"
       [class]="squadron && squadronItem.uuid.includes(squadronUUID) ? 'active squadron-tab' : 'squadron-tab'">
-      <xwing-icon [name]="squadronItem.faction"></xwing-icon>
+      <xwing-icon [name]="squadronItem.faction" [faction]="true"></xwing-icon>
       <div class="squadron-title">
         {{ squadronItem.name }} 
         ({{ state.getSquadronPointsDestroyed(squadronItem.uuid) }} / 
