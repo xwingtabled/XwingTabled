@@ -34,7 +34,7 @@ export class XwingIconComponent implements OnInit {
     "force-power" : "forcepower",
     "galacticrepublic" : "republic",
     "separatistalliance" : "separatists",
-    "resistance" : "rebel-outline"
+    "resistance" : "rebel"
   };
 
   static icon_class_template = "xwing-miniatures-font xwing-miniatures-font-TEMPLATE";
@@ -62,7 +62,7 @@ export class XwingIconComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.icon_class = XwingIconComponent.getClass(this.name);
+    this.icon_class = XwingIconComponent.getClass(this.name) + " " + this.name;
   }
 
 }
