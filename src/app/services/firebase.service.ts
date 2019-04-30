@@ -5,7 +5,8 @@ import { auth, firestore } from 'firebase/app';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { XwingStateService } from './xwing-state.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-
+import { Observable, of } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -52,6 +53,16 @@ export class FirebaseService {
     this.pushes[squadron.uuid] = JSON.stringify(squadron);
     let doc = this.afStore.doc("squadrons/" + squadron.uuid);
     return await doc.set(squadron);
+  }
+
+  async mysquadrons() {
+    let collection = this.afStore.collection('squadrons', ref => ref.where('uid', '==', this.user.uid));
+    return collection.get().toPromise();
+  }
+
+  async deleteSquadron(uuid: string) {
+    let doc = this.afStore.doc("squadrons/" + uuid);
+    return await doc.delete();
   }
 
   async retrieveSquadron(uuid: string) : Promise<firebase.firestore.DocumentSnapshot> {

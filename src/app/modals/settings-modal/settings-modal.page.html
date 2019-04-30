@@ -11,32 +11,19 @@
 <ion-content padding>
   <ion-list>
     <ion-list-header>
-      <ion-label>Saved Squadrons</ion-label>
+      Local Data
     </ion-list-header>
     <ion-item>
-      <ion-avatar slot="start">
-        <span class="squadron-icon"><xwing-ship [name]="'t65xwing'"></xwing-ship></span>
-      </ion-avatar>
       <ion-label>
-        Import a squadron
+        <h2>Reset</h2>
+        <p>
+          This will delete X-Wing metadata, images and squadrons stored on your device. 
+        </p>
       </ion-label>
-      <ion-icon name="add-circle" slot="end" (click)="import()"></ion-icon>
+      <ion-icon name="nuclear" slot="end" (click)="resetData()"></ion-icon>
     </ion-item>
-    <ion-item *ngFor="let squadronItem of state.squadrons">
-      <ion-avatar slot="start">
-        <span class="squadron-icon">
-          <xwing-icon [name]="squadronItem.faction"></xwing-icon>
-        </span>
-      </ion-avatar>
-      <ion-label>
-        <span class="squadron-link" (click)="goToSquadron(squadronItem.uuid)">{{ squadronItem.name }}</span>
-      </ion-label>
-      <ion-icon name="close-circle" (click)="closeSquadron(squadronItem.uuid)"></ion-icon>
-    </ion-item>
-  </ion-list>
-  <ion-list>
     <ion-list-header>
-      <ion-label>Settings</ion-label>
+      <ion-label>Cloud Login</ion-label>
     </ion-list-header>
     <ion-item *ngIf="firebase.user">
       <ion-avatar slot="start">
@@ -55,14 +42,32 @@
       </ion-label>
       <ion-icon name="log-in" slot="end" (click)="login()"></ion-icon>
     </ion-item>
-    <ion-item>
+    <ion-list-header>
+      Cloud Squadrons
+    </ion-list-header>
+    <ion-item *ngIf="cloudSquadrons.length == 0">
+      <i>None. Import a squadron - it will automatically cloud sync.</i>
+    </ion-item>
+    <ion-item *ngFor="let squadronItem of cloudSquadrons">
+      <ion-avatar slot="start">
+        <span class="squadron-icon">
+          <xwing-icon [name]="squadronItem.faction" [class]="getSquadronClass(squadronItem)"></xwing-icon>
+        </span>
+      </ion-avatar>
       <ion-label>
-        <h2>Reset Local Data</h2>
-        <p>
-          This will delete X-Wing metadata, images and squadrons. 
-        </p>
+        {{ squadronItem.name }}
       </ion-label>
-      <ion-icon name="nuclear" slot="end" (click)="resetData()"></ion-icon>
+      <ion-icon 
+        name="cloud-download" 
+        slot="end" 
+        *ngIf="!isLocalSquadron(squadronItem.uuid)"
+        class="clickable"
+        (click)="importSquadron(squadronItem)"></ion-icon>
+      <ion-icon 
+        name="close-circle" 
+        slot="end" 
+        class="clickable"
+        (click)="deleteSquadron(squadronItem)"></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

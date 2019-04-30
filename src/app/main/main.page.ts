@@ -122,6 +122,9 @@ export class MainPage implements OnInit {
   }
 
   squadronRoute(uuid: string) {
+    if (!uuid || uuid.length == 0) {
+      return "/";
+    }
     return "/squadron/" + uuid;
   }
 
@@ -138,16 +141,7 @@ export class MainPage implements OnInit {
   }
 
   closeSquadron() {
-    let index = this.state.getSquadronIndex(this.squadronUUID);
-    this.state.closeSquadron(this.squadronUUID);
-    if (this.state.squadrons.length == 0) {
-      this.router.navigateByUrl("/");
-      return;
-    }
-    if (index >= this.state.squadrons.length) {
-      index = this.state.squadrons.length - 1;
-    }
-    let newUUID = this.state.squadrons[index].uuid;
+    let newUUID = this.state.closeSquadron(this.squadronUUID);
     this.router.navigateByUrl(this.squadronRoute(newUUID));
   }
 
@@ -421,7 +415,10 @@ export class MainPage implements OnInit {
 
   async presentSettingsModal() {
     const modal = await this.modalController.create({
-      component: SettingsModalPage
+      component: SettingsModalPage,
+      componentProps: {
+        currentSquadronUUID: this.squadronUUID,
+      }
     });
     return await modal.present();
   }

@@ -123,10 +123,18 @@ export class XwingStateService {
   }
 
   closeSquadron(uuid: string) {
+    let destination = null;
     let index = this.getSquadronIndex(uuid);
     this.squadrons.splice(index, 1);
+    if (this.squadrons.length == 0) {
+      destination = null;
+    } else if (index >= this.squadrons.length) {
+      index = this.squadrons.length - 1;
+      destination = this.squadrons[index].uuid;
+    }
     this.snapshot();
     this.notify([ uuid ]);
+    return destination;
   }
 
   notify(uuids: string[] = []) {

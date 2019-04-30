@@ -11,6 +11,8 @@ import { XwingImportService } from '../../services/xwing-import.service';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
+import { Observable } from 'rxjs';
+import { firestore } from 'firebase';
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './settings-modal.page.html',
@@ -18,6 +20,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class SettingsModalPage implements OnInit {
 
+  cloudSquadrons: any[] = [];
+  currentSquadronUUID: string = null;
 
   constructor(public toastController: ToastController, 
               private dataService: XwingDataService,
@@ -28,10 +32,13 @@ export class SettingsModalPage implements OnInit {
               public layout: LayoutService,
               public firebase: FirebaseService,
               public router: Router,
+              public route: ActivatedRoute,
               public importService: XwingImportService) { }
 
   ngOnInit() {
-
+    if (this.firebase.loggedIn()) {
+      this.getSquadrons();
+    }
   }
 
   async resetData() {
@@ -63,21 +70,70 @@ export class SettingsModalPage implements OnInit {
     this.router.navigateByUrl("/squadron/" + uuid);
   }
 
-  closeSquadron(uuid: string) {
-    this.state.closeSquadron(uuid);
+  isLocalSquadron(uuid: string) {
+    return this.state.getSquadronIndex(uuid) > -1;
   }
 
-  async import() {
-    await this.modalController.dismiss();
-    await this.importService.presentXwsModal();
+  importSquadron(squadron) {
+    this.state.importSquadron(squadron);
   }
 
-  logout() {
-    this.firebase.logout();
+  async deleteSquadron(squadron: any) {
+    const alert = await this.alertController.create({
+      header: 'Delete ' + squadron.name + '?',
+      message: 'This will permanently remove the squadron from both the cloud and this device',
+      buttons: [
+        { text: 'OK',
+          handler: () => { 
+            this.ngZone.run(
+              async () => {
+                await this.firebase.deleteSquadron(squadron.uuid);
+                let destination = this.state.closeSquadron(squadron.uuid);
+                this.getSquadrons();
+                if (this.currentSquadronUUID == squadron.uuid) {
+                  if (!destination) {
+                    this.router.navigateByUrl("/");
+                  } else {
+                    this.router.navigateByUrl("/squadron/" + destination);
+                  }
+                }
+              }
+            )
+          }
+        },
+        { text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary' }
+      ]
+    });
+    return await alert.present();
   }
 
-  login() {
-    this.firebase.login();
+  getSquadronClass(squadron: any) {
+    if (!this.isLocalSquadron(squadron.uuid)) {
+      return "offline";
+    }
+    return squadron.faction;
+  }
+
+  async getSquadrons() {
+    this.cloudSquadrons = [ ];
+    let result = await this.firebase.mysquadrons();
+    result.docs.forEach(
+      (doc) => {
+        this.cloudSquadrons.push(doc.data())
+      }
+    )
+  }
+
+  async logout() {
+    await this.firebase.logout();
+    this.cloudSquadrons = [ ];
+  }
+
+  async login() {
+    await this.firebase.login();
+    await this.getSquadrons();
   }
 
   dismiss() {

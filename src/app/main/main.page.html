@@ -86,8 +86,8 @@
       <ion-icon name="more"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top" class="labels">
-      <ion-fab-button (click)="presentSettingsModal()" data-desc="Control Panel">
-        <ion-icon name="settings"></ion-icon>
+      <ion-fab-button (click)="presentSettingsModal()" data-desc="Cloud Data">
+        <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>

@@ -1,10 +1,43 @@
 @import '../../components/component.scss';
 @import '../modal.scss';
 
-ion-icon:hover {
+ion-icon.clickable:hover {
     color: black;
     cursor: pointer;
 }
+
+.offline {
+    color: lightgrey;
+}
+
+.rebelalliance {
+    color: red;
+}
+
+.galacticempire {
+    color: blue;
+}
+
+.scumandvillainy {
+    color: brown;
+}
+
+.resistance {
+    color: orange;
+}
+
+.firstorder {
+    color: darkred;
+}
+
+.galacticrepublic {
+    color: purple;
+}
+
+.separatistalliance {
+    color: darkblue;
+}
+
 
 ion-avatar {
     xwing-icon {
