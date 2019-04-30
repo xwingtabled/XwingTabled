@@ -8,6 +8,7 @@ import { firestore } from 'firebase/app'
 import * as uuidv4 from 'uuid/v4';
 import { FirebaseService } from './firebase.service';
 import { DocumentSnapshot} from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 export interface DamageCard {
   title?: string,
@@ -58,9 +59,9 @@ export interface SnapshotMap {
 })
 export class XwingStateService {
   public initialized: boolean = false;
-  public squadrons: SquadronMap;
-  public snapshots: SnapshotMap;
-  private subscriptions: { [key: string] : }
+  public squadrons: SquadronMap = { };
+  public snapshots: SnapshotMap = { };
+  private subscriptions: { [key: string] : Observable<Squadron> } = { };
   public topic: string = "state:update";
   public currentSquadronUUID: string = null;
 
@@ -90,9 +91,40 @@ export class XwingStateService {
       this.notify();
       return;
     }
+    Object.keys(this.squadrons).forEach(
+      (uuid) => {
+        this.snapshots[uuid] = [ ];
+      }
+    )
     console.log("Squadrons restored", this.squadrons);
     this.initialized = true;
     this.notify();
+  }
+
+  nextSquadron(uuid: string) : string {
+    if (!this.squadrons[uuid]) {
+      return null;
+    }
+
+    let uuids = Object.keys(this.squadrons);
+    let index = uuids.indexOf(uuid) + 1;
+    if (index > uuids.length) {
+      return null;
+    }
+    return uuids[index];
+  }
+
+  previousSquadron(uuid: string) : string {
+    if (!this.squadrons[uuid]) {
+      return null;
+    }
+
+    let uuids = Object.keys(this.squadrons);
+    let index = uuids.indexOf(uuid) - 1;
+    if (index > uuids.length) {
+      return null;
+    }
+    return uuids[index];
   }
 
   getTimestamp() {
@@ -303,7 +335,7 @@ export class XwingStateService {
     )
     this.storage.set("squadrons", this.squadrons);
     await this.firebase.pushSquadron(uuid, this.squadrons[uuid]);
-    let dateString = new Date(this.squadrons[uuid].timestamp * 1000).toDateString();
+    let dateString = new Date(this.squadrons[uuid].timestamp * 1000).toString();
     const toast = await this.toastController.create({
       message: "Snapshot created " + dateString,
       duration: 2000,
@@ -340,13 +372,6 @@ export class XwingStateService {
   async addSquadron(uuid: string, squadron: Squadron) {
     squadron.damagedeck = this.dataService.getDamageDeck();
     squadron.damagediscard = [ ];
-
-    // TODO: what is in the struct being received?
-    squadron.pilots.forEach(
-      (pilot) => {
-        pilot.uuid = uuidv4().substring(0, 8);
-      }
-    )
     squadron.timestamp = this.getTimestamp();
     await this.importSquadron(uuid, squadron);
     this.shuffleDamageDeck(uuid);

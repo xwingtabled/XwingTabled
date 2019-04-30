@@ -5,7 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
-import { XwingStateService } from '../../services/xwing-state.service';
+import { XwingStateService, Squadron } from '../../services/xwing-state.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { XwingImportService } from '../../services/xwing-import.service';
 import { ModalController } from '@ionic/angular';
@@ -13,6 +13,13 @@ import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from 'rxjs';
 import { firestore } from 'firebase';
+
+
+export interface SquadronSummary {
+  name: string,
+  faction: string,
+  uuid: string
+}
 @Component({
   selector: 'app-pilot-modal',
   templateUrl: './settings-modal.page.html',
@@ -71,25 +78,30 @@ export class SettingsModalPage implements OnInit {
   }
 
   isLocalSquadron(uuid: string) {
-    return this.state.getSquadronIndex(uuid) > -1;
+    return uuid in this.state.squadrons;
   }
 
-  importSquadron(squadron) {
-    this.state.importSquadron(squadron);
+  async importSquadron(squadron: SquadronSummary) {
+    let retrieved = await this.firebase.retrieveSquadron(squadron.uuid);
+    this.state.importSquadron(squadron.uuid, retrieved);
   }
 
-  async deleteSquadron(squadron: any) {
+  async deleteSquadron(squadron: SquadronSummary) {
     const alert = await this.alertController.create({
-      header: 'Delete ' + squadron.name + '?',
+      header: 'Delete ' + name + '?',
       message: 'This will permanently remove the squadron from both the cloud and this device',
       buttons: [
         { text: 'OK',
           handler: () => { 
             this.ngZone.run(
               async () => {
+                let destination = this.state.previousSquadron(squadron.uuid);
+                if (!destination) {
+                  destination = this.state.nextSquadron(squadron.uuid);
+                }
                 await this.firebase.deleteSquadron(squadron.uuid);
-                let destination = this.state.closeSquadron(squadron.uuid);
-                this.getSquadrons();
+                this.state.closeSquadron(squadron.uuid);
+                await this.getSquadrons();
                 if (this.currentSquadronUUID == squadron.uuid) {
                   if (!destination) {
                     this.router.navigateByUrl("/");
@@ -121,7 +133,14 @@ export class SettingsModalPage implements OnInit {
     let result = await this.firebase.mysquadrons();
     result.docs.forEach(
       (doc) => {
-        this.cloudSquadrons.push(doc.data())
+        let uuid: string = doc.id;
+        let data = doc.data();
+        let summary: SquadronSummary = {
+          name: data.name,
+          uuid: uuid,
+          faction: data.faction
+        }
+        this.cloudSquadrons.push(summary)
       }
     )
   }

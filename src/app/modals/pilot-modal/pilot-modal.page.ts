@@ -79,7 +79,7 @@ export class PilotModalPage implements OnInit {
   }
 
   push() {
-    this.firebase.pushSquadron(this.squadronUUID);
+    this.state.snapshot(this.squadronUUID);
   }
 
   initialize() {
@@ -107,7 +107,6 @@ export class PilotModalPage implements OnInit {
         }
       );
     }
-
   }
 
   toggleDial() {

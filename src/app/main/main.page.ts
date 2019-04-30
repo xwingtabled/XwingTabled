@@ -10,7 +10,7 @@ import { DamageDeckActionsComponent } from '../popovers/damage-deck-actions/dama
 import { NgZone } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { HttpProvider } from '../providers/http.provider';
-import { XwingStateService } from '../services/xwing-state.service';
+import { XwingStateService, Squadron } from '../services/xwing-state.service';
 import { XwingImportService } from '../services/xwing-import.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
@@ -32,8 +32,9 @@ export class MainPage implements OnInit {
   image_button_disabled: boolean = false;
   continue_button: boolean = false;
 
-  squadronUUID: string;
-  squadron: any = null;
+  uuid: string;
+  squadron: Squadron = null;
+  squadronUUIDs: string[ ] = [ ];
 
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
@@ -53,11 +54,11 @@ export class MainPage implements OnInit {
               public firebase: FirebaseService) { }
 
   ngOnInit() {
-    this.squadronUUID = this.route.snapshot.paramMap.get("squadronUUID");
+    this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
   }
 
   ionViewWillEnter() {
-    this.squadron = this.state.getSquadron(this.squadronUUID);
+    this.squadron = this.state.getSquadron(this.uuid);
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -68,9 +69,10 @@ export class MainPage implements OnInit {
     this.events.subscribe(
       this.state.topic,
       (uuids) => {
-        if (this.squadronUUID && uuids.includes(this.squadronUUID)) {
-          this.squadron = this.state.getSquadron(this.squadronUUID);
+        if (this.uuid && uuids.includes(this.uuid)) {
+          this.squadron = this.state.getSquadron(this.uuid);
         } 
+        this.squadronUUIDs = Object.keys(this.state.squadrons);
       }
     )
   }
@@ -99,41 +101,23 @@ export class MainPage implements OnInit {
     )
   }
 
-  nextSquadron() {
-    if (!this.squadron) {
-      return null;
-    }
-    let index = this.state.getSquadronIndex(this.squadron.uuid) + 1;
-    if (index >= this.state.squadrons.length) {
-      return null;
-    }
-    return this.state.squadrons[index];
+  nextSquadron() : string {
+    return this.state.nextSquadron(this.uuid);
   }
 
-  previousSquadron() {
-    if (!this.squadron) {
-      return null;
-    }
-    let index = this.state.getSquadronIndex(this.squadron.uuid) - 1;
-    if (index < 0) {
-      return null;
-    }
-    return this.state.squadrons[index];
+  previousSquadron() : string {
+    return this.state.previousSquadron(this.uuid);
   }
 
-  squadronRoute(uuid: string) {
+  squadronRoute(uuid: string) : string {
     if (!uuid || uuid.length == 0) {
       return "/";
     }
     return "/squadron/" + uuid;
   }
 
-  goToSquadron(squadron: any) {
-    if (!squadron) {
-      return;
-    }
-    let uuid = squadron.uuid;
-    if (uuid == this.squadronUUID) {
+  goToSquadron(uuid: string) {
+    if (uuid == this.uuid) {
       return;
     }
     this.router.navigateByUrl(this.squadronRoute(uuid));
@@ -141,7 +125,11 @@ export class MainPage implements OnInit {
   }
 
   closeSquadron() {
-    let newUUID = this.state.closeSquadron(this.squadronUUID);
+    let newUUID = this.previousSquadron();
+    if (!newUUID) {
+      newUUID = this.nextSquadron();
+    }
+    this.state.closeSquadron(this.uuid);
     this.router.navigateByUrl(this.squadronRoute(newUUID));
   }
 
@@ -224,7 +212,7 @@ export class MainPage implements OnInit {
       await this.firebase.login();
       await this.loadOnlineSquadron();
     } catch {
-      console.log("Unable to load squadron with UUID after logging in", this.squadronUUID);
+      console.log("Unable to load squadron with UUID after logging in", this.uuid);
     }
   }
 
@@ -234,14 +222,12 @@ export class MainPage implements OnInit {
     });
     await loading.present();
     try {
-      let result = await this.firebase.retrieveSquadron(this.squadronUUID);
-      if (result.exists) {
-        this.squadron = result.data();
-        this.state.importSquadron(this.squadron);
-        this.firebase.subscribeSquadron(this.squadronUUID);
+      let squadron: Squadron = await this.firebase.retrieveSquadron(this.uuid);
+      if (squadron) {
+        this.state.importSquadron(this.uuid, squadron);
       }
     } catch {
-      console.log("Unable to load squadron from firebase with UUID", this.squadronUUID);
+      console.log("Unable to load squadron from firebase with UUID", this.uuid);
     }
     return await this.loadingCtrl.dismiss();
   }
@@ -249,12 +235,9 @@ export class MainPage implements OnInit {
   async loadState() {
     console.log("Restoring squadrons from local storage");
     await this.state.restoreFromDisk();
-    if (this.state.snapshots && this.state.snapshots.length) {
-      this.toastUndo(this.state.getLastSnapshotTime());
-    }
     console.log("Syncing squadrons with Firebase");
-    await this.firebase.synchronize();
-    this.squadron = this.state.getSquadron(this.squadronUUID);
+    await this.state.synchronize();
+    this.squadron = this.state.getSquadron(this.uuid);
     try {
       if (!this.squadron) {
         await this.loadOnlineSquadron();
@@ -284,7 +267,7 @@ export class MainPage implements OnInit {
     const popover = await this.popoverController.create({
       component: DamageDeckActionsComponent,
       componentProps: {
-        squadronUUID: this.squadronUUID
+        squadronUUID: this.uuid
       },
     });
     return await popover.present();
@@ -303,7 +286,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               () => {
-                this.state.rechargeAllRecurring(this.squadronUUID);
+                this.state.rechargeAllRecurring(this.uuid);
               }
             )
           }
@@ -316,9 +299,9 @@ export class MainPage implements OnInit {
     return await alert.present();
   }
 
-  async toastUndo(timestamp: string) {
+  async toastUndo(timestamp: number) {
     const toast = await this.toastController.create({
-      message: 'Table restored to ' + timestamp,
+      message: 'Table restored to ' + new Date(timestamp).toString(),
       duration: 2000,
       position: 'bottom'
     });
@@ -328,14 +311,15 @@ export class MainPage implements OnInit {
   async askUndo() {
     const alert = await this.alertController.create({
       header: 'Rewind Time?',
-      message: 'This will rewind time to ' + this.state.snapshots[this.state.snapshots.length - 2].time,
+      message: 'This will rewind time to ' + 
+        new Date(this.state.getLastSnapshotTime(this.uuid) * 1000).toString(),
       buttons: [
         { text: 'OK',
           handler: () => { 
             this.ngZone.run(
               () => {
-                let time = this.state.undo();
-                this.toastUndo(time);
+                let timestamp = this.state.undo(this.uuid);
+                this.toastUndo(timestamp);
               }
             )
           }
@@ -380,7 +364,7 @@ export class MainPage implements OnInit {
           handler: () => { 
             this.ngZone.run(
               async () => {
-                this.state.resetSquadron(this.squadronUUID);
+                this.state.resetSquadron(this.uuid);
                 const toast = await this.toastController.create({
                   message: 'Squadrons reset',
                   duration: 2000,
@@ -417,7 +401,7 @@ export class MainPage implements OnInit {
     const modal = await this.modalController.create({
       component: SettingsModalPage,
       componentProps: {
-        currentSquadronUUID: this.squadronUUID,
+        currentSquadronUUID: this.uuid,
       }
     });
     return await modal.present();

@@ -1,16 +1,16 @@
 <div *ngIf="state.initialized" class="squadron-toolbar">
-  <ng-container *ngFor="let squadronItem of state.squadrons">
-    <div *ngIf="!layout.getClass().includes('phone') || squadronItem.uuid.includes(squadronUUID)"
-      (click)="goToSquadron(squadronItem)"
-      [class]="squadron && squadronItem.uuid.includes(squadronUUID) ? 'active squadron-tab' : 'squadron-tab'">
-      <xwing-icon [name]="squadronItem.faction" [faction]="true"></xwing-icon>
+  <ng-container *ngFor="let squadronUUID of squadronUUIDs">
+    <div *ngIf="!layout.getClass().includes('phone') || squadronUUID.includes(uuid)"
+      (click)="goToSquadron(squadronUUID)"
+      [class]="squadronUUID.includes(uuid) ? 'active squadron-tab' : 'squadron-tab'">
+      <xwing-icon [name]="state.squadrons[squadronUUID].faction" [faction]="true"></xwing-icon>
       <div class="squadron-title">
-        {{ squadronItem.name }} 
-        ({{ state.getSquadronPointsDestroyed(squadronItem.uuid) }} / 
-        {{ state.getSquadronPointTotal(squadronItem.uuid) }})
+        {{ state.squadrons[squadronUUID].name }} 
+        ({{ state.getSquadronPointsDestroyed(squadronUUID) }} / 
+        {{ state.getSquadronPointTotal(squadronUUID) }})
       </div>
       <div class="squadron-close">
-        <ion-icon *ngIf="squadronItem.uuid.includes(squadronUUID)" name="close-circle" (click)="askClose()"></ion-icon>
+        <ion-icon *ngIf="squadronUUID.includes(uuid)" name="close-circle" (click)="askClose()"></ion-icon>
       </div>
     </div>
   </ng-container>
@@ -18,26 +18,26 @@
     <ion-icon name="add-circle"></ion-icon>
   </div>
   <div 
-    *ngIf="state.squadrons.length > 1" 
+    *ngIf="squadronUUIDs.length > 1" 
     [class]="nextSquadron() ? 'active hover squad-control squadron-tab' : 'squad-control squadron-tab'"
     (click)="goToSquadron(nextSquadron())"
     style="float: right;">
     <ion-icon name="arrow-dropright"></ion-icon>
   </div>
   <div 
-    *ngIf="state.squadrons.length > 1" 
+    *ngIf="squadronUUIDs.length > 1" 
     [class]="previousSquadron() ? 'active hover squad-control squadron-tab' : 'squad-control squadron-tab'"
     (click)="goToSquadron(previousSquadron())"
     style="float: right;">
     <ion-icon name="arrow-dropleft"></ion-icon>
   </div>
 </div>
-<div *ngIf="!state.initialized || !squadron" [class]="'card-container' + layout.getClass()">
+<div *ngIf="!state.initialized || !state.squadrons[uuid]" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
       <div *ngIf="dataService.initialized">
-        <div *ngIf="squadronUUID" class="squadron-missing">
+        <div *ngIf="uuid" class="squadron-missing">
           <span><ion-icon name="warning"></ion-icon>
             &nbsp;
             <span *ngIf="firebase.loggedIn()">Unable to find this squadron locally or online</span>
@@ -47,18 +47,18 @@
               to view this squadron if it is online.</span>
             </span>
         </div>
-        <div *ngIf="state.squadrons.length == 0">This app is a card and token 
+        <div *ngIf="squadronUUIDs.length == 0">This app is a card and token 
           manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
           <span (click)="xwsAddButton()" class="card-link">import a squadron</span>.
         </div>
-        <div *ngIf="state.squadrons.length > 0" class="squadron-list-header">
+        <div *ngIf="squadronUUIDs.length > 0" class="squadron-list-header">
           Saved squadrons
         </div>
-        <div *ngFor="let squadronItem of state.squadrons" 
-          (click)="goToSquadron(squadronItem)"
+        <div *ngFor="let squadronUUID of squadronUUIDs" 
+          (click)="goToSquadron(squadronUUID)"
           class="squadron-link">
-          <xwing-icon [name]="squadronItem.faction"></xwing-icon>
-          <span>{{ squadronItem.name }}</span>
+          <xwing-icon [name]="state.squadrons[squadronUUID].faction"></xwing-icon>
+          <span>{{ state.squadrons[squadronUUID].name }}</span>
         </div>
       </div>
       <div *ngIf="!dataService.initialized">
@@ -80,7 +80,7 @@
   </div>
 </div>
 <ion-content padding>
-  <squadron *ngIf="squadron" [squadron]="squadron"></squadron>
+  <squadron *ngIf="squadron" [uuid]="uuid" [squadron]="squadron"></squadron>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

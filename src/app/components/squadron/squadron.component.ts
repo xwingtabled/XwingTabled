@@ -14,7 +14,7 @@ import { NgZone } from '@angular/core';
   styleUrls: ['./squadron.component.scss']
 })
 export class SquadronComponent implements OnInit {
-  @Input() squadronNum: number;
+  @Input() uuid: string;
   @Input() squadron: any;
 
   constructor(public dataService: XwingDataService, 

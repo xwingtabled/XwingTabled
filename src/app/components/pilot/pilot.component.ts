@@ -15,7 +15,7 @@ import { NgZone } from '@angular/core';
   styleUrls: ['./pilot.component.scss']
 })
 export class PilotComponent implements OnInit {
-  @Input() squadronUUID: number;
+  @Input() squadronUUID: string;
   @Input() pilot: any;
   groups: any[][] = [];
   img_url: string = null;
@@ -161,7 +161,7 @@ export class PilotComponent implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (stateString != JSON.stringify(this.pilot)) {
-      this.state.snapshot();
+      this.state.snapshot(this.squadronUUID);
     }
   }
 

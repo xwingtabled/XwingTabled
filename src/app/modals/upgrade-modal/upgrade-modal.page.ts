@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
-import { XwingStateService } from '../../services/xwing-state.service';
+import { XwingStateService, Pilot, Upgrade } from '../../services/xwing-state.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from '@angular/common';
 import { Events } from '@ionic/angular';
-import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-upgrade-modal',
@@ -17,8 +16,8 @@ export class UpgradeModalPage implements OnInit {
   squadronUUID: string;
   pilotUUID: string;
   ffg: number;
-  pilot: any;
-  upgrade: any = { };
+  pilot: Pilot;
+  upgrade: Upgrade;
   sides: any[] = [ ];
   img_urls: string[] = [ null, null ];
   useAngularRouter: boolean = false;
@@ -31,8 +30,7 @@ export class UpgradeModalPage implements OnInit {
               public state: XwingStateService,
               public router: Router,
               private location: Location,
-              private events: Events,
-              private firebase: FirebaseService) { }
+              private events: Events) { }
 
   ngOnInit() {
     let squadronUUIDParam = this.route.snapshot.paramMap.get("squadronUUID");
@@ -71,7 +69,7 @@ export class UpgradeModalPage implements OnInit {
   }
 
   push() {
-    this.firebase.pushSquadron(this.squadronUUID);
+    this.state.snapshot(this.squadronUUID);
   }
 
   chargeChange(remaining: number) {

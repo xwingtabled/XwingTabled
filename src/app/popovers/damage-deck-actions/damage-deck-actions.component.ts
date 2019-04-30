@@ -3,7 +3,6 @@ import { Events } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { XwingStateService } from '../../services/xwing-state.service';
-import { FirebaseService } from '../../services/firebase.service';
 @Component({
   selector: 'xws-damage-deck-actions',
   templateUrl: './damage-deck-actions.component.html',
@@ -15,8 +14,7 @@ export class DamageDeckActionsComponent implements OnInit {
   constructor(private events: Events, 
               private toastController: ToastController,
               private popoverController: PopoverController,
-              public state: XwingStateService,
-              private firebase: FirebaseService) { }
+              public state: XwingStateService) { }
 
   ngOnInit() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
@@ -34,13 +32,13 @@ export class DamageDeckActionsComponent implements OnInit {
   async shuffleDiscarded() {
     await this.popoverController.dismiss();
     this.state.shuffleDamageDiscard(this.squadronUUID);
-    this.firebase.pushSquadron(this.squadronUUID);
+    this.state.snapshot(this.squadronUUID);
   }
 
   async shuffleDeck() {
     await this.popoverController.dismiss();
     this.state.shuffleDamageDeck(this.squadronUUID);
-    this.firebase.pushSquadron(this.squadronUUID);
+    this.state.snapshot(this.squadronUUID);
   }
 
 }

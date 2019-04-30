@@ -20,8 +20,7 @@ export class DamagePopoverComponent implements OnInit {
   constructor(private popoverController: PopoverController, 
               private ngZone: NgZone,
               private state: XwingStateService,
-              private dataService: XwingDataService,
-              private firebase: FirebaseService) { }
+              private dataService: XwingDataService) { }
 
   ngOnInit() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
@@ -49,7 +48,7 @@ export class DamagePopoverComponent implements OnInit {
           // Move discarded cards to damage discard pile
           this.state.discard(this.squadronUUID, this.card);
         }
-        this.firebase.pushSquadron(this.squadronUUID);
+        this.state.snapshot(this.squadronUUID);
       }
     )
   }
@@ -58,7 +57,7 @@ export class DamagePopoverComponent implements OnInit {
     this.ngZone.run(
       () => {
         this.card.exposed = true;
-        this.firebase.pushSquadron(this.squadronUUID);
+        this.state.snapshot(this.squadronUUID);
       }
     )
   }
