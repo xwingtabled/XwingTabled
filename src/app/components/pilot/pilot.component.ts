@@ -161,7 +161,7 @@ export class PilotComponent implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (stateString != JSON.stringify(this.pilot)) {
-      this.state.snapshot(this.squadronUUID);
+      //this.state.snapshot(this.squadronUUID);
     }
   }
 

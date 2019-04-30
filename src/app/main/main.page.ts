@@ -314,6 +314,19 @@ export class MainPage implements OnInit {
     toast.present();
   }
 
+  undoAvailable() {
+    if (!this.uuid || !this.squadron) {
+      return false;
+    }
+    if (!this.state.snapshots[this.uuid]) {
+      return false;
+    }
+    if (this.state.snapshots[this.uuid].length < 2) {
+      return false;
+    }
+    return true;
+  }
+
   async askUndo() {
     const alert = await this.alertController.create({
       header: 'Rewind Time?',

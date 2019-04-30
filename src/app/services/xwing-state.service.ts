@@ -93,7 +93,7 @@ export class XwingStateService {
     }
     Object.keys(this.squadrons).forEach(
       (uuid) => {
-        this.snapshots[uuid] = [ ];
+        this.snapshots[uuid] = [ JSON.parse(JSON.stringify(this.squadrons[uuid])) ];
       }
     )
     console.log("Squadrons restored", this.squadrons);

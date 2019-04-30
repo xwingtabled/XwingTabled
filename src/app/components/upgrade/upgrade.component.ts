@@ -42,7 +42,7 @@ export class UpgradeComponent implements OnInit {
     await modal.present();
     const { data } = await modal.onWillDismiss();
     if (stateString != JSON.stringify(this.upgrade)) {
-      this.state.snapshot(this.squadronUUID);
+      //this.state.snapshot(this.squadronUUID);
     }
   }
 
