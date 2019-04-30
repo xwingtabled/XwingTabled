@@ -56,7 +56,7 @@ export class ConditionMenuComponent implements OnInit {
   getPilotDamageCards() {
     this.pilotDamageCards = [ ];
     let pilotCards = this.squadron.damagedeck.filter(
-      (card) => card['type'] == 'Pilot'
+      (card) => this.dataService.getDamageCardData(card.title)['type'] == 'Pilot'
     );
     pilotCards.forEach(
       (card) => {
