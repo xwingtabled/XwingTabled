@@ -55,6 +55,10 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
+    this.getSquadronUUIDs();
+  }
+
+  getSquadronUUIDs() {
     this.squadronUUIDs = Object.keys(this.state.squadrons);
   }
 
@@ -70,10 +74,10 @@ export class MainPage implements OnInit {
     this.events.subscribe(
       this.state.topic,
       (uuids) => {
+        this.getSquadronUUIDs();
         if (this.uuid && uuids.includes(this.uuid)) {
           this.squadron = this.state.getSquadron(this.uuid);
         } 
-        this.squadronUUIDs = Object.keys(this.state.squadrons);
       }
     )
   }
@@ -130,6 +134,7 @@ export class MainPage implements OnInit {
     if (!newUUID) {
       newUUID = this.nextSquadron();
     }
+    this.squadronUUIDs.splice(this.squadronUUIDs.indexOf(this.uuid), 1);
     this.state.closeSquadron(this.uuid);
     this.router.navigateByUrl(this.squadronRoute(newUUID));
   }

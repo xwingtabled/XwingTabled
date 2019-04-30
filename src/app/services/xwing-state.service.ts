@@ -170,8 +170,12 @@ export class XwingStateService {
     this.notify([ uuid ]);
   }
 
-  updateSquadron(uuid, incomingSquadron: Squadron) {
+  updateSquadron(uuid: string, incomingSquadron: Squadron) {
     let squadron: Squadron = this.getSquadron(uuid);
+    if (!incomingSquadron) {
+      this.closeSquadron(uuid);
+      return;
+    }
     if (!squadron) {
       return;
     }
@@ -184,9 +188,10 @@ export class XwingStateService {
   }
 
   closeSquadron(uuid: string) {
-    let destination = null;
     delete this.squadrons[uuid];
     delete this.snapshots[uuid];
+    delete this.subscriptions[uuid];
+    this.storage.set("squadrons", this.squadrons);
     this.notify([ uuid ]);
   }
 

@@ -84,6 +84,7 @@ export class SettingsModalPage implements OnInit {
   async importSquadron(squadron: SquadronSummary) {
     let retrieved = await this.firebase.retrieveSquadron(squadron.uuid);
     this.state.importSquadron(squadron.uuid, retrieved);
+    this.state.notify();
   }
 
   async deleteSquadron(squadron: SquadronSummary) {
@@ -100,7 +101,6 @@ export class SettingsModalPage implements OnInit {
                   destination = this.state.nextSquadron(squadron.uuid);
                 }
                 await this.firebase.deleteSquadron(squadron.uuid);
-                this.state.closeSquadron(squadron.uuid);
                 await this.getSquadrons();
                 if (this.currentSquadronUUID == squadron.uuid) {
                   if (!destination) {
