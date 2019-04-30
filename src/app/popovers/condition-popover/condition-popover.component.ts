@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { XwingStateService } from '../../services/xwing-state.service';
+import { FirebaseService } from '../../services/firebase.service';
 @Component({
   selector: 'app-condition-popover',
   templateUrl: './condition-popover.component.html',
@@ -18,12 +19,14 @@ export class ConditionPopoverComponent implements OnInit {
   
   constructor(private popoverController: PopoverController,
               private dataService: XwingDataService,
-              private state: XwingStateService) { }
+              private state: XwingStateService,
+              private firebase: FirebaseService) { }
 
   async assignPilotDamage() {
     await this.popoverController.dismiss();
     this.pilot.damagecards.push(this.condition.pilotDamageCard);
     this.condition.pilotDamageCard = null;
+    this.firebase.pushSquadron(this.squadronUUID);
   }
 
   async removeCondition() {
@@ -32,6 +35,7 @@ export class ConditionPopoverComponent implements OnInit {
     if (index > -1) {
       this.pilot.conditions.splice(index, 1);
     }
+    this.firebase.pushSquadron(this.squadronUUID);
   }
 
   ngOnInit() {

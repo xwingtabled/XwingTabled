@@ -28,7 +28,7 @@ export class FirebaseService {
   }
 
   timestamp() {
-    return firestore.FieldValue.serverTimestamp();
+    return Math.floor(Date.now() / 1000);
   }
 
   async pushSquadron(uuid: string) {
@@ -83,8 +83,7 @@ export class FirebaseService {
           let result = await this.retrieveSquadron(squadron.uuid);
           if (result.exists) {
             let onlineSquadron = result.data();
-            if (onlineSquadron.timestamp.seconds > squadron.timestamp.seconds) {
-              console.log("Online squadron is newer", squadron.uuid);
+            if (onlineSquadron.timestamp > squadron.timestamp) {
               this.state.updateSquadron(onlineSquadron);
             }
           } else {

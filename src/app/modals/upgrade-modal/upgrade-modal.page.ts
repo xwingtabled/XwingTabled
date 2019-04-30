@@ -6,6 +6,8 @@ import { XwingStateService } from '../../services/xwing-state.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from '@angular/common';
 import { Events } from '@ionic/angular';
+import { FirebaseService } from '../../services/firebase.service';
+
 @Component({
   selector: 'app-upgrade-modal',
   templateUrl: './upgrade-modal.page.html',
@@ -29,7 +31,8 @@ export class UpgradeModalPage implements OnInit {
               public state: XwingStateService,
               public router: Router,
               private location: Location,
-              private events: Events) { }
+              private events: Events,
+              private firebase: FirebaseService) { }
 
   ngOnInit() {
     let squadronUUIDParam = this.route.snapshot.paramMap.get("squadronUUID");
@@ -67,8 +70,13 @@ export class UpgradeModalPage implements OnInit {
     }
   }
 
+  push() {
+    this.firebase.pushSquadron(this.squadronUUID);
+  }
+
   chargeChange(remaining: number) {
     this.upgrade.charges = remaining;
+    this.push();
   }
 
   flipCard() {
@@ -77,6 +85,7 @@ export class UpgradeModalPage implements OnInit {
     } else {
       this.upgrade.side = 0;
     }
+    this.push();
   }
 
   dismiss() {

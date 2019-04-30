@@ -113,8 +113,8 @@ export class XwingStateService {
     if (!this.squadrons[index]) {
       return;
     }
-    if (this.squadrons[index].timestamp.seconds && 
-        this.squadrons[index].timestamp.seconds + 2 > squadron.timestamp.seconds) {
+    if (this.squadrons[index].timestamp &&
+        this.squadrons[index].timestamp + 2 > squadron.timestamp) {
       return;
     }
     this.squadrons[index] = squadron;
@@ -303,12 +303,13 @@ export class XwingStateService {
       }
     )
     squadron.uuid = this.getSquadronId();
-    squadron.timestamp = firestore.FieldValue.serverTimestamp();
+    squadron.timestamp = Math.floor(Date.now() / 1000);
     this.squadrons.push(squadron);
     this.shuffleDamageDeck(squadron.uuid);
     this.initialized = true;
     this.snapshot();
     this.notify([ squadron.uuid ]);
+    console.log("Squadron added", squadron);
     return squadron;
   }
 

@@ -3,6 +3,7 @@ import { XwingDataService } from '../../services/xwing-data.service';
 import { XwingStateService } from '../../services/xwing-state.service';
 import { PopoverController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-condition-menu',
@@ -23,7 +24,8 @@ export class ConditionMenuComponent implements OnInit {
   constructor(private dataService: XwingDataService, 
               public state: XwingStateService,
               private popoverController: PopoverController,
-              private toastController: ToastController) { }
+              private toastController: ToastController,
+              private firebase: FirebaseService) { }
 
   async assignCondition() {
     let existing = this.pilot.conditions.find((condition) => condition.xws == this.selected_condition.xws);
@@ -39,6 +41,7 @@ export class ConditionMenuComponent implements OnInit {
         this.squadron.damagedeck.splice(index, 1);
       }
       this.pilot.conditions.push(condition);
+      this.firebase.pushSquadron(this.squadronUUID);
       return this.popoverController.dismiss();
     } else {
       const toast = await this.toastController.create({

@@ -3,6 +3,7 @@ import { PopoverController } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { XwingStateService } from '../../services/xwing-state.service';
 import { XwingDataService } from '../../services/xwing-data.service';
+import { FirebaseService } from '../../services/firebase.service';
 @Component({
   selector: 'xws-damage-popover',
   templateUrl: './damage-popover.component.html',
@@ -19,7 +20,8 @@ export class DamagePopoverComponent implements OnInit {
   constructor(private popoverController: PopoverController, 
               private ngZone: NgZone,
               private state: XwingStateService,
-              private dataService: XwingDataService) { }
+              private dataService: XwingDataService,
+              private firebase: FirebaseService) { }
 
   ngOnInit() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
@@ -47,6 +49,7 @@ export class DamagePopoverComponent implements OnInit {
           // Move discarded cards to damage discard pile
           this.state.discard(this.squadronUUID, this.card);
         }
+        this.firebase.pushSquadron(this.squadronUUID);
       }
     )
   }
@@ -55,6 +58,7 @@ export class DamagePopoverComponent implements OnInit {
     this.ngZone.run(
       () => {
         this.card.exposed = true;
+        this.firebase.pushSquadron(this.squadronUUID);
       }
     )
   }
