@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { XwingDataService } from './xwing-data.service';
-import { XwingStateService } from './xwing-state.service';
+import { XwingStateService, Squadron, Pilot, Upgrade } from './xwing-state.service';
 import { FirebaseService } from './firebase.service';
 import { HttpProvider } from '../providers/http.provider';
 import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import * as uuidv4 from 'uuid/v4';
 @Injectable({
   providedIn: 'root'
 })
@@ -52,8 +53,8 @@ export class XwingImportService {
     pilot.upgrades = mangledUpgrades;
   }
 
-  getUpgradeStateObject(upgrade: any) {
-    let upgradeData = {
+  getUpgradeStateObject(upgrade: any) : Upgrade {
+    let upgradeData: Upgrade = {
       side: 0,
       sides: [ ]
     };
@@ -68,13 +69,14 @@ export class XwingImportService {
     return upgradeData;
   }
 
-  getPilotStateObject(pilot: any, faction: string) {
+  getPilotStateObject(pilot: any, faction: string) : Pilot {
     let xwsPilotData = this.dataService.getPilot(faction, pilot.ship, pilot.id);
-    let pilotData = {
+    let pilotData: Pilot = {
       ffg: xwsPilotData.ffg,
       upgrades: [ ],
       damagecards: [ ],
-      conditions: [ ]
+      conditions: [ ],
+      uuid: uuidv4().substring(0, 8)
     }
     return pilotData;
   }
@@ -146,7 +148,7 @@ export class XwingImportService {
     pilot.points = pilotCost + upgradeCost;
   }
 
-  processFFG(data: any) {
+  processFFG(data: any) : Squadron {
     let cost = data.cost;
     let name = data.name;
     let faction = data.faction.name;
@@ -181,7 +183,7 @@ export class XwingImportService {
     return this.processXws(squadron);
   }
 
-  processYasb(data: any) {
+  processYasb(data: any) : Squadron {
     let pilots = [ ];
     data.pilots.forEach(
       (pilot) => {
@@ -249,16 +251,16 @@ export class XwingImportService {
     )
   }
 
-  processXws(squadron: any) {
+  processXws(squadron: any) : Squadron {
     let squadPoints = 0;
-    let squadronData = {
+    let squadronData : Squadron = {
       name: squadron.name,
       faction: squadron.faction,
       damagediscard: [ ],
       damagedeck: this.dataService.getDamageDeck(),
       pilots: [ ],
-      timestamp: 0,
-      uuid: null
+      timestamp: this.state.getTimestamp(),
+      uid: null
     }
 
     // Transform upgrade array in xws data source to 
@@ -274,7 +276,7 @@ export class XwingImportService {
         if (!pilot.id) {
           pilot.id = pilot.name;
         }
-        let pilotData = this.getPilotStateObject(pilot, squadron.faction);
+        let pilotData: Pilot = this.getPilotStateObject(pilot, squadron.faction);
 
         this.applyXwsShims(squadron);
         // Process xws data source pilot
@@ -293,8 +295,6 @@ export class XwingImportService {
     // Assign ID tokens and enumerate pilots
     for (let i = 0; i < squadronData.pilots.length; i++) {
       squadronData.pilots[i].idNumber = i + 1;
-      // num will never change and is used for Angular router
-      squadronData.pilots[i].num = squadronData.pilots[i].idNumber;
     }
 
     return squadronData;
@@ -302,9 +302,8 @@ export class XwingImportService {
 
   async importXwingTabled(uuid: string) {
     this.firebase.retrieveSquadron(uuid).then(
-      (data) => {
-        this.state.importSquadron(data.data());
-        this.firebase.subscribeSquadron(uuid);
+      (squadron) => {
+        this.state.importSquadron(uuid, squadron);
       },
       async (error) => {
         console.log("Unable to get X-Wing Tabled Squadron Data", error);
@@ -324,9 +323,7 @@ export class XwingImportService {
     await this.http.get(url).subscribe(
       (data) => {
         let squadron = this.processFFG(data);
-        this.state.addSquadron(squadron);
-        this.firebase.pushSquadron(squadron.uuid);
-        this.firebase.subscribeSquadron(squadron.uuid);
+        this.state.addSquadron(uuid, squadron);
       },
       async (error) => {
         console.log("Unable to get FFG SquadBuilder data", error);
@@ -348,6 +345,7 @@ export class XwingImportService {
     const { data } = await modal.onWillDismiss();
     if (!data) return;
     try {
+      let uuid = uuidv4();
       if (data.xwingtabled) {
         await this.importXwingTabled(data.xwingtabled);
       }
@@ -356,19 +354,14 @@ export class XwingImportService {
       }
       if (data.yasb) {
         let squadron = this.processYasb(data.yasb);
-        this.state.addSquadron(squadron);
-        this.firebase.pushSquadron(squadron.uuid);
-        this.firebase.subscribeSquadron(squadron.uuid);
+        this.state.addSquadron(uuid, squadron);
       }
       if (data.xws) {
         let squadron = data.xws;
         squadron = this.processXws(squadron);
-        this.state.addSquadron(squadron);
-        this.firebase.pushSquadron(squadron.uuid);
-        this.firebase.subscribeSquadron(squadron.uuid);
+        this.state.addSquadron(uuid, squadron);
       }
-      let newSquadronUUID = this.state.squadrons[this.state.squadrons.length - 1].uuid;
-      let url = '/squadron/' + newSquadronUUID;
+      let url = '/squadron/' + uuid;
       this.router.navigateByUrl(url);
     } catch (e) {
       console.log(e);

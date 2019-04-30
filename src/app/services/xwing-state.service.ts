@@ -6,7 +6,8 @@ import { ToastController } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { firestore } from 'firebase/app'
 import * as uuidv4 from 'uuid/v4';
-
+import { FirebaseService } from './firebase.service';
+import { DocumentSnapshot} from '@angular/fire/firestore';
 
 export interface DamageCard {
   title?: string,
@@ -27,7 +28,7 @@ export interface Pilot {
   conditions: any[ ],
   damagecards: DamageCard[ ],
   ffg: number,
-  idNumber: string | number,
+  idNumber?: string | number,
   shields?: number,
   charges?: number,
   force?: number,
@@ -42,7 +43,6 @@ export interface Squadron {
   pilots: Pilot[ ],
   timestamp: number,
   uid: string,
-  uuid: string,
 }
 
 export interface SquadronMap {
@@ -60,6 +60,7 @@ export class XwingStateService {
   public initialized: boolean = false;
   public squadrons: SquadronMap;
   public snapshots: SnapshotMap;
+  private subscriptions: { [key: string] : }
   public topic: string = "state:update";
   public currentSquadronUUID: string = null;
 
@@ -68,7 +69,8 @@ export class XwingStateService {
               private storage: Storage,
               public toastController: ToastController,
               public zone: NgZone,
-              public loadingCtrl: LoadingController) {
+              public loadingCtrl: LoadingController,
+              private firebase: FirebaseService) {
   }
 
   reset() {
@@ -136,17 +138,17 @@ export class XwingStateService {
     this.notify([ uuid ]);
   }
 
-  updateSquadron(incomingSquadron: Squadron) {
-    let squadron: Squadron = this.getSquadron(incomingSquadron.uuid);
+  updateSquadron(uuid, incomingSquadron: Squadron) {
+    let squadron: Squadron = this.getSquadron(uuid);
     if (!squadron) {
       return;
     }
     if (squadron.timestamp + 2 > incomingSquadron.timestamp) {
       return;
     }
-    this.squadrons[incomingSquadron.uuid] = incomingSquadron;
-    this.snapshot(incomingSquadron.uuid);
-    this.notify([ incomingSquadron.uuid ]);
+    this.squadrons[uuid] = incomingSquadron;
+    this.snapshot(uuid);
+    this.notify([ uuid ]);
   }
 
   closeSquadron(uuid: string) {
@@ -263,10 +265,44 @@ export class XwingStateService {
     this.snapshot(squadronUUID);
   }
 
+  async subscribe(uuid: string) {
+    this.subscriptions[uuid] = await this.firebase.getSquadronSubscription(uuid);
+    this.subscriptions[uuid].subscribe(
+      (squadron) => {
+        this.updateSquadron(uuid, squadron);
+      }
+    )
+  }
+
+  async synchronize() {
+    const loading = await this.loadingCtrl.create({
+      message: "Looking for squadron online"
+    });
+    await loading.present();
+    Object.keys(this.squadrons).forEach(
+      async (uuid) => {
+        try {
+          let squadron: Squadron = await this.firebase.retrieveSquadron(uuid);
+          if (squadron) {
+            this.updateSquadron(uuid, squadron);
+          } else {
+            await this.firebase.pushSquadron(uuid, squadron);
+          }
+          await this.subscribe(uuid);
+        } catch (err) {
+          console.log("Unable to sync squadron", uuid, err);
+        }
+      }
+    )
+    return await this.loadingCtrl.dismiss()
+  }
+
   async snapshot(uuid: string) {
     this.snapshots[uuid].push(
       JSON.parse(JSON.stringify(this.squadrons[uuid]))
     )
+    this.storage.set("squadrons", this.squadrons);
+    await this.firebase.pushSquadron(uuid, this.squadrons[uuid]);
     let dateString = new Date(this.squadrons[uuid].timestamp * 1000).toDateString();
     const toast = await this.toastController.create({
       message: "Snapshot created " + dateString,
@@ -293,14 +329,15 @@ export class XwingStateService {
     return this.squadrons[uuid];
   }
 
-  importSquadron(squadron: Squadron) {
-    this.squadrons[squadron.uuid] = squadron;
-    this.snapshots[squadron.uuid] = [ ];
+  async importSquadron(uuid: string, squadron: Squadron) {
+    this.squadrons[uuid] = squadron;
+    this.snapshots[uuid] = [ ];
     this.initialized = true;
-    this.snapshot(squadron.uuid);
+    await this.snapshot(uuid);
+    return await this.subscribe(uuid);
   }
 
-  addSquadron(squadron: Squadron) {
+  async addSquadron(uuid: string, squadron: Squadron) {
     squadron.damagedeck = this.dataService.getDamageDeck();
     squadron.damagediscard = [ ];
 
@@ -310,27 +347,26 @@ export class XwingStateService {
         pilot.uuid = uuidv4().substring(0, 8);
       }
     )
-    squadron.uuid = this.getSquadronId();
     squadron.timestamp = this.getTimestamp();
-    this.importSquadron(squadron);
-    this.shuffleDamageDeck(squadron.uuid);
+    await this.importSquadron(uuid, squadron);
+    this.shuffleDamageDeck(uuid);
     this.initialized = true;
-    this.notify([ squadron.uuid ]);
+    this.notify([ uuid ]);
     console.log("Squadron added", squadron);
     return squadron;
   }
 
-  async shuffleDamageDeck(squadronUUID: string) {
-    let squadron = this.getSquadron(squadronUUID);
-    let newDeck = [ ];
+  async shuffleDamageDeck(uuid: string) {
+    let squadron: Squadron = this.getSquadron(uuid);
+    let newDeck: DamageCard[ ] = [ ];
     while (squadron.damagedeck.length > 0) {
       let index = Math.floor(Math.random() * squadron.damagedeck.length);
-      let card = squadron.damagedeck[index];
+      let card: DamageCard = squadron.damagedeck[index];
       squadron.damagedeck.splice(index, 1);
       newDeck.push(card);
     }
     squadron.damagedeck = newDeck;
-    this.snapshot(squadron.uuid);
+    this.snapshot(uuid);
     const toast = await this.toastController.create({
       message: "Damage Deck shuffled",
       duration: 2000,
@@ -339,19 +375,19 @@ export class XwingStateService {
     return toast.present();
   }
 
-  shuffleDamageDiscard(squadronUUID: string) {
-    let squadron = this.getSquadron(squadronUUID);
+  shuffleDamageDiscard(uuid: string) {
+    let squadron = this.getSquadron(uuid);
     squadron.damagediscard.forEach(
       (card) => {
         squadron.damagedeck.push(card);
       }
     )
     squadron.damagediscard = [ ];
-    this.shuffleDamageDeck(squadron.uuid);
+    this.shuffleDamageDeck(uuid);
   }
 
-  discard(squadronUUID: string, card: DamageCard) {
-    let squadron = this.getSquadron(squadronUUID);
+  discard(uuid: string, card: DamageCard) {
+    let squadron = this.getSquadron(uuid);
     squadron.damagediscard.push(card);
   }
 
