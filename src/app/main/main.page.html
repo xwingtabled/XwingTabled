@@ -1,5 +1,5 @@
 <div *ngIf="state.initialized" class="squadron-toolbar">
-  <ng-container *ngFor="let squadronUUID of squadronUUIDs">
+  <ng-container *ngFor="let squadronUUID of getSquadronUUIDs()">
     <div *ngIf="state.squadrons[squadronUUID] && (!layout.getClass().includes('phone') || squadronUUID.includes(uuid))"
       (click)="goToSquadron(squadronUUID)"
       [class]="squadronUUID.includes(uuid) ? 'active squadron-tab' : 'squadron-tab'">
@@ -80,7 +80,7 @@
   </div>
 </div>
 <ion-content padding>
-  <squadron *ngIf="squadron" [uuid]="uuid" [squadron]="squadron"></squadron>
+  <squadron *ngIf="state.squadrons[uuid]" [uuid]="uuid" [squadron]="state.squadrons[uuid]"></squadron>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
       <ion-icon name="more"></ion-icon>

@@ -352,10 +352,12 @@ export class XwingStateService {
   undo(uuid: string) : number {
     this.snapshots[uuid].pop();
     let snapshot: Squadron = this.snapshots[uuid].pop();
-    this.squadrons[uuid] = snapshot;
+    let oldTimestamp = snapshot.timestamp;
+    snapshot.timestamp = this.getTimestamp();
+    this.squadrons[uuid] = JSON.parse(JSON.stringify(snapshot));
     this.snapshot(uuid);
     this.notify([ uuid ]);
-    return snapshot.timestamp;
+    return oldTimestamp;
   }
 
   getSquadronId() {

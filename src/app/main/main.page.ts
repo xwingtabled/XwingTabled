@@ -33,7 +33,6 @@ export class MainPage implements OnInit {
   continue_button: boolean = false;
 
   uuid: string;
-  squadron: Squadron = null;
   squadronUUIDs: string[ ] = [ ];
 
   constructor(public modalController: ModalController, 
@@ -55,36 +54,24 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
-    this.getSquadronUUIDs();
   }
 
   getSquadronUUIDs() {
-    this.squadronUUIDs = Object.keys(this.state.squadrons);
+    return Object.keys(this.state.squadrons);
   }
 
   ionViewWillEnter() {
-    this.squadron = this.state.getSquadron(this.uuid);
+    //this.squadron = this.state.getSquadron(this.uuid);
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
         await this.data_event_handler(event);
       }
     );
-
-    this.events.subscribe(
-      this.state.topic,
-      (uuids) => {
-        this.getSquadronUUIDs();
-        if (this.uuid && uuids.includes(this.uuid)) {
-          this.squadron = this.state.getSquadron(this.uuid);
-        } 
-      }
-    )
   }
 
   ionViewWillLeave() {
     this.events.unsubscribe(this.dataService.topic);
-    this.events.unsubscribe(this.state.topic);
   }
 
   getPointsDestroyed(squadron) {
