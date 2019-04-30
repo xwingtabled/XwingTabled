@@ -9,6 +9,7 @@ export class TokenDisplayComponent implements OnInit {
   @Input() name: string;
   @Input() remaining: number;
   @Input() maximum: number;
+  @Input() readonly: boolean = false;
   @Output() change = new EventEmitter<any>();
 
   constructor() { }
@@ -26,11 +27,17 @@ export class TokenDisplayComponent implements OnInit {
   }
 
   spend() {
+    if (this.readonly) {
+      return;
+    }
     this.remaining -= 1;
     this.emit();
   }
 
   recover() {
+    if (this.readonly) {
+      return;
+    }
     this.remaining += 1;
     this.emit();
   }

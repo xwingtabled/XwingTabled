@@ -230,14 +230,14 @@ export class MainPage implements OnInit {
     await this.state.restoreFromDisk();
     console.log("Syncing squadrons with Firebase");
     await this.state.synchronize();
-    this.squadron = this.state.getSquadron(this.uuid);
     try {
-      if (!this.squadron) {
+      if (!this.state.squadrons[this.uuid]) {
         await this.loadOnlineSquadron();
       }
     } catch (err) {
       console.log("Error while checking for online squadron", err);
     }
+    console.log("Squadrons synchronized", this.state.squadrons);
   }
 
   retryDownload() {
@@ -302,7 +302,7 @@ export class MainPage implements OnInit {
   }
 
   undoAvailable() {
-    if (!this.uuid || !this.squadron) {
+    if (!this.uuid || !this.state.squadrons[this.uuid]) {
       return false;
     }
     if (!this.state.snapshots[this.uuid]) {

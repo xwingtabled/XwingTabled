@@ -127,6 +127,17 @@ export class XwingStateService {
     return uuids[index];
   }
 
+  readonly(uuid: string) : boolean {
+    if (!this.squadrons[uuid]) {
+      return true;
+    }
+    if (!this.squadrons[uuid].uid || !this.firebase.loggedIn()) {
+      return true;
+    }
+    let result = this.squadrons[uuid].uid != this.firebase.user.uid;
+    return result;
+  }
+
   getTimestamp() {
     return Math.ceil(Date.now() / 1000);
   }

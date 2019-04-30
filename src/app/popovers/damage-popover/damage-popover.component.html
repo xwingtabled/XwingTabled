@@ -15,6 +15,6 @@
       <span class="damage-card-back-art"><xwing-icon [name]="'hit'"></xwing-icon></span>
     </div>
   </div>
-  <ion-button expand="full" (click)="repair()">Repair</ion-button>
-  <ion-button expand="full" *ngIf="!card.exposed" (click)="expose()">Expose</ion-button>
+  <ion-button *ngIf="!state.readonly(squadronUUID)"  expand="full" (click)="repair()">Repair</ion-button>
+  <ion-button expand="full" *ngIf="!state.readonly(squadronUUID) && !card.exposed" (click)="expose()">Expose</ion-button>
 </div>

@@ -92,10 +92,10 @@
       <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadron" (click)="askReset()" data-desc="Reset squadron">
+      <ion-fab-button *ngIf="!state.readonly(uuid) && state.squadrons[uuid]" (click)="askReset()" data-desc="Reset squadron">
         <ion-icon name="refresh"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="undoAvailable()" (click)="askUndo()" data-desc="Undo">
+      <ion-fab-button *ngIf="!state.readonly(uuid) && undoAvailable()" (click)="askUndo()" data-desc="Undo">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="squadron" 
@@ -103,7 +103,7 @@
         data-desc="Damage deck">
         <xwing-icon [name]="'hit'"></xwing-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadron" (click)="askRecharge()" data-desc="Recurring charges">
+      <ion-fab-button *ngIf="!state.readonly(uuid) && state.squadrons[uuid]" (click)="askRecharge()" data-desc="Recurring charges">
         <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>
     </ion-fab-list>
