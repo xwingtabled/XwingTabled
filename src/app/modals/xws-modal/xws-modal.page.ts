@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 @Component({
   selector: 'app-xws-modal',
   templateUrl: './xws-modal.page.html',
@@ -7,12 +8,17 @@ import { ModalController } from '@ionic/angular';
 })
 export class XwsModalPage implements OnInit {
 
+  text: string;
   xwsData: any = null;
   dataValid: boolean = false;
 
-  constructor(public modal: ModalController) { }
+  constructor(public modal: ModalController,
+              public platform: Platform) { }
 
   ngOnInit() {
+    if (this.text && this.text.length > 0) {
+      this.dataValid = this.validate(this.text);
+    }
   }
 
   processURLUUID(value: string, url: string, xwsDataField: string) : boolean {
@@ -102,12 +108,16 @@ export class XwsModalPage implements OnInit {
     } 
   }
 
+  validate(value: string) : boolean {
+    return this.processXwingTabled(value) 
+    || this.processXws(value) 
+    || this.processFFGSquadBuilder(value) 
+    || this.processYasb(value);
+  }
+
   textChange($event) {
     let value = $event.detail.value;
-    this.dataValid = this.processXwingTabled(value) 
-      || this.processXws(value) 
-      || this.processFFGSquadBuilder(value) 
-      || this.processYasb(value);
+    this.dataValid = this.validate(value);
   }
 
   cancel() {

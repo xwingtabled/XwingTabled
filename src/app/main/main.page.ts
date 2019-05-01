@@ -15,7 +15,7 @@ import { XwingImportService } from '../services/xwing-import.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { FirebaseService } from '../services/firebase.service';
-
+import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
@@ -34,6 +34,7 @@ export class MainPage implements OnInit {
 
   uuid: string;
   squadronUUIDs: string[ ] = [ ];
+  scanning: boolean = false;
 
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
@@ -50,10 +51,10 @@ export class MainPage implements OnInit {
               private importService: XwingImportService,
               private route: ActivatedRoute,
               public layout: LayoutService,
-              public firebase: FirebaseService) { }
+              public firebase: FirebaseService,
+              private qrScanner: QRScanner) { }
 
   ngOnInit() {
-    this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
   }
 
   getSquadronUUIDs() {
@@ -61,7 +62,7 @@ export class MainPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    //this.squadron = this.state.getSquadron(this.uuid);
+    this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -198,6 +199,48 @@ export class MainPage implements OnInit {
 
   continueAnyway() {
     this.dataService.initialized = true;
+  }
+
+  qrscan() {
+    this.scanning = true;
+    this.qrScanner.prepare().then(
+      (status: QRScannerStatus) => {
+        if (status.authorized) {
+          return this.qrScanner.show();
+        }
+        throw Error('QRScanner not authorized');
+      }
+    ).then(
+      (status: QRScannerStatus) => {
+        let qrsub = this.qrScanner.scan().subscribe(
+          async (text: string) => {
+            qrsub.unsubscribe();
+            this.qrScanner.destroy();
+            this.scanning = false;
+            let uuid = await this.importService.presentXwsModal(text);
+            if (uuid) {
+              this.router.navigateByUrl(this.squadronRoute(uuid));
+            }
+          },
+          (error) => {
+            console.log("QRScanner error", error);
+          },
+          () => {
+            this.qrScanner.destroy();
+            this.scanning = false;
+          }
+        )
+      }
+    ).catch(
+      (error) => {
+        console.log("QRScanner error", error);
+      }
+    )
+  }
+
+  stopqr() {
+    this.qrScanner.destroy();
+    this.scanning = false;
   }
 
   async loginAndRetry() {
@@ -398,9 +441,11 @@ export class MainPage implements OnInit {
     toast.present();
   }
 
-  xwsAddButton() {
-    //this.presentXwsModal();
-    this.importService.presentXwsModal();
+  async xwsAddButton() {
+    let uuid = await this.importService.presentXwsModal();
+    if (uuid) {
+      this.router.navigateByUrl(this.squadronRoute(uuid));
+    }
   }
 
   async presentSettingsModal() {

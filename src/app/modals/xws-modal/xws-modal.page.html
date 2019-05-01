@@ -21,6 +21,7 @@
       </ul>
     <ion-label position="stacked">Paste XWS squadron data or URL here</ion-label>
     <ion-textarea (ionChange)="textChange($event)"
+      [(ngModel)]="text"
       placeholder='https://squadbuilder.fantasyflightgames.com ---
       https:/raithos.github.io ---
       {"faction":"rebelalliance","name":"My Squadron"}'>

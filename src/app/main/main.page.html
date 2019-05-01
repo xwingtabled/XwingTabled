@@ -32,12 +32,12 @@
     <ion-icon name="arrow-dropleft"></ion-icon>
   </div>
 </div>
-<div *ngIf="!state.initialized || !state.squadrons[uuid]" [class]="'card-container' + layout.getClass()">
+<div *ngIf="!this.scanning && (!state.initialized || !state.squadrons[uuid])" [class]="'card-container' + layout.getClass()">
   <div class="card">
     <img src="assets/img/splash.png">
     <div class="card-content">
       <div *ngIf="dataService.initialized">
-        <div *ngIf="uuid" class="squadron-missing">
+        <div *ngIf="uuid && !state.squadrons[uuid]" class="squadron-missing">
           <span><ion-icon name="warning"></ion-icon>
             &nbsp;
             <span *ngIf="firebase.loggedIn()">Unable to find this squadron locally or online</span>
@@ -79,7 +79,7 @@
     </div>
   </div>
 </div>
-<ion-content padding>
+<ion-content *ngIf="!this.scanning" padding>
   <squadron *ngIf="state.squadrons[uuid]" [uuid]="uuid" [squadron]="state.squadrons[uuid]"></squadron>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="labels2">
     <ion-fab-button>
@@ -89,7 +89,10 @@
       <ion-fab-button (click)="presentSettingsModal()" data-desc="Cloud Data">
         <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="dataService.initialized && !layout.getClass().includes('tablet')" (click)="xwsAddButton()" data-desc="Import squadron">
+      <ion-fab-button *ngIf="dataService.initialized && platform.is('cordova')" data-desc="Scan QR" (click)="qrscan()">
+        <ion-icon name="qr-scanner"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="!state.readonly(uuid) && state.squadrons[uuid]" (click)="askReset()" data-desc="Reset squadron">
@@ -109,3 +112,6 @@
     </ion-fab-list>
   </ion-fab>
 </ion-content>
+<ion-footer *ngIf="this.scanning">
+  <ion-button (click)="stopqr()" expand="full">Cancel QR Scanner</ion-button>
+</ion-footer>

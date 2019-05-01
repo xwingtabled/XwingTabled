@@ -32,6 +32,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { FirebaseService } from './services/firebase.service';
+import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +52,7 @@ import { FirebaseService } from './services/firebase.service';
     AboutPageModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
   ],
   providers: [
     StatusBar,
@@ -71,7 +72,8 @@ import { FirebaseService } from './services/firebase.service';
     ToastController,
     ModalGuard,
     GooglePlus,
-    FirebaseService
+    FirebaseService,
+    QRScanner
   ],
   bootstrap: [AppComponent]
 })

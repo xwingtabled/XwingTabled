@@ -337,9 +337,12 @@ export class XwingImportService {
     );
   }
 
-  async presentXwsModal() {
+  async presentXwsModal(text: string = "") {
     const modal = await this.modalController.create({
-      component: XwsModalPage
+      component: XwsModalPage,
+      componentProps: {
+        text: text
+      }
     });
     await modal.present();
     const { data } = await modal.onWillDismiss();
@@ -361,8 +364,7 @@ export class XwingImportService {
         squadron = this.processXws(squadron);
         this.state.addSquadron(uuid, squadron);
       }
-      let url = '/squadron/' + uuid;
-      this.router.navigateByUrl(url);
+      return uuid;
     } catch (e) {
       console.log(e);
       const toast = await this.toastController.create({
