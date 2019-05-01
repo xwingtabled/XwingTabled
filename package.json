@@ -59,6 +59,7 @@
     "firebase": "^5.10.1",
     "font-awesome": "^4.7.0",
     "jsonpack": "^1.1.5",
+    "ngx-qrcode2": "0.0.9",
     "promise-polyfill": "^8.1.0",
     "rxjs": "^6.3.0",
     "uuid": "^3.3.2",

@@ -63,6 +63,11 @@
         *ngIf="!isLocalSquadron(squadronItem.uuid)"
         class="clickable"
         (click)="importSquadron(squadronItem)"></ion-icon>
+      <ion-icon
+        name="share"
+        slot="end"
+        class="clickable"
+        (click)="share(squadronItem.uuid)"></ion-icon>
       <ion-icon 
         name="close-circle" 
         slot="end" 

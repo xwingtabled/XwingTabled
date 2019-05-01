@@ -13,12 +13,15 @@ import { DamageDeckActionsComponent } from './damage-deck-actions/damage-deck-ac
 import { DamagePopoverComponent } from './damage-popover/damage-popover.component';
 import { DamageCardSelectComponent } from './damage-card-select/damage-card-select.component';
 import { AssignIdPopoverComponent } from './assign-id-popover/assign-id-popover.component';
+import { SharePopoverComponent } from './share-popover/share-popover.component';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    XwingModule
+    XwingModule,
+    NgxQRCodeModule
   ],
   declarations: [
     ConditionMenuComponent,
@@ -26,7 +29,8 @@ import { AssignIdPopoverComponent } from './assign-id-popover/assign-id-popover.
     DamageDeckActionsComponent,
     DamagePopoverComponent,
     DamageCardSelectComponent,
-    AssignIdPopoverComponent
+    AssignIdPopoverComponent,
+    SharePopoverComponent
   ],
   exports: [
   ],
@@ -36,7 +40,8 @@ import { AssignIdPopoverComponent } from './assign-id-popover/assign-id-popover.
     DamageDeckActionsComponent,
     DamagePopoverComponent,
     DamageCardSelectComponent,
-    AssignIdPopoverComponent
+    AssignIdPopoverComponent,
+    SharePopoverComponent
   ]
 })
 export class PopoverModule {}

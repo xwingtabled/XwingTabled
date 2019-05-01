@@ -55,6 +55,7 @@ export class MainPage implements OnInit {
               private qrScanner: QRScanner) { }
 
   ngOnInit() {
+    this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
   }
 
   getSquadronUUIDs() {
@@ -62,7 +63,6 @@ export class MainPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -191,6 +191,7 @@ export class MainPage implements OnInit {
       this.image_button = false;
       this.image_button_disabled = false;
       this.continue_button = true;
+      await this.loadState();
     }
     if (event.status == "image_download_complete") {
       await this.loadState();
@@ -273,14 +274,15 @@ export class MainPage implements OnInit {
     await this.state.restoreFromDisk();
     console.log("Syncing squadrons with Firebase");
     await this.state.synchronize();
+    console.log("Squadrons synchronized", this.state.squadrons);
     try {
       if (!this.state.squadrons[this.uuid]) {
+        console.log("Retrieving squadron", this.uuid);
         await this.loadOnlineSquadron();
       }
     } catch (err) {
       console.log("Error while checking for online squadron", err);
     }
-    console.log("Squadrons synchronized", this.state.squadrons);
   }
 
   retryDownload() {

@@ -1,0 +1,7 @@
+<div class="share-popover">
+  <div class="qrcode">
+    <ngx-qrcode qrc-element-type="url" [qrc-value]="qrcode" class="qrcode"></ngx-qrcode>  
+  </div>
+  <input type="text" value="{{qrcode}}" #url class="url">
+  <ion-button expand="full" (click)="copy()">Copy to Clipboard</ion-button>
+</div>

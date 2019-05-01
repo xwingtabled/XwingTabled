@@ -33,6 +33,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { FirebaseService } from './services/firebase.service';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,6 +55,7 @@ import { QRScanner } from '@ionic-native/qr-scanner/ngx';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    NgxQRCodeModule
   ],
   providers: [
     StatusBar,

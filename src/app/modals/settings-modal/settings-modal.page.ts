@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
-import { Events } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { XwingStateService, Squadron } from '../../services/xwing-state.service';
@@ -11,8 +10,7 @@ import { XwingImportService } from '../../services/xwing-import.service';
 import { ModalController } from '@ionic/angular';
 import { LayoutService } from '../../services/layout.service';
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable } from 'rxjs';
-import { firestore } from 'firebase';
+import { SharePopoverComponent } from '../../popovers/share-popover/share-popover.component';
 
 
 export interface SquadronSummary {
@@ -40,7 +38,8 @@ export class SettingsModalPage implements OnInit {
               public firebase: FirebaseService,
               public router: Router,
               public route: ActivatedRoute,
-              public importService: XwingImportService) { }
+              public importService: XwingImportService,
+              private popoverController: PopoverController) { }
 
   ngOnInit() {
     if (this.firebase.loggedIn()) {
@@ -157,5 +156,15 @@ export class SettingsModalPage implements OnInit {
 
   dismiss() {
     this.modalController.dismiss();
+  }
+
+  async share(uuid: string) {
+    const popover = await this.popoverController.create({
+      component: SharePopoverComponent,
+      componentProps: {
+        squadronUUID: uuid,
+      }
+    });
+    return popover.present();  
   }
 }
