@@ -355,9 +355,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-@ionic/angular
-MIT
-
 firebase/app
 
 @firebase/polyfill
@@ -486,6 +483,9 @@ Apache-2.0
 
 @firebase/webchannel-wrapper
 Apache-2.0
+
+@ionic/angular
+MIT
 
 @angular/router
 MIT
@@ -758,9 +758,6 @@ firebase/auth
 
 loader
 
-@angular/core
-MIT
-
 @angular/forms
 MIT
 
@@ -801,6 +798,9 @@ trademarks does not indicate endorsement of the trademark holder by Font
 Awesome, nor vice versa. **Please do not use brand logos for any purpose except
 to represent the company, product, or service to which they refer.**
 
+
+@angular/core
+MIT
 
 zone.js
 MIT
