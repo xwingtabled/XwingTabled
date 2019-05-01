@@ -35,6 +35,7 @@ export class MainPage implements OnInit {
   uuid: string;
   squadronUUIDs: string[ ] = [ ];
   scanning: boolean = false;
+  retrieving: boolean = true;
 
   constructor(public modalController: ModalController, 
               public dataService: XwingDataService,
@@ -63,14 +64,6 @@ export class MainPage implements OnInit {
       }
     );
   }
-
-  /*
-  async ionViewDidEnter() {
-    if (this.dataService.initialized && this.uuid && !this.state.squadrons[this.uuid]) {
-      await this.loadOnlineSquadron();
-    }
-  }
-  */
 
   getSquadronUUIDs() {
     return Object.keys(this.state.squadrons);
@@ -285,6 +278,7 @@ export class MainPage implements OnInit {
     } catch (err) {
       console.log("Error while checking for online squadron", err);
     }
+    this.retrieving = false;
   }
 
   retryDownload() {

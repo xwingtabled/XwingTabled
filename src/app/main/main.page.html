@@ -37,7 +37,7 @@
     <img src="assets/img/splash.png">
     <div class="card-content">
       <div *ngIf="dataService.initialized">
-        <div *ngIf="uuid && !state.squadrons[uuid]" class="squadron-missing">
+        <div *ngIf="!retrieving && uuid && !state.squadrons[uuid]" class="squadron-missing">
           <span><ion-icon name="warning"></ion-icon>
             &nbsp;
             <span *ngIf="firebase.loggedIn()">Unable to find this squadron locally or online</span>
