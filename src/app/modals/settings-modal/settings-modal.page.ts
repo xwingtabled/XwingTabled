@@ -88,7 +88,7 @@ export class SettingsModalPage implements OnInit {
 
   async deleteSquadron(squadron: SquadronSummary) {
     const alert = await this.alertController.create({
-      header: 'Delete ' + name + '?',
+      header: 'Delete ' + squadron.name + '?',
       message: 'This will permanently remove the squadron from both the cloud and this device',
       buttons: [
         { text: 'OK',
