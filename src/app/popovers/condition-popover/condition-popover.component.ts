@@ -18,7 +18,7 @@ export class ConditionPopoverComponent implements OnInit {
   
   constructor(private popoverController: PopoverController,
               private dataService: XwingDataService,
-              private state: XwingStateService) { }
+              public state: XwingStateService) { }
 
   async assignPilotDamage() {
     await this.popoverController.dismiss();

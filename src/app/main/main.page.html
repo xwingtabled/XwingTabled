@@ -98,7 +98,7 @@
       <ion-fab-button *ngIf="!state.readonly(uuid) && undoAvailable()" (click)="askUndo()" data-desc="Undo">
         <ion-icon name="undo"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="squadron" 
+      <ion-fab-button *ngIf="state.squadrons[uuid]" 
         (click)="damageDeck()" 
         data-desc="Damage deck">
         <xwing-icon [name]="'hit'"></xwing-icon>

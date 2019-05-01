@@ -19,7 +19,7 @@ export class DamagePopoverComponent implements OnInit {
 
   constructor(private popoverController: PopoverController, 
               private ngZone: NgZone,
-              private state: XwingStateService,
+              public state: XwingStateService,
               private dataService: XwingDataService) { }
 
   ngOnInit() {
