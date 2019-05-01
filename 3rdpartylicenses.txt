@@ -487,6 +487,9 @@ Apache-2.0
 @ionic/angular
 MIT
 
+@ionic-native/qr-scanner
+MIT
+
 @angular/router
 MIT
 
