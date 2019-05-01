@@ -56,13 +56,6 @@ export class MainPage implements OnInit {
 
   ngOnInit() {
     this.uuid = this.route.snapshot.paramMap.get("squadronUUID");
-  }
-
-  getSquadronUUIDs() {
-    return Object.keys(this.state.squadrons);
-  }
-
-  ionViewWillEnter() {
     this.events.subscribe(
       this.dataService.topic,
       async (event) => {
@@ -71,8 +64,8 @@ export class MainPage implements OnInit {
     );
   }
 
-  ionViewWillLeave() {
-    this.events.unsubscribe(this.dataService.topic);
+  getSquadronUUIDs() {
+    return Object.keys(this.state.squadrons);
   }
 
   getPointsDestroyed(squadron) {
@@ -185,16 +178,16 @@ export class MainPage implements OnInit {
     }
     if (event.status == "images_complete") {
       this.image_button = false;
-      await this.loadState();
+      this.loadState();
     }
     if (event.status == "image_download_incomplete") {
       this.image_button = false;
       this.image_button_disabled = false;
       this.continue_button = true;
-      await this.loadState();
+      this.loadState();
     }
     if (event.status == "image_download_complete") {
-      await this.loadState();
+      this.loadState();
     }
   }
 
@@ -270,6 +263,7 @@ export class MainPage implements OnInit {
   }
 
   async loadState() {
+    this.events.unsubscribe(this.dataService.topic);
     console.log("Restoring squadrons from local storage");
     await this.state.restoreFromDisk();
     console.log("Syncing squadrons with Firebase");
