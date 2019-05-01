@@ -64,6 +64,12 @@ export class MainPage implements OnInit {
     );
   }
 
+  ionViewDidEnter() {
+    if (this.dataService.initialized && this.uuid && !this.state.squadrons[this.uuid]) {
+      this.loadOnlineSquadron();
+    }
+  }
+
   getSquadronUUIDs() {
     return Object.keys(this.state.squadrons);
   }
