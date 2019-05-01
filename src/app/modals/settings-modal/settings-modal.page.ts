@@ -19,7 +19,7 @@ export interface SquadronSummary {
   uuid: string
 }
 @Component({
-  selector: 'app-pilot-modal',
+  selector: 'app-settings-modal',
   templateUrl: './settings-modal.page.html',
   styleUrls: ['./settings-modal.page.scss'],
 })

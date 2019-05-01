@@ -111,6 +111,11 @@
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
+  <ion-fab *ngIf="!platform.is('cordova')" vertical="bottom" horizontal="start" slot ="fixed">
+    <ion-fab-button color="light" (click)="presentHelpModal()">
+      <ion-icon name="help"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 <ion-footer *ngIf="this.scanning">
   <ion-button (click)="stopqr()" expand="full">Cancel QR Scanner</ion-button>

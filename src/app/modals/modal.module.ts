@@ -6,6 +6,7 @@ import { XwsModalPageModule } from './xws-modal/xws-modal.module';
 import { UpgradeModalPageModule } from './upgrade-modal/upgrade-modal.module';
 import { PilotModalPageModule } from './pilot-modal/pilot-modal.module';
 import { SettingsModalPageModule } from './settings-modal/settings-modal.module';
+import { HelpModalPageModule } from './help-modal/help-modal.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SettingsModalPageModule } from './settings-modal/settings-modal.module'
     XwsModalPageModule,
     UpgradeModalPageModule,
     PilotModalPageModule,
-    SettingsModalPageModule
+    SettingsModalPageModule,
+    HelpModalPageModule
   ],
 })
 export class ModalModule {}

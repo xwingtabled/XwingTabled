@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, PopoverController, LoadingController } from '@ionic/angular';
-import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
+import { HelpModalPage } from '../modals/help-modal/help-modal.page';
 import { SettingsModalPage } from '../modals/settings-modal/settings-modal.page';
 import { XwingDataService } from '../services/xwing-data.service';
 import { Platform } from '@ionic/angular';
@@ -452,6 +452,13 @@ export class MainPage implements OnInit {
       componentProps: {
         currentSquadronUUID: this.uuid,
       }
+    });
+    return await modal.present();
+  }
+
+  async presentHelpModal() {
+    const modal = await this.modalController.create({
+      component: HelpModalPage
     });
     return await modal.present();
   }
