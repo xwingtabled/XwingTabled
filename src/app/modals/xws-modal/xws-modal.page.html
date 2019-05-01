@@ -10,20 +10,18 @@
   </ion-header>
 <ion-content padding>
   <div class="container">
-      You can import squadron data from:
-      <ul>
-        <li>YASB 2.0 URL<br />
-          <i>https://raithos.github.io/...</i><br /><br /></li>
-        <li>FFG SquadBuilder URLs<br />
-          <i>https://squadbuilder.fantasyflightgames.com/...</i><br /><br /></li>
-        <li>XWS Data<br />
-          <i>"{{ '{' }}"faction" : "rebelalliance", "name" : "My Squadron" ... {{ '}' }}</i></li>
-      </ul>
-    <ion-label position="stacked">Paste XWS squadron data or URL here</ion-label>
+    <p>
+      You can import squadron data from <a href="https://xwingtabled.github.io">X-Wing Tabled urls</a>, 
+      <a href="https://squadbuilder.fantasyflightgames.com">Official X-Wing Squad Builder</a> urls,
+      <a href="https://raithos.github.io">YASB 2.0</a> urls, XWS format data, and Launch Bay Next QR Code data.
+    </p>
+    <ion-label position="stacked">{{ oktext() }}</ion-label>
     <ion-textarea (ionChange)="textChange($event)"
       [(ngModel)]="text"
-      placeholder='https://squadbuilder.fantasyflightgames.com ---
-      https:/raithos.github.io ---
+      placeholder='https://xwingtabled.github.io/squadron/---
+      https://squadbuilder.fantasyflightgames.com/saved-squads---
+      https:/raithos.github.io/?f=---
+      ("My Squadron".200.1.1)---
       {"faction":"rebelalliance","name":"My Squadron"}'>
     </ion-textarea>
     <div class="button-container">

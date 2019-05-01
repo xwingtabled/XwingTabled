@@ -349,10 +349,15 @@ export class XwingImportService {
     if (!data) return;
     try {
       let uuid = uuidv4();
+      if (data.launchbay) {
+        let squadron = this.processFFG(data.launchbay);
+        this.state.addSquadron(uuid, squadron);
+      }
       if (data.xwingtabled) {
         await this.importXwingTabled(data.xwingtabled);
       }
       if (data.ffg) {
+        uuid = data.ffg;
         await this.importFFG(data.ffg);
       }
       if (data.yasb) {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
+import { XwingDataService } from '../../services/xwing-data.service';
 @Component({
   selector: 'app-xws-modal',
   templateUrl: './xws-modal.page.html',
@@ -13,12 +14,101 @@ export class XwsModalPage implements OnInit {
   dataValid: boolean = false;
 
   constructor(public modal: ModalController,
-              public platform: Platform) { }
+              public platform: Platform,
+              public dataService: XwingDataService) { }
 
   ngOnInit() {
     if (this.text && this.text.length > 0) {
       this.dataValid = this.validate(this.text);
     }
+  }
+
+  oktext() {
+    let message = "Paste your squadron data or URL here";
+    if (!this.xwsData) {
+      return message;
+    }
+    if ("ffg" in this.xwsData) {
+      message = "FFG Squadbuilder squadron detected"
+    }
+    if ("launchbay" in this.xwsData) {
+      message = "Launch Bay Next squadron detected";
+    }
+    if ("yasb" in this.xwsData) {
+      message = "YASB 2.0 squadron detected";
+    }
+    if ("xwingtabled" in this.xwsData) {
+      message = "X-Wing Tabled squadron detected";
+    }
+    if ("xws" in this.xwsData) {
+      message = "XWS squadron detected";
+    }
+    return message;
+  }
+
+  processLaunchBay(value: string) : boolean {
+    let matchArray = value.match(/\(\'[\d\w%]*\'.\d*.\d.\d(.\(\d*.\d*(.\(\d*.\d*\))*\))*\)/);
+    if (matchArray && matchArray.length) {
+      let tokens = value.slice(1, -1).split('.');
+      let name = decodeURIComponent(tokens[0].slice(1, -1));
+      let points = tokens[1];
+      let factionId = parseInt(tokens[2]);
+      let factionName = this.dataService.data.factions[0].find(faction => faction.ffg == factionId).name
+      let faction = {
+        faction: factionId,
+        name: factionName
+      }
+      let remainder = tokens.slice(4).join('.');
+      let deck = [ ];
+      let pilotMatches = remainder.match(/.?\(\d+.\d+(.\(\d+.\d+\))*\)/g);
+      pilotMatches.forEach(
+        (pilotString) => {
+          if (pilotString[0] == '.') {
+            pilotString = pilotString.slice(1);
+          }
+          let pilotTokens = pilotString.slice(1, -1).split('.');
+          let ship_type = parseInt(pilotTokens[0]);
+          let pilotId = parseInt(pilotTokens[1]);
+          let upgradeString = pilotTokens.slice(2).join('.');
+          let slots = [ ];
+          let upgrades = upgradeString.match(/\.?(\(\d+.\d+\))/g);
+          if (upgrades) {
+            upgrades.forEach(
+              (upgradeString) => {
+                if(upgradeString[0] == '.') {
+                  upgradeString = upgradeString.slice(1);
+                }
+                let upgradeTokens = upgradeString.slice(1, -1).split('.');
+                let upgradeId = parseInt(upgradeTokens[1]);
+                slots.push(
+                  {
+                    id: upgradeId
+                  }
+                )
+              }
+            )
+          }
+          let pilot = {
+            pilot_card: {
+              id: pilotId
+            },
+            slots: slots
+          }
+          deck.push(pilot);
+        }
+      )
+      let squadron = {
+        name: name,
+        cost: points,
+        faction: faction,
+        deck: deck
+      }
+      this.xwsData = { 
+        launchbay: squadron
+      }
+      return true;
+    }
+    return false;
   }
 
   processURLUUID(value: string, url: string, xwsDataField: string) : boolean {
@@ -112,7 +202,8 @@ export class XwsModalPage implements OnInit {
     return this.processXwingTabled(value) 
     || this.processXws(value) 
     || this.processFFGSquadBuilder(value) 
-    || this.processYasb(value);
+    || this.processYasb(value) 
+    || this.processLaunchBay(value);
   }
 
   textChange($event) {
