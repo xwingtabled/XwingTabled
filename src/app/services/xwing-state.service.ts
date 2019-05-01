@@ -194,7 +194,6 @@ export class XwingStateService {
       return;
     }
     this.squadrons[uuid] = incomingSquadron;
-    this.snapshot(uuid);
     this.notify([ uuid ]);
   }
 
