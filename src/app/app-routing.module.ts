@@ -3,15 +3,18 @@ import { Routes, RouterModule } from '@angular/router';
 import { PilotModalPage } from './modals/pilot-modal/pilot-modal.page';
 import { ModalGuard } from './modal-guard';
 import { UpgradeModalPage } from './modals/upgrade-modal/upgrade-modal.page';
+import { MainPage } from './main/main.page';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: './main/main.module#MainPageModule' 
+    component: MainPage
+//    loadChildren: './main/main.module#MainPageModule' 
   },
   {
     path: 'squadron/:squadronUUID',
-    loadChildren: './main/main.module#MainPageModule'
+    component: MainPage
+//    loadChildren: './main/main.module#MainPageModule'
   },
   {
     path: 'squadron/:squadronUUID/pilot/:pilotUUID',
