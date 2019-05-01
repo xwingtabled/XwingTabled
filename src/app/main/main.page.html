@@ -52,7 +52,7 @@
           <span (click)="xwsAddButton()" class="card-link">import a squadron</span>.
         </div>
         <div *ngIf="getSquadronUUIDs().length > 0" class="squadron-list-header">
-          Saved squadrons
+          Squadrons on this device
         </div>
         <div *ngFor="let squadronUUID of getSquadronUUIDs()" 
           (click)="goToSquadron(squadronUUID)"
