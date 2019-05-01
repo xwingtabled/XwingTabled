@@ -271,7 +271,7 @@ export class MainPage implements OnInit {
     await this.state.synchronize();
     console.log("Squadrons synchronized", this.state.squadrons);
     try {
-      if (!this.state.squadrons[this.uuid]) {
+      if (this.uuid && !this.state.squadrons[this.uuid]) {
         console.log("Retrieving squadron", this.uuid);
         await this.loadOnlineSquadron();
       }
