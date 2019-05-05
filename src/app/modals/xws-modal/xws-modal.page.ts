@@ -12,6 +12,9 @@ export class XwsModalPage implements OnInit {
   text: string;
   xwsData: any = null;
   dataValid: boolean = false;
+  devices: any[] = [];
+  currentDevice: number = 0;
+  scanning: boolean = false;
 
   constructor(public modal: ModalController,
               public platform: Platform,
@@ -47,7 +50,8 @@ export class XwsModalPage implements OnInit {
   }
 
   processLaunchBay(value: string) : boolean {
-    let matchArray = value.match(/\(\'[\d\w%]*\'.\d*.\d.\d(.\(\d*.\d*(.\(\d*.\d*\))*\))*\)/);
+    value = value.trim();
+    let matchArray = value.match(/\(\'[\d\w%]*\'.\d+\.\d+\.\d+(\.\(\d+\.\d+(\.\(\d+\.\d+\))*\))*/g);
     if (matchArray && matchArray.length) {
       let tokens = value.slice(1, -1).split('.');
       let name = decodeURIComponent(tokens[0].slice(1, -1));
@@ -217,5 +221,30 @@ export class XwsModalPage implements OnInit {
 
   ok() {
     this.modal.dismiss(this.xwsData);
+  }
+
+  toggleScan() {
+    this.scanning = !this.scanning;
+  }
+
+  toggleCamera() {
+    if (this.devices.length < 2) {
+      return;
+    }
+    if (this.currentDevice == 0) {
+      this.currentDevice = 1;
+    } else {
+      this.currentDevice = 0;
+    }
+  }
+
+  camerasFoundHandler($event) {
+    this.devices = $event;
+  }
+
+  scanSuccessHandler($event) {
+    this.text = $event;
+    this.scanning = false;
+    this.dataValid = this.validate(this.text);
   }
 }

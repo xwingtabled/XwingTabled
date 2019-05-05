@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+  <ion-toolbar>
       <ion-buttons slot="start">
         <ion-button (click)="cancel()"><ion-icon name="arrow-back"></ion-icon></ion-button>
       </ion-buttons>
@@ -9,7 +9,7 @@
     </ion-toolbar>
   </ion-header>
 <ion-content padding>
-  <div class="container">
+  <div class="container" *ngIf="!scanning">
     <p>
       You can import squadron data from <a href="https://xwingtabled.github.io">X-Wing Tabled urls</a>, 
       <a href="https://squadbuilder.fantasyflightgames.com">Official X-Wing Squad Builder</a> urls,
@@ -24,9 +24,21 @@
       ("My Squadron".200.1.1)---
       {"faction":"rebelalliance","name":"My Squadron"}'>
     </ion-textarea>
-    <div class="button-container">
-      <ion-button color="light" (click)="cancel()">Cancel</ion-button>
-      <ion-button (click)="ok()" [disabled]="!dataValid">OK</ion-button>
-    </div>
   </div>
+  <zxing-scanner 
+    *ngIf="scanning"
+    [device]="devices.length > 0 ? devices[currentDevice] : null"
+    (camerasFound)="camerasFoundHandler($event)"
+    (scanSuccess)="scanSuccessHandler($event)">
+  </zxing-scanner>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="start" (click)="toggleScan()">
+      Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="ok()" [disabled]="!dataValid">OK&nbsp;<ion-icon name="checkmark-circle"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

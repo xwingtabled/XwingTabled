@@ -7,6 +7,7 @@ import { XwingModule } from '../components/xwing.module';
 import { ProgressBarModule } from 'angular-progress-bar';
 import { MainPage } from './main.page';
 import { HttpProvider } from '../providers/http.provider';
+
 const routes: Routes = [
   {
     path: '',

@@ -17,7 +17,7 @@ import { HelpModalPageModule } from './help-modal/help-modal.module';
     UpgradeModalPageModule,
     PilotModalPageModule,
     SettingsModalPageModule,
-    HelpModalPageModule
+    HelpModalPageModule,
   ],
 })
 export class ModalModule {}

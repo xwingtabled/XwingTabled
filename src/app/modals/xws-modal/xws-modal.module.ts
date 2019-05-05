@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { XwingModule } from '../../components/xwing.module';
 import { XwsModalPage } from './xws-modal.page';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 const routes: Routes = [
   {
@@ -20,7 +21,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    XwingModule
+    XwingModule,
+    ZXingScannerModule
   ],
   declarations: [
     XwsModalPage

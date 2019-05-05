@@ -16,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { FirebaseService } from '../services/firebase.service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.page.html',
