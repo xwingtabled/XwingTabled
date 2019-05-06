@@ -330,5 +330,4 @@ export class XwingImportService {
       throw error;
     }
   }
-
 }

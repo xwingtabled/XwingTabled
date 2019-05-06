@@ -28,7 +28,7 @@ export class FirebaseService {
   }
 
   timestamp() {
-    return Math.floor(Date.now() / 1000);
+    return Date.now();
   }
 
   async pushSquadron(uuid: string, squadron: Squadron) {

@@ -147,7 +147,7 @@ export class XwingStateService {
   }
 
   getTimestamp() {
-    return Math.ceil(Date.now() / 1000);
+    return Date.now();
   }
 
   getLastSnapshotTime(uuid: string) : number {
@@ -198,7 +198,7 @@ export class XwingStateService {
     if (!squadron) {
       return;
     }
-    if (squadron.timestamp + 2 > incomingSquadron.timestamp) {
+    if (squadron.timestamp >= incomingSquadron.timestamp) {
       return;
     }
     this.squadrons[uuid] = incomingSquadron;
@@ -359,8 +359,8 @@ export class XwingStateService {
       JSON.parse(JSON.stringify(this.squadrons[uuid]))
     )
     this.storage.set("squadrons", this.squadrons);
-    await this.firebase.pushSquadron(uuid, this.squadrons[uuid]);
-    let dateString = new Date(this.squadrons[uuid].timestamp * 1000).toString();
+    this.firebase.pushSquadron(uuid, this.squadrons[uuid]);
+    let dateString = new Date(this.squadrons[uuid].timestamp).toString();
     const toast = await this.toastController.create({
       message: "Snapshot created " + dateString,
       duration: 2000,

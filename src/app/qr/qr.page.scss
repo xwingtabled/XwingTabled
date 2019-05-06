@@ -5,6 +5,10 @@ ion-content > *
      align-items: center!important;
 }
 
+ion-content {
+    --ion-background-color: white;
+}
+
 .qr-scanner {
     max-width: 100vw;
     max-height: 50vh;

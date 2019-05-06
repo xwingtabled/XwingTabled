@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
+import { Squadron } from '../services/xwing-state.service';
 import { XwingDataService } from '../services/xwing-data.service';
 import { XwingImportService } from '../services/xwing-import.service';
+import { XwingStateService } from '../services/xwing-state.service';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import * as uuidv4 from 'uuid/v4';
+
 @Component({
   selector: 'app-add-page',
   templateUrl: './add.page.html',
@@ -13,11 +17,12 @@ import { Router } from '@angular/router';
 export class AddPage implements OnInit {
 
   text: string;
-  launchBayData: any = null;
-  ffgData: any = null;
-  yasbData: any = null;
-  xwingTabledData: any = null;
-  xwsData: any = null;
+  launchBayData: Squadron = null;
+  ffgData: Squadron = null;
+  yasbData: Squadron = null;
+  xwingTabledData: Squadron = null;
+  xwingTabledUUID: string = null;
+  xwsData: Squadron = null;
   dataValid: boolean = false;
 
   constructor(public modal: ModalController,
@@ -25,7 +30,8 @@ export class AddPage implements OnInit {
               public dataService: XwingDataService,
               private importService: XwingImportService,
               private location: Location,
-              private router: Router) { }
+              private router: Router,
+              private state: XwingStateService) { }
 
   ngOnInit() {
   }
@@ -101,7 +107,7 @@ export class AddPage implements OnInit {
         faction: faction,
         deck: deck
       }
-      this.launchBayData = squadron;
+      this.launchBayData = this.importService.convertFFG(squadron);
       return true;
     }
     return false;
@@ -135,7 +141,7 @@ export class AddPage implements OnInit {
     }
     try {
       this.xwingTabledData = await this.importService.processXwingTabled(uuid);
-      console.log("Retrieved xwingtabled squadron", this.xwingTabledData);
+      this.xwingTabledUUID = uuid;
       return true;
     } catch (error) {
       return false;
@@ -200,7 +206,8 @@ export class AddPage implements OnInit {
 
   validateXws(value: string) : boolean {
     try {
-      this.xwsData = JSON.parse(value);
+      let data = JSON.parse(value);
+      this.xwsData = this.importService.processXws(data);
       return true;
     } catch(error) {
       return false;
@@ -233,7 +240,14 @@ export class AddPage implements OnInit {
     this.location.back();
   }
 
-  ok() {
-    this.location.back();
+  async import(uuid: string, squadron: Squadron) {
+    await this.state.importSquadron(uuid, squadron);
+    this.router.navigateByUrl("/squadron/" + uuid);
+  }
+
+  async add(squadron: Squadron) {
+    let uuid = uuidv4();
+    await this.state.addSquadron(uuid, squadron);
+    this.router.navigateByUrl("/squadron/" + uuid);
   }
 }

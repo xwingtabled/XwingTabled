@@ -9,7 +9,7 @@
     </ion-toolbar>
   </ion-header>
 <ion-content padding>
-  <div class="container" *ngIf="!scanning">
+  <div class="container">
     <p>
       You can import squadron data from <a href="https://xwingtabled.github.io">X-Wing Tabled urls</a>, 
       <a href="https://squadbuilder.fantasyflightgames.com">Official X-Wing Squad Builder</a> urls,
@@ -26,17 +26,25 @@
     </ion-textarea>
   </div>
 </ion-content>
-<ion-footer>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="openQr()">     
-        Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-footer>
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab-button class="start" (click)="openQr()" data-desc="Scan QR">
+    <ion-icon name="qr-scanner"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button *ngIf="xwingTabledData" (click)="ok()" data-desc="Import X-Wing Tabled Squadron">
-    <ion-icon name="checkmark"></ion-icon>
+  <ion-fab-button class="end" *ngIf="xwingTabledData" (click)="import(xwingTabledUUID, xwingTabledData)" data-desc="Import X-Wing Tabled Squadron">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button class="end" *ngIf="yasbData" (click)="add(yasbData)" data-desc="Import from YASB 2.0">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button class="end" *ngIf="ffgData" (click)="add(ffgData)" data-desc="Import from FFG Squadbuilder">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button class="end" *ngIf="xwsData" (click)="add(xwsData)" data-desc="Import from XWS">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button class="end" *ngIf="launchBayData" (click)="add(launchBayData)" data-desc="Import from Launch Bay Next">
+    <ion-icon name="add"></ion-icon>
   </ion-fab-button>
 </ion-fab>

@@ -20,6 +20,11 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab-button (click)="cancel()">
+    <ion-icon name="close"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 <ion-fab *ngIf="isCordova && canChangeCamera" vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="toggleCordovaCamera()">
     <ion-icon name="reverse-camera"></ion-icon>
