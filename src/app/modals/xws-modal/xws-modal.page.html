@@ -37,6 +37,9 @@
     <ion-buttons slot="start" (click)="toggleScan()">
       Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
     </ion-buttons>
+    <ion-buttons *ngIf="devices && devices.length > 1" slot="start" (click)="toggleCamera()">
+      Camera&nbsp;<ion-icon name="reverse-camera"></ion-icon>
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="ok()" [disabled]="!dataValid">OK&nbsp;<ion-icon name="checkmark-circle"></ion-icon></ion-button>
     </ion-buttons>
