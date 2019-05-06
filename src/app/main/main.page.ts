@@ -16,6 +16,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { FirebaseService } from '../services/firebase.service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
+import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
+import * as uuidv4 from 'uuid/v4';
 
 @Component({
   selector: 'app-main',
@@ -197,6 +199,54 @@ export class MainPage implements OnInit {
     this.dataService.initialized = true;
   }
 
+
+  async presentXwsModal(text: string = "") {
+    const modal = await this.modalController.create({
+      component: XwsModalPage,
+      componentProps: {
+        text: text
+      }
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss();
+    if (!data) return;
+    try {
+      let uuid = uuidv4();
+      if (data.launchbay) {
+        let squadron = this.importService.processFFG(data.launchbay);
+        await this.state.addSquadron(uuid, squadron);
+      }
+      if (data.xwingtabled) {
+        await this.importService.importXwingTabled(data.xwingtabled);
+      }
+      if (data.ffg) {
+        uuid = data.ffg;
+        await this.importService.importFFG(data.ffg);
+      }
+      if (data.yasb) {
+        let squadron = this.importService.processYasb(data.yasb);
+        await this.state.addSquadron(uuid, squadron);
+      }
+      if (data.xws) {
+        let squadron = data.xws;
+        squadron = this.importService.processXws(squadron);
+        await this.state.addSquadron(uuid, squadron);
+      }
+      if (data.qr) {
+        this.qrscan();
+      }
+      return uuid;
+    } catch (e) {
+      console.log(e);
+      const toast = await this.toastController.create({
+        message: e,
+        duration: 2000,
+        position: 'bottom'
+      });
+      toast.present();
+    }
+  }
+
   qrscan() {
     this.scanning = true;
     this.qrScanner.prepare().then(
@@ -213,7 +263,7 @@ export class MainPage implements OnInit {
             qrsub.unsubscribe();
             this.qrScanner.destroy();
             this.scanning = false;
-            let uuid = await this.importService.presentXwsModal(text);
+            let uuid = await this.presentXwsModal(text);
             if (uuid) {
               this.router.navigateByUrl(this.squadronRoute(uuid));
             }
@@ -441,7 +491,7 @@ export class MainPage implements OnInit {
   }
 
   async xwsAddButton() {
-    let uuid = await this.importService.presentXwsModal();
+    let uuid = await this.presentXwsModal();
     if (uuid) {
       this.router.navigateByUrl(this.squadronRoute(uuid));
     }

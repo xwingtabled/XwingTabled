@@ -3,7 +3,6 @@ import { XwingDataService } from './xwing-data.service';
 import { XwingStateService, Squadron, Pilot, Upgrade } from './xwing-state.service';
 import { FirebaseService } from './firebase.service';
 import { HttpProvider } from '../providers/http.provider';
-import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import * as uuidv4 from 'uuid/v4';
@@ -337,47 +336,4 @@ export class XwingImportService {
     );
   }
 
-  async presentXwsModal(text: string = "") {
-    const modal = await this.modalController.create({
-      component: XwsModalPage,
-      componentProps: {
-        text: text
-      }
-    });
-    await modal.present();
-    const { data } = await modal.onWillDismiss();
-    if (!data) return;
-    try {
-      let uuid = uuidv4();
-      if (data.launchbay) {
-        let squadron = this.processFFG(data.launchbay);
-        await this.state.addSquadron(uuid, squadron);
-      }
-      if (data.xwingtabled) {
-        await this.importXwingTabled(data.xwingtabled);
-      }
-      if (data.ffg) {
-        uuid = data.ffg;
-        await this.importFFG(data.ffg);
-      }
-      if (data.yasb) {
-        let squadron = this.processYasb(data.yasb);
-        await this.state.addSquadron(uuid, squadron);
-      }
-      if (data.xws) {
-        let squadron = data.xws;
-        squadron = this.processXws(squadron);
-        await this.state.addSquadron(uuid, squadron);
-      }
-      return uuid;
-    } catch (e) {
-      console.log(e);
-      const toast = await this.toastController.create({
-        message: e,
-        duration: 2000,
-        position: 'bottom'
-      });
-      toast.present();
-    }
-  }
 }

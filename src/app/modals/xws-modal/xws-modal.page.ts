@@ -230,6 +230,10 @@ export class XwsModalPage implements OnInit {
     this.modal.dismiss(this.xwsData);
   }
 
+  dismissQr() {
+    this.modal.dismiss({ qr: true });
+  }
+
   toggleScan() {
     this.scanning = !this.scanning;
   }

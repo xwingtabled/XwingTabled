@@ -89,7 +89,7 @@
       <ion-fab-button (click)="presentSettingsModal()" data-desc="Cloud Data">
         <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="dataService.initialized && platform.is('cordova')" data-desc="Scan QR" (click)="qrscan()">
+      <ion-fab-button *ngIf="false && dataService.initialized && platform.is('cordova')" data-desc="Scan QR" (click)="qrscan()">
         <ion-icon name="qr-scanner"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">

@@ -29,7 +29,8 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: './about/about.module#AboutPageModule'
-  }
+  },  { path: 'qr', loadChildren: './qr/qr.module#QrPageModule' }
+
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
