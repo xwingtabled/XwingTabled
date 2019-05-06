@@ -7,9 +7,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!isCordova">
   <zxing-scanner 
-    *ngIf="!isCordova"
     [device]="devices.length > 0 ? devices[currentDevice] : null"
     (camerasFound)="camerasFoundHandler($event)"
     (scanSuccess)="scanSuccessHandler($event)"
@@ -19,8 +18,10 @@
     <ion-fab-button *ngIf="!isCordova && devices.length > 1" (click)="toggleWebCamera()">
       <ion-icon name="reverse-camera"></ion-icon>
     </ion-fab-button>
-    <ion-fab-button *ngIf="isCordova && canChangeCamera" (click)="toggleCordovaCamera()">
-      <ion-icon name="reverse-camera"></ion-icon>
-    </ion-fab-button>
   </ion-fab>
 </ion-content>
+<ion-fab *ngIf="isCordova && canChangeCamera" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="toggleCordovaCamera()">
+    <ion-icon name="reverse-camera"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

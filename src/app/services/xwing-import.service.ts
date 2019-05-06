@@ -149,7 +149,7 @@ export class XwingImportService {
     pilot.points = pilotCost + upgradeCost;
   }
 
-  processFFG(data: any) : Squadron {
+  convertFFG(data: any) : Squadron {
     let cost = data.cost;
     let name = data.name;
     let faction = data.faction.name;
@@ -179,8 +179,6 @@ export class XwingImportService {
         points: data.cost,
         pilots: pilots
     }
-    console.log("FFG SquadBuilder response", data);
-    console.log("FFG -> XWS", squadron);
     return this.processXws(squadron);
   }
 
@@ -221,7 +219,6 @@ export class XwingImportService {
       faction: data.faction,
       pilots: pilots
     };
-    console.log("YASB squadron", squadron);
     return this.processXws(squadron);
   }
 
@@ -301,41 +298,37 @@ export class XwingImportService {
     return squadronData;
   }
 
-  async importXwingTabled(uuid: string) {
-    this.firebase.retrieveSquadron(uuid).then(
-      (squadron) => {
-        this.state.importSquadron(uuid, squadron);
-      },
-      async (error) => {
-        console.log("Unable to get X-Wing Tabled Squadron Data", error);
-        const toast = await this.toastController.create({
-          message: "ERROR: Unable to retrieve X-Wing Tabled Squadron",
-          duration: 5000,
-          position: 'bottom'
-        });
-        toast.present(); 
-      }
-    )
+  async processXwingTabled(uuid: string) : Promise<Squadron> {
+    try {
+      let squadron = this.firebase.retrieveSquadron(uuid);
+      return squadron;
+    } catch (error) {
+      console.log("Unable to get X-Wing Tabled Squadron Data", error);
+      const toast = await this.toastController.create({
+        message: "ERROR: Unable to retrieve X-Wing Tabled Squadron",
+        duration: 5000,
+        position: 'bottom'
+      });
+      toast.present(); 
+      return error;
+    }
   }
 
-  async importFFG(uuid: string) {
+  async processFFG(uuid: string) : Promise<Squadron> {
     let url = "https://squadbuilder.fantasyflightgames.com/api/squads/" + uuid + "/";
-    
-    await this.http.get(url).subscribe(
-      (data) => {
-        let squadron = this.processFFG(data);
-        this.state.addSquadron(uuid, squadron);
-      },
-      async (error) => {
-        console.log("Unable to get FFG SquadBuilder data", error);
-        const toast = await this.toastController.create({
-          message: "ERROR: Unable to load FFG Squad",
-          duration: 5000,
-          position: 'bottom'
-        });
-        toast.present();
-      }
-    );
+    try {
+      let squadron = await this.http.get(url).toPromise();
+      return this.convertFFG(squadron);
+    } catch (error) {
+      console.log("Unable to get FFG SquadBuilder data", error);
+      const toast = await this.toastController.create({
+        message: "ERROR: Unable to load FFG Squad",
+        duration: 5000,
+        position: 'bottom'
+      });
+      toast.present(); 
+      throw error;
+    }
   }
 
 }

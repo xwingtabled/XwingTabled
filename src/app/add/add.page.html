@@ -15,7 +15,7 @@
       <a href="https://squadbuilder.fantasyflightgames.com">Official X-Wing Squad Builder</a> urls,
       <a href="https://raithos.github.io">YASB 2.0</a> urls, XWS format data, and Launch Bay Next QR Code data.
     </p>
-    <ion-label position="stacked">{{ oktext() }}</ion-label>
+    <ion-label position="stacked">Paste your squadron data or url here</ion-label>
     <ion-textarea (ionChange)="textChange($event)"
       [(ngModel)]="text"
       placeholder='https://xwingtabled.github.io/squadron/---
@@ -33,8 +33,10 @@
         Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button (click)="ok()" [disabled]="!dataValid">OK&nbsp;<ion-icon name="checkmark-circle"></ion-icon></ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-footer>
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button *ngIf="xwingTabledData" (click)="ok()" data-desc="Import X-Wing Tabled Squadron">
+    <ion-icon name="checkmark"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

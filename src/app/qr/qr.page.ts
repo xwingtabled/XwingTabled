@@ -25,18 +25,20 @@ export class QrPage implements OnInit {
   ngOnInit() {
     this.isCordova = this.platform.is('cordova');
     if (this.isCordova) {
-      this.qrScanner.getStatus().then(
-        (status) => {
-          this.canChangeCamera = status.canChangeCamera;
-        }
-      )
       this.cordovaQrScan();
     }
   }
   
+  ionViewWillLeave() {
+    if (this.isCordova) {
+      this.qrScanner.destroy();
+    }
+  }
+
   cordovaQrScan() {
     this.qrScanner.prepare().then(
       (status: QRScannerStatus) => {
+        this.canChangeCamera = status.canChangeCamera;
         if (status.authorized) {
           return this.qrScanner.show();
         }
@@ -47,9 +49,8 @@ export class QrPage implements OnInit {
         let qrsub = this.qrScanner.scan().subscribe(
           async (text: string) => {
             qrsub.unsubscribe();
-            this.qrScanner.destroy();
             this.importService.qrData = text;
-            this.location.back();
+            this.router.navigateByUrl("/add");
           },
           (error) => {
             console.log("QRScanner error", error);
@@ -99,7 +100,6 @@ export class QrPage implements OnInit {
   scanSuccessHandler($event) {
     this.importService.qrData = $event;
     this.router.navigateByUrl("/add");
-    this.location.back();
   }
 
   cancel() {
