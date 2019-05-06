@@ -351,7 +351,7 @@ export class XwingImportService {
       let uuid = uuidv4();
       if (data.launchbay) {
         let squadron = this.processFFG(data.launchbay);
-        this.state.addSquadron(uuid, squadron);
+        await this.state.addSquadron(uuid, squadron);
       }
       if (data.xwingtabled) {
         await this.importXwingTabled(data.xwingtabled);
@@ -362,12 +362,12 @@ export class XwingImportService {
       }
       if (data.yasb) {
         let squadron = this.processYasb(data.yasb);
-        this.state.addSquadron(uuid, squadron);
+        await this.state.addSquadron(uuid, squadron);
       }
       if (data.xws) {
         let squadron = data.xws;
         squadron = this.processXws(squadron);
-        this.state.addSquadron(uuid, squadron);
+        await this.state.addSquadron(uuid, squadron);
       }
       return uuid;
     } catch (e) {

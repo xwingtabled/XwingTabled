@@ -75,6 +75,7 @@ export class XwingStateService {
   }
 
   reset() {
+    console.log("Resetting state data");
     this.squadrons = { };
     this.snapshots = { };
     this.initialized = false;
@@ -83,16 +84,23 @@ export class XwingStateService {
 
   async restoreFromDisk() {
     await this.storage.ready();
-    this.squadrons = await this.storage.get("squadrons");
-    if (!this.squadrons) {
-      this.squadrons = { }
+    let storedSquadrons = await this.storage.get("squadrons");
+    if (!storedSquadrons) {
       console.log("No local squadrons found");
       this.initialized = false;
       this.notify();
       return;
     }
+    Object.keys(storedSquadrons).forEach(
+      (uuid) => {
+        this.squadrons[uuid] = storedSquadrons[uuid];
+      }
+    )
     Object.keys(this.squadrons).forEach(
       (uuid) => {
+        if (!this.snapshots[uuid]) {
+          return;
+        }
         this.snapshots[uuid] = [ JSON.parse(JSON.stringify(this.squadrons[uuid])) ];
       }
     )
@@ -316,7 +324,9 @@ export class XwingStateService {
     this.subscriptions[uuid] = await this.firebase.getSquadronSubscription(uuid);
     this.subscriptions[uuid].subscribe(
       (squadron) => {
-        this.updateSquadron(uuid, squadron);
+        if (squadron) {
+          this.updateSquadron(uuid, squadron);
+        }
       }
     )
   }
