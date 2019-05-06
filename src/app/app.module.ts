@@ -35,6 +35,7 @@ import { FirebaseService } from './services/firebase.service';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { MainPageModule } from './main/main.module';
+import { AddPageModule } from './add/add.module';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { MainPageModule } from './main/main.module';
     AngularFireAuthModule,
     AngularFirestoreModule,
     NgxQRCodeModule,
-    MainPageModule
+    MainPageModule,
+    AddPageModule
   ],
   providers: [
     StatusBar,

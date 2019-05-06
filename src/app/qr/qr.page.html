@@ -1,9 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Qr</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()"><ion-icon name="arrow-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Scan a QR Code</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <zxing-scanner 
+    *ngIf="!isCordova"
+    [device]="devices.length > 0 ? devices[currentDevice] : null"
+    (camerasFound)="camerasFoundHandler($event)"
+    (scanSuccess)="scanSuccessHandler($event)"
+    class="qr-scanner">
+  </zxing-scanner>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="reverse-camera"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

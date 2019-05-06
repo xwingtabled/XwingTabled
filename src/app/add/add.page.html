@@ -25,23 +25,13 @@
       {"faction":"rebelalliance","name":"My Squadron"}'>
     </ion-textarea>
   </div>
-  <zxing-scanner 
-    *ngIf="scanning"
-    [device]="devices.length > 0 ? devices[currentDevice] : null"
-    (camerasFound)="camerasFoundHandler($event)"
-    (scanSuccess)="scanSuccessHandler($event)">
-  </zxing-scanner>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-buttons  *ngIf="!platform.is('cordova')" slot="start" (click)="toggleScan()">
-      Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
-    </ion-buttons>
-    <ion-buttons *ngIf="platform.is('cordova')" slot="start" (click)="dismissQr()">
-      Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
-    </ion-buttons>
-    <ion-buttons *ngIf="devices && devices.length > 1" slot="start" (click)="toggleCamera()">
-      Camera&nbsp;<ion-icon name="reverse-camera"></ion-icon>
+    <ion-buttons slot="start">
+      <ion-button href="/qr">     
+        Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="ok()" [disabled]="!dataValid">OK&nbsp;<ion-icon name="checkmark-circle"></ion-icon></ion-button>

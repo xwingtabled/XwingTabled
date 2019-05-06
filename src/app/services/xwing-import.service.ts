@@ -10,6 +10,8 @@ import * as uuidv4 from 'uuid/v4';
   providedIn: 'root'
 })
 export class XwingImportService {
+  public qrData: string = "";
+  
   constructor(public dataService: XwingDataService,
               public state: XwingStateService,
               private http: HttpProvider,

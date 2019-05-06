@@ -16,7 +16,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { FirebaseService } from '../services/firebase.service';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { XwsModalPage } from '../modals/xws-modal/xws-modal.page';
 import * as uuidv4 from 'uuid/v4';
 
 @Component({
@@ -201,6 +200,7 @@ export class MainPage implements OnInit {
 
 
   async presentXwsModal(text: string = "") {
+    /*
     const modal = await this.modalController.create({
       component: XwsModalPage,
       componentProps: {
@@ -244,7 +244,7 @@ export class MainPage implements OnInit {
         position: 'bottom'
       });
       toast.present();
-    }
+    }*/
   }
 
   qrscan() {
@@ -263,10 +263,12 @@ export class MainPage implements OnInit {
             qrsub.unsubscribe();
             this.qrScanner.destroy();
             this.scanning = false;
+            /*
             let uuid = await this.presentXwsModal(text);
             if (uuid) {
               this.router.navigateByUrl(this.squadronRoute(uuid));
             }
+            */
           },
           (error) => {
             console.log("QRScanner error", error);
@@ -491,10 +493,12 @@ export class MainPage implements OnInit {
   }
 
   async xwsAddButton() {
+    /*
     let uuid = await this.presentXwsModal();
     if (uuid) {
       this.router.navigateByUrl(this.squadronRoute(uuid));
     }
+    */
   }
 
   async presentSettingsModal() {

@@ -1,27 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
-import { XwingDataService } from '../../services/xwing-data.service';
+import { XwingDataService } from '../services/xwing-data.service';
+import { XwingImportService } from '../services/xwing-import.service';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 @Component({
-  selector: 'app-xws-modal',
-  templateUrl: './xws-modal.page.html',
-  styleUrls: ['./xws-modal.page.scss'],
+  selector: 'app-add-page',
+  templateUrl: './add.page.html',
+  styleUrls: ['./add.page.scss'],
 })
-export class XwsModalPage implements OnInit {
+export class AddPage implements OnInit {
 
   text: string;
   xwsData: any = null;
   dataValid: boolean = false;
-  devices: any[] = [];
-  currentDevice: number = 0;
-  scanning: boolean = false;
 
   constructor(public modal: ModalController,
               public platform: Platform,
-              public dataService: XwingDataService) { }
+              public dataService: XwingDataService,
+              private importService: XwingImportService,
+              private location: Location,
+              private router: Router) { }
 
   ngOnInit() {
-    if (this.text && this.text.length > 0) {
+  }
+
+  ionViewWillEnter() {
+    this.text = this.importService.qrData;
+    this.importService.qrData = "";
+    if (this.text) {
       this.dataValid = this.validate(this.text);
     }
   }
@@ -223,39 +231,10 @@ export class XwsModalPage implements OnInit {
   }
 
   cancel() {
-    this.modal.dismiss();
+    this.location.back();
   }
 
   ok() {
-    this.modal.dismiss(this.xwsData);
-  }
-
-  dismissQr() {
-    this.modal.dismiss({ qr: true });
-  }
-
-  toggleScan() {
-    this.scanning = !this.scanning;
-  }
-
-  toggleCamera() {
-    if (this.devices.length < 2) {
-      return;
-    }
-    if (this.currentDevice == 0) {
-      this.currentDevice = 1;
-    } else {
-      this.currentDevice = 0;
-    }
-  }
-
-  camerasFoundHandler($event) {
-    this.devices = $event;
-  }
-
-  scanSuccessHandler($event) {
-    this.text = $event;
-    this.scanning = false;
-    this.dataValid = this.validate(this.text);
+    this.location.back();
   }
 }

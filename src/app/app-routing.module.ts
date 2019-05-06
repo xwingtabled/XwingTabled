@@ -4,17 +4,16 @@ import { PilotModalPage } from './modals/pilot-modal/pilot-modal.page';
 import { ModalGuard } from './modal-guard';
 import { UpgradeModalPage } from './modals/upgrade-modal/upgrade-modal.page';
 import { MainPage } from './main/main.page';
+import { AddPage } from './add/add.page';
 
 const routes: Routes = [
   {
     path: '',
     component: MainPage
-//    loadChildren: './main/main.module#MainPageModule' 
   },
   {
     path: 'squadron/:squadronUUID',
     component: MainPage
-//    loadChildren: './main/main.module#MainPageModule'
   },
   {
     path: 'squadron/:squadronUUID/pilot/:pilotUUID',
@@ -29,7 +28,11 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: './about/about.module#AboutPageModule'
-  },  { path: 'qr', loadChildren: './qr/qr.module#QrPageModule' }
+  },
+  { path: 'qr', loadChildren: './qr/qr.module#QrPageModule' },
+  {
+    path: 'add', loadChildren: './add/add.module#AddPageModule' 
+  }
 
 ];
 @NgModule({
