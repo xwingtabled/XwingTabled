@@ -51,44 +51,51 @@ export class XwsModalPage implements OnInit {
 
   processLaunchBay(value: string) : boolean {
     value = value.trim();
-    let matchArray = value.match(/\(\'[\d\w%]*\'.\d+\.\d+\.\d+(\.\(\d+\.\d+(\.\(\d+\.\d+\))*\))*/g);
+    let upgradeRegex = /(\.\d+)/g;
+    let slotRegex = /(\.\(\d+(\.\d+)+\))/g;
+    let pilotRegex = /(\.\(\d+\.\d+(\.\(\d+(\.\d+)+\))+\))/g;
+    let squadronNameRegex = /(\'[\w\d\%]*\')/g;
+    let headerRegex = /(\.\d+\.\d+\.\d+)/g;
+    let launchBayRegex = /\((\'[\w\d\%]*\')(\.\d+\.\d+\.\d+)(\.\(\d+\.\d+(\.\(\d+(\.\d+)+\))+\))+\)/g;
+    let deck = [ ];
+    let matchArray = value.match(launchBayRegex);
     if (matchArray && matchArray.length) {
-      let tokens = value.slice(1, -1).split('.');
-      let name = decodeURIComponent(tokens[0].slice(1, -1));
-      let points = tokens[1];
-      let factionId = parseInt(tokens[2]);
+      let squadronNameRegexMatches = value.match(squadronNameRegex);
+      let pilotRegexMatches = value.match(pilotRegex);
+      let headerRegexMatches = value.match(headerRegex);
+      let name = decodeURIComponent(squadronNameRegexMatches[0].slice(1, -1));
+      let points = parseInt(headerRegexMatches[0].split('.')[1]);
+      let factionId = parseInt(headerRegexMatches[0].split('.')[2]);
       let factionName = this.dataService.data.factions[0].find(faction => faction.ffg == factionId).name
       let faction = {
         faction: factionId,
         name: factionName
       }
-      let remainder = tokens.slice(4).join('.');
-      let deck = [ ];
-      let pilotMatches = remainder.match(/.?\(\d+.\d+(.\(\d+.\d+\))*\)/g);
-      pilotMatches.forEach(
-        (pilotString) => {
-          if (pilotString[0] == '.') {
-            pilotString = pilotString.slice(1);
-          }
-          let pilotTokens = pilotString.slice(1, -1).split('.');
-          let ship_type = parseInt(pilotTokens[0]);
+      pilotRegexMatches.forEach(
+        (pilotMatch) => {
+          let pilotString = pilotMatch.slice(2);
+          let pilotTokens = pilotString.split('.');
           let pilotId = parseInt(pilotTokens[1]);
-          let upgradeString = pilotTokens.slice(2).join('.');
           let slots = [ ];
-          let upgrades = upgradeString.match(/\.?(\(\d+.\d+\))/g);
-          if (upgrades) {
-            upgrades.forEach(
-              (upgradeString) => {
-                if(upgradeString[0] == '.') {
-                  upgradeString = upgradeString.slice(1);
+          let slotMatches = pilotMatch.match(slotRegex);
+          if (slotMatches) {
+            slotMatches.forEach(
+              (slotMatch) => {
+                let upgradeMatches = slotMatch.match(upgradeRegex);
+                if (upgradeMatches) {
+                  upgradeMatches.forEach(
+                    (upgradeString) => {
+                      if (upgradeString[0] == '.') {
+                        upgradeString = upgradeString.slice(1);
+                      }
+                      slots.push(
+                        {
+                          id: parseInt(upgradeString)
+                        }
+                      )
+                    }
+                  )
                 }
-                let upgradeTokens = upgradeString.slice(1, -1).split('.');
-                let upgradeId = parseInt(upgradeTokens[1]);
-                slots.push(
-                  {
-                    id: upgradeId
-                  }
-                )
               }
             )
           }
