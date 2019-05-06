@@ -2,9 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PilotModalPage } from './modals/pilot-modal/pilot-modal.page';
 import { ModalGuard } from './modal-guard';
+import { PageGuard } from './page-guard';
 import { UpgradeModalPage } from './modals/upgrade-modal/upgrade-modal.page';
 import { MainPage } from './main/main.page';
 import { AddPage } from './add/add.page';
+import { QrPage } from './qr/qr.page';
 
 const routes: Routes = [
   {
@@ -29,9 +31,14 @@ const routes: Routes = [
     path: 'about',
     loadChildren: './about/about.module#AboutPageModule'
   },
-  { path: 'qr', loadChildren: './qr/qr.module#QrPageModule' },
+  { path: 'qr',
+    component: QrPage,
+    canActivate: [PageGuard] 
+  },
   {
-    path: 'add', loadChildren: './add/add.module#AddPageModule' 
+    path: 'add',
+    component: AddPage,
+    canActivate: [PageGuard]  
   }
 
 ];

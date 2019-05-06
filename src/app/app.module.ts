@@ -26,6 +26,7 @@ import { AboutPageModule } from './about/about.module';
 import { XwingStateService } from './services/xwing-state.service';
 import { XwingImportService } from './services/xwing-import.service';
 import { ModalGuard } from './modal-guard';
+import { PageGuard } from './page-guard';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -36,6 +37,7 @@ import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { MainPageModule } from './main/main.module';
 import { AddPageModule } from './add/add.module';
+import { QrPageModule } from './qr/qr.module';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,8 @@ import { AddPageModule } from './add/add.module';
     AngularFirestoreModule,
     NgxQRCodeModule,
     MainPageModule,
-    AddPageModule
+    AddPageModule,
+    QrPageModule
   ],
   providers: [
     StatusBar,
@@ -78,6 +81,7 @@ import { AddPageModule } from './add/add.module';
     FileTransfer,
     ToastController,
     ModalGuard,
+    PageGuard,
     GooglePlus,
     FirebaseService,
     QRScanner

@@ -95,7 +95,7 @@
       <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button-->
-      <ion-fab-button *ngIf="dataService.initialized" href="/add" data-desc="Add Squadron">
+      <ion-fab-button *ngIf="dataService.initialized" (click)="addSquadron()" data-desc="Add Squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="!state.readonly(uuid) && state.squadrons[uuid]" (click)="askReset()" data-desc="Reset squadron">

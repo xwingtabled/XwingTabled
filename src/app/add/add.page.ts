@@ -230,6 +230,10 @@ export class AddPage implements OnInit {
     this.dataValid = this.validate(value);
   }
 
+  openQr() {
+    this.router.navigateByUrl("/qr");
+  }
+
   cancel() {
     this.location.back();
   }

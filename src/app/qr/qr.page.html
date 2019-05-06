@@ -16,7 +16,10 @@
     class="qr-scanner">
   </zxing-scanner>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+    <ion-fab-button *ngIf="!isCordova && devices.length > 1" (click)="toggleWebCamera()">
+      <ion-icon name="reverse-camera"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button *ngIf="isCordova && canChangeCamera" (click)="toggleCordovaCamera()">
       <ion-icon name="reverse-camera"></ion-icon>
     </ion-fab-button>
   </ion-fab>

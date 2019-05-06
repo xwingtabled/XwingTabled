@@ -3,6 +3,7 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { Platform } from '@ionic/angular';
 import { XwingImportService } from '../services/xwing-import.service';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-qr',
@@ -13,19 +14,25 @@ export class QrPage implements OnInit {
   isCordova: boolean = false;
   devices: any[] = [];
   currentDevice: number = 0;
+  canChangeCamera: boolean = false;
 
   constructor(private qrScanner: QRScanner,
               private importService: XwingImportService,
               private platform: Platform,
-              private location: Location) { }
+              private location: Location,
+              private router: Router) { }
 
   ngOnInit() {
     this.isCordova = this.platform.is('cordova');
     if (this.isCordova) {
+      this.qrScanner.getStatus().then(
+        (status) => {
+          this.canChangeCamera = status.canChangeCamera;
+        }
+      )
       this.cordovaQrScan();
     }
   }
-
   
   cordovaQrScan() {
     this.qrScanner.prepare().then(
@@ -41,13 +48,8 @@ export class QrPage implements OnInit {
           async (text: string) => {
             qrsub.unsubscribe();
             this.qrScanner.destroy();
-            // Save to import service?
-            /*
-            let uuid = await this.presentXwsModal(text);
-            if (uuid) {
-              this.router.navigateByUrl(this.squadronRoute(uuid));
-            }
-            */
+            this.importService.qrData = text;
+            this.location.back();
           },
           (error) => {
             console.log("QRScanner error", error);
@@ -68,10 +70,7 @@ export class QrPage implements OnInit {
     this.qrScanner.destroy();
   }
 
-  toggleCamera() {
-    if (this.devices.length < 2) {
-      return;
-    }
+  toggleWebCamera() {
     if (this.currentDevice == 0) {
       this.currentDevice = 1;
     } else {
@@ -79,12 +78,28 @@ export class QrPage implements OnInit {
     }
   }
 
+  toggleCordovaCamera() {
+    this.toggleWebCamera();
+    this.qrScanner.useCamera(this.currentDevice).then(
+      (status) => {
+
+      },
+      (error) => {
+        this.currentDevice = 0;
+        this.qrScanner.useCamera(this.currentDevice);
+      }
+    )
+  }
+
+
   camerasFoundHandler($event) {
     this.devices = $event;
   }
 
   scanSuccessHandler($event) {
     this.importService.qrData = $event;
+    this.router.navigateByUrl("/add");
+    this.location.back();
   }
 
   cancel() {
