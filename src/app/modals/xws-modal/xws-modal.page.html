@@ -34,7 +34,7 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-buttons slot="start" (click)="toggleScan()">
+    <ion-buttons  *ngIf="!platform.is('cordova')" slot="start" (click)="toggleScan()">
       Scan&nbsp;<ion-icon name="qr-scanner"></ion-icon>
     </ion-buttons>
     <ion-buttons *ngIf="devices && devices.length > 1" slot="start" (click)="toggleCamera()">
