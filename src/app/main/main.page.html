@@ -49,7 +49,7 @@
         </div>
         <div *ngIf="getSquadronUUIDs().length == 0">This app is a card and token 
           manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
-          <span (click)="xwsAddButton()" class="card-link">import a squadron</span>.
+          <span (click)="addSquadron()" class="card-link">import a squadron</span>.
         </div>
         <div *ngIf="getSquadronUUIDs().length > 0" class="squadron-list-header">
           Squadrons on this device
@@ -89,12 +89,6 @@
       <ion-fab-button (click)="presentSettingsModal()" data-desc="Cloud Data">
         <ion-icon name="cloud-upload"></ion-icon>
       </ion-fab-button>
-      <!--ion-fab-button *ngIf="false && dataService.initialized && platform.is('cordova')" data-desc="Scan QR" (click)="qrscan()">
-        <ion-icon name="qr-scanner"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button *ngIf="dataService.initialized" (click)="xwsAddButton()" data-desc="Import squadron">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button-->
       <ion-fab-button *ngIf="dataService.initialized" (click)="addSquadron()" data-desc="Add Squadron">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
