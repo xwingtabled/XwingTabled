@@ -171,9 +171,10 @@ export class AddPage implements OnInit {
       return false;
     }
     let matchArray = value.match(/s\=.*\&sn/g);
-    this.yasbData = {
+    let yasbStruct = {
       pilots: [ ],
-      name: ""
+      name: "",
+      faction: ""
     }
     if (matchArray && matchArray.length > 0) {
       let squadString = matchArray[0].substring(2).slice(0, -3);
@@ -185,17 +186,18 @@ export class AddPage implements OnInit {
             let pilotId = pilotString.substring(0, separatorIndex);
             let upgradeString = pilotString.substring(separatorIndex + 1);
             let upgradeIds = upgradeString.split(',');
-            this.yasbData.pilots.push({ id: pilotId, upgrades: upgradeIds });
+            yasbStruct.pilots.push({ id: pilotId, upgrades: upgradeIds });
           }
         )
         let squadNameParam = value.match(/sn\=([a-zA-Z\%\d])*/);
         if (squadNameParam.length > 0) {
-          this.yasbData.name = decodeURIComponent(squadNameParam[0].split('=')[1]);
+          yasbStruct.name = decodeURIComponent(squadNameParam[0].split('=')[1]);
         }
         let factionNameParam = value.match(/f\=([a-zA-Z\%\d])*/);
         if (factionNameParam.length > 0) {
-          this.yasbData.faction = decodeURIComponent(factionNameParam[0].split('=')[1]).replace(/\s/g, '').toLowerCase();
+          yasbStruct.faction = decodeURIComponent(factionNameParam[0].split('=')[1]).replace(/\s/g, '').toLowerCase();
         }
+        this.yasbData = this.importService.processYasb(yasbStruct);
         return true;
       }
     } else {

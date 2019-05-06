@@ -80,6 +80,10 @@ export class SettingsModalPage implements OnInit {
     return uuid in this.state.squadrons;
   }
 
+  openSquadron(squadron: SquadronSummary) {
+    this.router.navigateByUrl("/squadron/" + squadron.uuid);
+  }
+
   async importSquadron(squadron: SquadronSummary) {
     let retrieved = await this.firebase.retrieveSquadron(squadron.uuid);
     this.state.importSquadron(squadron.uuid, retrieved);
@@ -100,6 +104,7 @@ export class SettingsModalPage implements OnInit {
                   destination = this.state.nextSquadron(squadron.uuid);
                 }
                 await this.firebase.deleteSquadron(squadron.uuid);
+                this.state.closeSquadron(squadron.uuid);
                 await this.getSquadrons();
                 if (this.currentSquadronUUID == squadron.uuid) {
                   if (!destination) {
