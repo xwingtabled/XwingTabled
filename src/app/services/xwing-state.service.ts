@@ -355,7 +355,7 @@ export class XwingStateService {
   }
 
   async snapshot(uuid: string) {
-    if (!this.snapshots[uuid]) {
+    if (! (uuid in this.snapshots) ) {
       this.snapshots[uuid] = [ ];
     }
     this.snapshots[uuid].push(
