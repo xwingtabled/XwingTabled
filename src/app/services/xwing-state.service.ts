@@ -343,7 +343,7 @@ export class XwingStateService {
           if (squadron) {
             this.updateSquadron(uuid, squadron);
           } else {
-            await this.firebase.pushSquadron(uuid, squadron);
+            await this.firebase.pushSquadron(uuid, this.squadrons[uuid]);
           }
           await this.subscribe(uuid);
         } catch (err) {
