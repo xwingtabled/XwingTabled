@@ -44,6 +44,7 @@ export interface Squadron {
   pilots: Pilot[ ],
   timestamp: number,
   uid: string,
+  schroedinger: boolean
 }
 
 export interface SquadronMap {
