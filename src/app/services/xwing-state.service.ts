@@ -355,6 +355,9 @@ export class XwingStateService {
   }
 
   async snapshot(uuid: string) {
+    if (!this.snapshots[uuid]) {
+      this.snapshots[uuid] = [ ];
+    }
     this.snapshots[uuid].push(
       JSON.parse(JSON.stringify(this.squadrons[uuid]))
     )
