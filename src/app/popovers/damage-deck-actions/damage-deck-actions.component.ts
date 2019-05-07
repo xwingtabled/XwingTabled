@@ -41,4 +41,8 @@ export class DamageDeckActionsComponent implements OnInit {
     this.state.snapshot(this.squadronUUID);
   }
 
+  schroedinger($event) {
+    this.state.snapshot(this.squadronUUID);
+  }
+
 }

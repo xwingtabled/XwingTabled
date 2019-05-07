@@ -6,6 +6,12 @@
   <p>
     {{ squadron.damagedeck.length }} cards left, {{ squadron.damagediscard.length}} discarded
   </p>
+  <ion-item>
+    <ion-label>Schroedinger</ion-label>
+    <ion-toggle 
+      [(ngModel)]="state.squadrons[squadronUUID].schroedinger"
+      (ionChange)="schroedinger($event)"></ion-toggle>
+  </ion-item>
   <ion-button expand="full" (click)="shuffleDeck()">Shuffle Deck</ion-button>
   <ion-button expand="full" [disabled]="squadron.damagediscard.length <= 0" (click)="shuffleDiscarded()">Shuffle discarded</ion-button>
 </div>
