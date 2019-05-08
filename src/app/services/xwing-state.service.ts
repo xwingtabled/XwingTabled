@@ -99,9 +99,6 @@ export class XwingStateService {
     )
     Object.keys(this.squadrons).forEach(
       (uuid) => {
-        if (!this.snapshots[uuid]) {
-          return;
-        }
         this.snapshots[uuid] = [ JSON.parse(JSON.stringify(this.squadrons[uuid])) ];
       }
     )
