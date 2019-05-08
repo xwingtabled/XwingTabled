@@ -44,6 +44,7 @@ export interface Squadron {
   pilots: Pilot[ ],
   timestamp: number,
   uid: string,
+  schroedinger: boolean
 }
 
 export interface SquadronMap {
@@ -454,7 +455,12 @@ export class XwingStateService {
   drawHit(squadronUUID: string, pilotUUID: string) : DamageCard {
     let squadron = this.getSquadron(squadronUUID);
     let pilot = this.getPilot(squadronUUID, pilotUUID);
-    let card = squadron.damagedeck.shift();
+    let card: DamageCard = null;
+    if (squadron.schroedinger) {
+      card = { exposed: false };
+    } else {
+      card = squadron.damagedeck.shift();
+    }
     if (card) {
       card.exposed = false;
       pilot.damagecards.push(card);
@@ -464,10 +470,21 @@ export class XwingStateService {
     }
   }
 
+  getRandomDamageCard(squadronUUID: string) : DamageCard {
+    let squadron = this.getSquadron(squadronUUID);
+    let index = Math.floor(Math.random() * squadron.damagedeck.length);
+    return squadron.damagedeck.splice(index, 1)[0];
+  }
+
   drawCrit(squadronUUID: string, pilotUUID: string) : DamageCard {
     let squadron = this.getSquadron(squadronUUID);
     let pilot = this.getPilot(squadronUUID, pilotUUID);
-    let card = squadron.damagedeck.shift();
+    let card: DamageCard = null;
+    if (squadron.schroedinger) {
+      card = this.getRandomDamageCard(squadronUUID);
+    } else {
+      card = squadron.damagedeck.shift();
+    }
     if (card) {
       card.exposed = true;
       pilot.damagecards.push(card);

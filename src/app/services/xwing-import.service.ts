@@ -258,7 +258,8 @@ export class XwingImportService {
       damagedeck: this.dataService.getDamageDeck(),
       pilots: [ ],
       timestamp: this.state.getTimestamp(),
-      uid: null
+      uid: null,
+      schroedinger: false
     }
 
     // Transform upgrade array in xws data source to 

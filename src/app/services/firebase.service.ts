@@ -89,7 +89,8 @@ export class FirebaseService {
       damagediscard: data.damagediscard,
       pilots: data.pilots,
       timestamp: data.timestamp,
-      uid: data.uid
+      uid: data.uid,
+      schroedinger: data.schroedinger ? true : false
     }
     return squadron;
   }
