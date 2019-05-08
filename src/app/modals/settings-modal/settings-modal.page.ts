@@ -82,6 +82,7 @@ export class SettingsModalPage implements OnInit {
 
   openSquadron(squadron: SquadronSummary) {
     this.router.navigateByUrl("/squadron/" + squadron.uuid);
+    this.dismiss();
   }
 
   async importSquadron(squadron: SquadronSummary) {
