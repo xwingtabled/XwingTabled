@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { NgZone } from '@angular/core';
-import { XwingStateService } from '../../services/xwing-state.service';
+import { XwingStateService, DamageCard } from '../../services/xwing-state.service';
 import { XwingDataService } from '../../services/xwing-data.service';
 import { FirebaseService } from '../../services/firebase.service';
 @Component({
@@ -16,6 +16,8 @@ export class DamagePopoverComponent implements OnInit {
   squadron: any;
   card: any = { };
   cardData: any = { };
+  selected_card: DamageCard = null;
+  schroedinger_cards: DamageCard[] = [ ];
 
   constructor(private popoverController: PopoverController, 
               private ngZone: NgZone,
@@ -25,7 +27,21 @@ export class DamagePopoverComponent implements OnInit {
   ngOnInit() {
     this.squadron = this.state.getSquadron(this.squadronUUID);
     this.card = this.state.getDamageCard(this.squadronUUID, this.pilotUUID, this.cardIndex);
-    this.cardData = this.dataService.getDamageCardData(this.card.title);
+    if (this.card.title) {
+      this.cardData = this.dataService.getDamageCardData(this.card.title);
+    }
+    if (this.squadron.schroedinger) {
+      // Fill cards with unique titles from damage deck
+      this.squadron.damagedeck.forEach(
+        (draw) => {
+          let found = this.schroedinger_cards.find(card => draw.title == card.title);
+          if (!found) {
+            this.schroedinger_cards.push(draw);
+          }
+        }
+      );
+      this.schroedinger_cards.sort((a, b) => { return a.title.localeCompare(b.title) });
+    }
   }
 
 
@@ -57,9 +73,30 @@ export class DamagePopoverComponent implements OnInit {
     this.ngZone.run(
       () => {
         this.card.exposed = true;
+        if (!this.card.title) {
+          let crit = this.state.getRandomDamageCard(this.squadronUUID);
+          this.card.title = crit.title;
+          this.cardData = this.dataService.getDamageCardData(crit.title);
+        }
         this.state.snapshot(this.squadronUUID);
       }
     )
+  }
+
+  changeEvent(event) {
+    this.selected_card = event.detail.value;
+  }
+
+  selectCard() {
+    this.card.exposed = true;
+    this.card.title = this.selected_card.title;
+    this.cardData = this.dataService.getDamageCardData(this.card.title);
+    for (let i = 0; i < this.squadron.damagedeck.length; i++) {
+      if (this.squadron.damagedeck[i].title == this.selected_card.title) {
+        this.squadron.damagedeck.splice(i, 1);
+        return;
+      }
+    }
   }
 
 }

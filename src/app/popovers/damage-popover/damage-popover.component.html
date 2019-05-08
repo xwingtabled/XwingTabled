@@ -17,4 +17,10 @@
   </div>
   <ion-button *ngIf="!state.readonly(squadronUUID)"  expand="full" (click)="repair()">Repair</ion-button>
   <ion-button expand="full" *ngIf="!state.readonly(squadronUUID) && !card.exposed" (click)="expose()">Expose</ion-button>
+  <ng-container *ngIf="!card.title && state.squadrons[squadronUUID].schroedinger">
+      <ion-button [disabled]="!selected_card" expand="full" (click)="selectCard()">Expose as</ion-button>
+      <ion-select placeholder="Select One" (ionChange)="changeEvent($event)">
+        <ion-select-option *ngFor="let card of schroedinger_cards" [value]="card">{{ card.title }}</ion-select-option>
+      </ion-select>
+  </ng-container>
 </div>

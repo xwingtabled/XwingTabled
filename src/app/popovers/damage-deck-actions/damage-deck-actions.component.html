@@ -12,6 +12,18 @@
       [(ngModel)]="state.squadrons[squadronUUID].schroedinger"
       (ionChange)="schroedinger($event)"></ion-toggle>
   </ion-item>
-  <ion-button expand="full" (click)="shuffleDeck()">Shuffle Deck</ion-button>
-  <ion-button expand="full" [disabled]="squadron.damagediscard.length <= 0" (click)="shuffleDiscarded()">Shuffle discarded</ion-button>
+  <ng-container *ngIf="!state.squadrons[squadronUUID].schroedinger">
+    <ion-button expand="full" (click)="shuffleDeck()">Shuffle Deck</ion-button>
+    <ion-button expand="full" [disabled]="squadron.damagediscard.length <= 0" (click)="shuffleDiscarded()">Shuffle discarded</ion-button>
+  </ng-container>
+  <ng-container *ngIf="state.squadrons[squadronUUID].schroedinger">
+    <h5>Schroedinger's Damage Deck</h5>
+    <ul>
+      <li>Facedown damage cards will be dealt with no underlying crit</li>
+      <li>Crits will be assigned randomly when exposed</li>
+      <li>Crits may also be assigned manually</li>
+      <li>Exposed cards will retain assignments</li>
+      <li>Undo will not guarantee re-assignment of the same crit</li>
+    </ul>
+  </ng-container>
 </div>

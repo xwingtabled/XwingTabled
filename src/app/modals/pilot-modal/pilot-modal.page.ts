@@ -5,7 +5,7 @@ import { AlertController } from '@ionic/angular';
 import { Events } from '@ionic/angular';
 import { NgZone } from '@angular/core';
 import { XwingDataService } from '../../services/xwing-data.service';
-import { XwingStateService } from '../../services/xwing-state.service';
+import { XwingStateService, DamageCard, Pilot, Squadron } from '../../services/xwing-state.service';
 import { ConditionMenuComponent } from '../../popovers/condition-menu/condition-menu.component';
 import { DamagePopoverComponent } from '../../popovers/damage-popover/damage-popover.component';
 import { DamageCardSelectComponent } from '../../popovers/damage-card-select/damage-card-select.component';
@@ -23,8 +23,8 @@ import { FirebaseService } from '../../services/firebase.service';
   styleUrls: ['./pilot-modal.page.scss'],
 })
 export class PilotModalPage implements OnInit {
-  pilot: any;
-  squadron: any;
+  pilot: Pilot;
+  squadron: Squadron;
   pilotUUID: string;
   squadronUUID: string;
   img_url: string = null;
@@ -295,6 +295,14 @@ export class PilotModalPage implements OnInit {
   }
 
   async thaneKyrell() {
+    this.pilot.damagecards.forEach(
+      (card) => {
+        if (!card.exposed) {
+          let crit = this.state.getRandomDamageCard(this.squadronUUID);
+          card.title = crit.title;
+        }
+      }
+    )
     const popover = await this.popoverController.create({
       component: DamageCardSelectComponent,
       componentProps: {
@@ -310,9 +318,15 @@ export class PilotModalPage implements OnInit {
   }
 
   async maarekStele() {
-    let cards = [ ];
+    let cards: DamageCard[ ] = [ ];
     for (let i = 0; i < 3 && this.squadron.damagedeck.length; i++) {
-      cards.push(this.state.draw(this.squadronUUID));
+      let card: DamageCard = null;
+      if (this.squadron.schroedinger) {
+        card = this.state.getRandomDamageCard(this.squadronUUID);
+      } else {
+        card = this.state.draw(this.squadronUUID);
+      }
+      cards.push(card);
     }
     const popover = await this.popoverController.create({
       component: DamageCardSelectComponent,
@@ -325,7 +339,12 @@ export class PilotModalPage implements OnInit {
           cards.forEach(
             (remaining) => {
               if (remaining != card) {
-                this.state.discard(this.squadronUUID, remaining);
+                remaining.exposed = false;
+                if (this.squadron.schroedinger) {
+                  this.squadron.damagedeck.push(remaining);
+                } else {
+                  this.state.discard(this.squadronUUID, remaining);
+                }
               }
             }
           );
@@ -382,21 +401,6 @@ export class PilotModalPage implements OnInit {
     this.expanded = !this.expanded;
   }
 
-  fleeShip() {
-    /*
-    this.pilot.pointsDestroyed = this.pilot.points;
-    this.state.squadron.pointsDestroyed = 0;
-    this.state.squadron.pilots.forEach(
-      (pilot) => {
-        this.state.squadron.pointsDestroyed += pilot.pointsDestroyed;
-      }
-    )
-    if (this.state.squadron.pointsDestroyed == this.state.squadron.points) {
-      this.state.squadron.pointsDestroyed = 200;
-    }
-    */
-  }
-
   hitCardAvailable() : boolean {
     let result = false;
     this.pilot.damagecards.forEach(
@@ -430,6 +434,10 @@ export class PilotModalPage implements OnInit {
         let index = hitIndexes[Math.floor(Math.random() * Math.floor(hitIndexes.length))];
         let card = this.pilot.damagecards[index];
         card.exposed = true;
+        if (!card.title) {
+          let crit = this.state.getRandomDamageCard(this.squadronUUID);
+          card.title = crit.title;
+        }
         this.mutateCard(card);
         this.push();
         const popover = await this.popoverController.create({

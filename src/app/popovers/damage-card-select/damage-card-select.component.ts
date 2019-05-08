@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { DamageCard } from '../../services/xwing-state.service';
 
 @Component({
   selector: 'app-damage-card-select',
@@ -7,10 +8,9 @@ import { PopoverController } from '@ionic/angular';
   styleUrls: ['./damage-card-select.component.scss']
 })
 export class DamageCardSelectComponent implements OnInit {
-  cards;
-  title;
+  cards: DamageCard[];
   callback;
-  selected_card: any = null;
+  selected_card: DamageCard = null;
 
   constructor(private popoverController: PopoverController) { }
 
