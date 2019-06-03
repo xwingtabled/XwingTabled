@@ -49,15 +49,13 @@
         </div>
         <div *ngIf="!firebase.user">
           You may 
-          <span (click)="presentSettingsModal()" class="card-link">
-            log in with your Google account
-          </span> if you wish to save or share squadrons.<br /><br />
+          <span (click)="presentSettingsModal()" class="card-link">log in with your Google account</span> 
+          if you wish to save or share squadrons.<br /><br />
         </div>
         <div *ngIf="firebase.user">
           You are currently logged in as 
-          <span (click)="presentSettingsModal()" class="card-link">
-            {{ firebase.user.email }}
-          </span>.<br /><br />
+          <span (click)="presentSettingsModal()" class="card-link">{{ firebase.user.email }}</span>.
+          <br /><br />
         </div>
         <div *ngIf="getSquadronUUIDs().length == 0">You may 
           <span (click)="addSquadron()" class="card-link">import a squadron</span>
