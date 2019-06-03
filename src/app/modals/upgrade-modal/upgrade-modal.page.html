@@ -3,9 +3,6 @@
     <ion-buttons slot="start">
       <ion-button (click)="dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-buttons *ngIf="!layout.isPhone()" slot="primary">
-      <ion-button color="primary" *ngIf="!state.readonly(squadronUUID) && upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>
-    </ion-buttons> 
     <ion-title>{{ sides[upgrade.side].name }}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -22,7 +19,7 @@
         [readonly]="state.readonly(squadronUUID)"
         (change)="chargeChange($event)"></xws-token-display>
     </div>
-    <div *ngIf="layout.isPhone()">
+    <div>
       <ion-button expand="full" color="primary" *ngIf="upgrade.sides.length > 1" (click)="flipCard()">Flip</ion-button>
     </div>
   </div>

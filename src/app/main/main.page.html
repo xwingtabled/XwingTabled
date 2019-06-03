@@ -47,9 +47,21 @@
               to view this squadron if it is online.</span>
             </span>
         </div>
-        <div *ngIf="getSquadronUUIDs().length == 0">This app is a card and token 
-          manager for X-Wing Miniatures Second Edition.<br /><br /> To begin, you may 
-          <span (click)="addSquadron()" class="card-link">import a squadron</span>.
+        <div *ngIf="!firebase.user">
+          You may 
+          <span (click)="presentSettingsModal()" class="card-link">
+            log in with your Google account
+          </span> if you wish to save or share squadrons.<br /><br />
+        </div>
+        <div *ngIf="firebase.user">
+          You are currently logged in as 
+          <span (click)="presentSettingsModal()" class="card-link">
+            {{ firebase.user.email }}
+          </span>.<br /><br />
+        </div>
+        <div *ngIf="getSquadronUUIDs().length == 0">You may 
+          <span (click)="addSquadron()" class="card-link">import a squadron</span>
+          from your favorite squadbuilder.
         </div>
         <div *ngIf="getSquadronUUIDs().length > 0" class="squadron-list-header">
           Squadrons on this device
@@ -105,6 +117,9 @@
       </ion-fab-button>
       <ion-fab-button *ngIf="!state.readonly(uuid) && state.squadrons[uuid]" (click)="askRecharge()" data-desc="Recurring charges">
         <xwing-icon [name]="'charge'"></xwing-icon>
+      </ion-fab-button>
+      <ion-fab-button data-desc="About" (click)="presentHelpModal()">
+        <ion-icon name="at"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>

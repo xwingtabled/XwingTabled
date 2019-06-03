@@ -145,15 +145,16 @@
 </ion-content>
 <ion-footer *ngIf="!state.readonly(squadronUUID) && showFooter()">
   <ion-toolbar>
-    <ion-button expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
-    <ion-button expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+    <ng-container *ngIf="!this.expanded">
+        <ion-button class="button-spacing" expand="full" (click)="drawHit()">Draw<xwing-icon [name]="'hit'"></xwing-icon></ion-button>
+        <ion-button class="button-spacing" expand="full" (click)="drawCrit()">Draw<xwing-icon [name]="'crit'"></xwing-icon></ion-button>
+    </ng-container>
     <ion-button *ngIf="this.expanded || squadron.schroedinger" expand="full" (click)="assignCrit()">Assign <xwing-icon [name]="'crit'"></xwing-icon></ion-button>
-    <ion-button *ngIf="!this.expanded" expand="full" (click)="expandToggle()" color="tertiary">
+    <ion-button *ngIf="!this.expanded" expand="block" (click)="expandToggle()" color="tertiary">
       More&nbsp;
       <fa-icon [icon]="faChevronCircleUp"></fa-icon>
     </ion-button>
     <ng-container *ngIf="this.expanded">
-
       <ion-button [disabled]="!hitCardAvailable()" expand="full" (click)="exposeRandomHit()">
         Expose Random <xwing-icon [name]="'hit'"></xwing-icon>
       </ion-button>
@@ -166,7 +167,7 @@
       <ion-button expand="full" (click)="recycleDamageCards()" [disabled]="!recycleAvailable()">Recycle Damage Cards</ion-button>
       <ion-button expand="full" (click)="assignIdNumber()">Assign Ship ID</ion-button>
       <ion-button expand="full" (click)="showConditionMenu()">Assign Condition</ion-button>
-      <ion-button expand="full" (click)="expandToggle()" color="tertiary">
+      <ion-button expand="block" (click)="expandToggle()" color="tertiary">
         Less &nbsp;
         <fa-icon [icon]="faChevronCircleDown"></fa-icon>
       </ion-button>
