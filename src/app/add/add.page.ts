@@ -46,10 +46,10 @@ export class AddPage implements OnInit {
     value = value.trim();
     let upgradeRegex = /(\.\d+)/g;
     let slotRegex = /(\.\(\d+(\.\d+)+\))/g;
-    let pilotRegex = /(\.\(\d+\.\d+(\.\(\d+(\.\d+)+\))+\))/g;
+    let pilotRegex = /(\.\(\d+\.\d+(\.\(\d+(\.\d+)+\))*\))/g;
     let squadronNameRegex = /(\'[\w\d\%]*\')/g;
     let headerRegex = /(\.\d+\.\d+\.\d+)/g;
-    let launchBayRegex = /\((\'[\w\d\%]*\')(\.\d+\.\d+\.\d+)(\.\(\d+\.\d+(\.\(\d+(\.\d+)+\))+\))+\)/g;
+    let launchBayRegex = /\((\'[\w\d\%]*\')(\.\d+\.\d+\.\d+)(\.\(\d+\.\d+(\.\(\d+(\.\d+)+\))*\))+\)/g;
     let deck = [ ];
     let matchArray = value.match(launchBayRegex);
     if (matchArray && matchArray.length) {
@@ -66,11 +66,11 @@ export class AddPage implements OnInit {
       }
       pilotRegexMatches.forEach(
         (pilotMatch) => {
-          let pilotString = pilotMatch.slice(2);
+          let pilotString = pilotMatch.slice(2, pilotMatch.length - 1);
           let pilotTokens = pilotString.split('.');
           let pilotId = parseInt(pilotTokens[1]);
           let slots = [ ];
-          let slotMatches = pilotMatch.match(slotRegex);
+          let slotMatches = pilotString.match(slotRegex);
           if (slotMatches) {
             slotMatches.forEach(
               (slotMatch) => {
