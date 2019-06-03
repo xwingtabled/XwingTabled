@@ -116,7 +116,7 @@
       <ion-fab-button *ngIf="!state.readonly(uuid) && state.squadrons[uuid]" (click)="askRecharge()" data-desc="Recurring charges">
         <xwing-icon [name]="'charge'"></xwing-icon>
       </ion-fab-button>
-      <ion-fab-button data-desc="About" (click)="presentHelpModal()">
+      <ion-fab-button data-desc="About" (click)="aboutPage()">
         <ion-icon name="at"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
