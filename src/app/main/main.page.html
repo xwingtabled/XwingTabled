@@ -3,7 +3,10 @@
     <div *ngIf="state.squadrons[squadronUUID] && (!layout.getClass().includes('phone') || squadronUUID.includes(uuid))"
       (click)="goToSquadron(squadronUUID)"
       [class]="squadronUUID.includes(uuid) ? 'active squadron-tab' : 'squadron-tab'">
-      <xwing-icon [name]="state.squadrons[squadronUUID].faction" [faction]="true"></xwing-icon>
+      <span class="nounderline">
+        <ion-icon *ngIf="state.readonly(squadronUUID)" name="eye"></ion-icon>&nbsp;
+        <xwing-icon [name]="state.squadrons[squadronUUID].faction" [faction]="true"></xwing-icon>&nbsp;
+      </span>
       <div class="squadron-title">
         {{ state.squadrons[squadronUUID].name }} 
         ({{ state.getSquadronPointsDestroyed(squadronUUID) }} / 

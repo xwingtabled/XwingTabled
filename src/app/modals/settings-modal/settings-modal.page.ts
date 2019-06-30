@@ -157,6 +157,7 @@ export class SettingsModalPage implements OnInit {
 
   async login() {
     await this.firebase.login();
+    await this.state.synchronize();
     await this.getSquadrons();
   }
 

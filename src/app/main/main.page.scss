@@ -176,18 +176,20 @@
         top: 0.2em;
         font-size: 1.2em;
     }
-    ion-icon:hover {
-        color: black;
-        text-decoration:underline;
-    }
     .squadron-close {
         margin-left: 0.5em;
         display: inline-block;
         vertical-align: text-bottom;
+        ion-icon:hover {
+            color: black;
+            text-decoration:underline;
+        }
     }
     div:hover:not(.active) {
         cursor: pointer;
-        text-decoration: underline;
+        .squadron-title {
+            text-decoration: underline;
+        }
     }
     div.active {
         background-color: var(--ion-background-color);
@@ -195,7 +197,9 @@
     }
     div.hover {
         cursor: pointer;
-        text-decoration: underline;
+        .squadron-title {
+          text-decoration: underline;
+        }
     }
     .squad-control {
         float: right;

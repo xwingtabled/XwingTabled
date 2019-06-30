@@ -3,7 +3,9 @@
     <ion-buttons slot="start">
       <ion-button (click)="dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{ data.name }}&nbsp;
+    <ion-title>
+      <ion-icon *ngIf="state.readonly(squadronUUID)" name="eye"></ion-icon>&nbsp;
+      {{ data.name }}&nbsp;
       <span *ngIf="pilot.idNumber">
         <xwing-icon [name]="'token-lock'"></xwing-icon>
         &nbsp;{{ pilot.idNumber }}

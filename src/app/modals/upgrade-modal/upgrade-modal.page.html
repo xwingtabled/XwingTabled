@@ -3,7 +3,10 @@
     <ion-buttons slot="start">
       <ion-button (click)="dismiss()"><ion-icon name="arrow-back"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{ sides[upgrade.side].name }}</ion-title>
+    <ion-title>
+      <ion-icon *ngIf="state.readonly(squadronUUID)" name="eye"></ion-icon>&nbsp;
+      {{ sides[upgrade.side].name }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
