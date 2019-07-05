@@ -325,6 +325,9 @@ export class XwingDataService {
     // Given a faction string and pilot object retrieve object data
     // or return null if it can't be retrieved
     let ship = this.getShip(faction, xwsShip);
+    if (!ship) {
+      throw "Could not find ship " + xwsShip;
+    }
     let pilot = null;
     if (this.data.shims.xwsPilot[xwsPilot]) {
       xwsPilot = this.data.shims.xwsPilot[xwsPilot];

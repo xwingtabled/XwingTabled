@@ -15,7 +15,8 @@ let shims = {
         "mg100starfortress": "mg100starfortresssf17",
         "upsilonclassshuttle": "upsilonclasscommandshuttle",
         "tiesilencer": "tievnsilencer",
-        "scavengedyt1300lightfreighter": "scavengedyt1300"
+        "scavengedyt1300lightfreighter": "scavengedyt1300",
+	"tieininterceptor": "tieinterceptor"
     },
     xwsPilot: {
         "niennumb-t70xwing": "niennunb",

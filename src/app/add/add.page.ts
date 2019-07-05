@@ -212,6 +212,7 @@ export class AddPage implements OnInit {
       this.xwsData = this.importService.processXws(data);
       return true;
     } catch(error) {
+      console.log("Error parsing", error);
       return false;
     } 
   }
