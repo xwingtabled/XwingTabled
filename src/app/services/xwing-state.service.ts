@@ -140,6 +140,9 @@ export class XwingStateService {
     if (!this.squadrons[uuid].uid) {
       return false;
     }
+    if (!this.firebase.user) {
+      return false;
+    }
     let result = this.squadrons[uuid].uid != this.firebase.user.uid;
     return result;
   }
