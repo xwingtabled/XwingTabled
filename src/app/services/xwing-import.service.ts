@@ -185,7 +185,12 @@ export class XwingImportService {
   async convertURLToXws(url: string) : Promise<Squadron> {
     url = "https://xwing-list-loader.herokuapp.com/xws?url=" + encodeURIComponent(url);
     let xws = await this.http.get(url).toPromise();
-    return this.processXws(xws);
+    try {
+      let squadron = this.processXws(xws.xws);
+      return squadron;
+    } catch (error) {
+      console.log("Error processing XWS during URL import", error);
+    }
   }
 
   applyXwsShims(squadron: any) {
