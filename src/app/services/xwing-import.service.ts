@@ -182,44 +182,10 @@ export class XwingImportService {
     return this.processXws(squadron);
   }
 
-  processYasb(data: any) : Squadron {
-    let pilots = [ ];
-    data.pilots.forEach(
-      (pilot) => {
-        let yasbPilot = this.dataService.getYasbPilot(pilot.id);
-        let xwsPilot = { id: yasbPilot.xws, ship: yasbPilot.ship, upgrades: { } };
-        let upgrades = { };
-        for (let i = 0; i < pilot.upgrades.length; i++) {
-          let upgrade = pilot.upgrades[i];
-          let hardpointRegex = /\d{3}(\:U\.\-?\d+)/g
-          let hardpoints = upgrade.match(hardpointRegex);
-          let upgradeNum = -1;
-          if (hardpoints && hardpoints[0]) {
-            upgradeNum = parseInt(hardpoints[0].split('.')[1]);
-            // Upgrade number that grants another slot - push to the end
-            let baseUpgradeNum = hardpoints[0].split(':')[0];
-            pilot.upgrades.push(baseUpgradeNum)
-          } else {
-            upgradeNum = parseInt(upgrade);
-          }
-          let yasbUpgrade = this.dataService.getYasbUpgrade(upgradeNum);
-          if (yasbUpgrade) {
-            if (upgrades[yasbUpgrade.slot] == undefined) {
-              upgrades[yasbUpgrade.slot] = [ ];
-            }
-            upgrades[yasbUpgrade.slot].push(yasbUpgrade.xws);
-          }
-        }
-        xwsPilot.upgrades = upgrades;
-        pilots.push(xwsPilot);
-      }
-    )
-    let squadron = {
-      name: data.name,
-      faction: data.faction,
-      pilots: pilots
-    };
-    return this.processXws(squadron);
+  async convertURLToXws(url: string) : Promise<Squadron> {
+    url = "https://xwing-list-loader.herokuapp.com/xws?url=" + encodeURIComponent(url);
+    let xws = await this.http.get(url).toPromise();
+    return this.processXws(xws);
   }
 
   applyXwsShims(squadron: any) {

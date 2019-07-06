@@ -161,8 +161,7 @@ export class AddPage implements OnInit {
     }
   }
 
-  validateYasb(value: string) {
-    let pilotRegex = /(\d+:(\-?\d*\,?)*)+(\:U\.\-?\d+)?/g;
+  async validateYasb(value: string) : Promise<boolean> {
     if (!value || value.length == 0) {
       return false;
     }
@@ -170,40 +169,12 @@ export class AddPage implements OnInit {
     if (!isYasb) {
       return false;
     }
-    let matchArray = value.match(/s\=.*\&sn/g);
-    let yasbStruct = {
-      pilots: [ ],
-      name: "",
-      faction: ""
-    }
-    if (matchArray && matchArray.length > 0) {
-      let squadString = matchArray[0].substring(2).slice(0, -3);
-      let pilotStrings = squadString.match(pilotRegex);
-      if (pilotStrings.length > 0) {
-        pilotStrings.forEach(
-          (pilotString) => {
-            let separatorIndex = pilotString.indexOf(':');
-            let pilotId = pilotString.substring(0, separatorIndex);
-            let upgradeString = pilotString.substring(separatorIndex + 1);
-            let upgradeIds = upgradeString.split(',');
-            yasbStruct.pilots.push({ id: pilotId, upgrades: upgradeIds });
-          }
-        )
-        let squadNameParam = value.match(/sn\=([a-zA-Z\%\d])*/);
-        if (squadNameParam.length > 0) {
-          yasbStruct.name = decodeURIComponent(squadNameParam[0].split('=')[1]);
-        }
-        let factionNameParam = value.match(/f\=([a-zA-Z\%\d])*/);
-        if (factionNameParam.length > 0) {
-          yasbStruct.faction = decodeURIComponent(factionNameParam[0].split('=')[1]).replace(/\s/g, '').toLowerCase();
-        }
-        this.yasbData = this.importService.processYasb(yasbStruct);
-        return true;
-      }
-    } else {
+    try {
+      this.yasbData = await this.importService.convertURLToXws(value);
+    } catch (error) {
       return false;
     }
-    return false;
+    return true;
   }
 
   validateXws(value: string) : boolean {
@@ -212,7 +183,7 @@ export class AddPage implements OnInit {
       this.xwsData = this.importService.processXws(data);
       return true;
     } catch(error) {
-      console.log("Error parsing", error);
+      console.log("Error parsing - probably not an XWS");
       return false;
     } 
   }
@@ -226,7 +197,7 @@ export class AddPage implements OnInit {
     await this.validateXwingTabled(value) 
     this.validateXws(value) 
     await this.validateFFGSquadBuilder(value) 
-    this.validateYasb(value) 
+    await this.validateYasb(value) 
     this.validateLaunchBay(value);
   }
 
