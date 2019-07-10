@@ -22,7 +22,10 @@ let shims = {
         "niennumb-t70xwing": "niennunb",
         "niennunb-t70xwing" : "niennunb",
         "l337escapecraft" : "l337-escapecraft",
-        "darthtyranus" : "countdooku"
+        "darthtyranus" : "countdooku",
+        "dineeellberger-nabooroyaln1starfighter" : "dineeellberger",
+        "ricolie-nabooroyaln1starfighter": "ricolie",
+        "padmeamidala-nabooroyaln1starfighter": "padmeamidala"
     },
     xwsUpgrade: {
         "hansoloscum" : "hansolo-gunner",

@@ -72,6 +72,9 @@ export class XwingImportService {
 
   getPilotStateObject(pilot: any, faction: string) : Pilot {
     let xwsPilotData = this.dataService.getPilot(faction, pilot.ship, pilot.id);
+    if (!xwsPilotData) {
+      console.log("Could not find pilot", pilot);
+    }
     let pilotData: Pilot = {
       ffg: xwsPilotData.ffg,
       upgrades: [ ],
