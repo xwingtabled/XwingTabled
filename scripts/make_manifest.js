@@ -30,7 +30,9 @@ let shims = {
     xwsUpgrade: {
         "hansoloscum" : "hansolo-gunner",
         "rey" : "rey-gunner",
-        "c3poresistance" : "c3po-crew" 
+        "c3poresistance" : "c3po-crew",
+        "autoblasters": "autoblaster",
+        "leiaorganaresistance": "leiaorgana-resistance"
     }
 }
 

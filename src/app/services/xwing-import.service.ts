@@ -43,7 +43,7 @@ export class XwingImportService {
                   upgradeData['type'] = upgradeType;
                   mangledUpgrades.push(upgradeData);
                 } else {
-                  throw "ERROR: Upgrade not found - " + upgradeName;
+                  console.log("Upgrade not found", upgradeName);
                 }
               }
             )
