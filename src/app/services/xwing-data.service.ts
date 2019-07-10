@@ -396,6 +396,12 @@ export class XwingDataService {
       (upgrade) => {
         let upgradeData = this.getCardByFFG(upgrade.sides[upgrade.side].ffg);
         if (upgradeData.cost == '*') {
+          if (!upgradeData.metadata 
+              || !upgradeData.metadata.cost 
+              || !upgradeData.metadata.cost.variable) {
+              console.log("Variable cost upgrade has no xws metadata", upgrade);
+              return;
+          }
           let statVariable = upgradeData.metadata.cost.variable;
           let cost;
           if (statVariable == 'initiative') {
