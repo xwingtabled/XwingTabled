@@ -6,7 +6,7 @@ var JSZip = require('jszip');
 const { Observable, from, zip } = require('rxjs');
 const { concatMap } = require('rxjs/operators');
 
-let baseUrl = "https://raw.githubusercontent.com/jychuah/xwing-data2/plasma_torpedoes/";
+let baseUrl = "https://raw.githubusercontent.com/jychuah/xwing-data2/ffgscraper/";
 
 let urls = [ ];
 let data = { };
