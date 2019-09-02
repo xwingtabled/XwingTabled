@@ -440,7 +440,7 @@ export class XwingDataService {
     if (pilot.shields) {
       currentHitPoints += pilot.shields;
     }
-    if (currentHitPoints < totalHitPoints / 2.0) {
+    if (currentHitPoints <= totalHitPoints / 2.0) {
       return Math.ceil(pilotPoints / 2.0);
     }
     return 0;

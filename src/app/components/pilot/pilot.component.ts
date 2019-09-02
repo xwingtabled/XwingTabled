@@ -127,7 +127,7 @@ export class PilotComponent implements OnInit {
 
     let shieldStat = this.generateStat("shields");
     
-    if (hullStat.remaining < hullStat.value || !shieldStat) {
+    if (hullStat.remaining < hullStat.value || shieldStat.remaining == 0) {
       this.bigStat = hullStat;
       this.smallStat = shieldStat;
     } else {
