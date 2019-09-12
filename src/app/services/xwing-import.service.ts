@@ -236,6 +236,10 @@ export class XwingImportService {
       schroedinger: false
     }
 
+    if (!squadronData.name) {
+      squadronData.name = "Unnamed Squadron";
+    }
+
     // Transform upgrade array in xws data source to 
     // make it easier to grab data
     squadron.pilots.forEach(

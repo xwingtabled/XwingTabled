@@ -392,6 +392,7 @@ export class XwingDataService {
     let pilotPoints = parseInt(pilotData.cost);
     let initiative = pilotData.initiative;
     let agility = parseInt(pilotData.statistics.find((stat) => stat.xws == 'agility').value);
+    let size = pilotData.metadata.size;
     pilot.upgrades.forEach(
       (upgrade) => {
         let upgradeData = this.getCardByFFG(upgrade.sides[upgrade.side].ffg);
@@ -408,6 +409,8 @@ export class XwingDataService {
             cost = upgradeData.metadata.cost.values[initiative];
           } else if (statVariable == 'agility') {
             cost = upgradeData.metadata.cost.values[agility];
+          } else if (statVariable == 'size') {
+            cost = upgradeData.metadata.cost.values[size];
           }
           pilotPoints += cost;
         } else {
