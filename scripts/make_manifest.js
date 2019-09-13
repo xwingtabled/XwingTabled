@@ -16,8 +16,7 @@ let shims = {
         "upsilonclassshuttle": "upsilonclasscommandshuttle",
         "tiesilencer": "tievnsilencer",
         "scavengedyt1300lightfreighter": "scavengedyt1300",
-        "tieininterceptor": "tieinterceptor",
-        "anakinskywalkerywing": "anakinskywalker-btlbywing"
+        "tieininterceptor": "tieinterceptor"
     },
     xwsPilot: {
         "niennumb-t70xwing": "niennunb",
@@ -26,7 +25,8 @@ let shims = {
         "darthtyranus" : "countdooku",
         "dineeellberger-nabooroyaln1starfighter" : "dineeellberger",
         "ricolie-nabooroyaln1starfighter": "ricolie",
-        "padmeamidala-nabooroyaln1starfighter": "padmeamidala"
+        "padmeamidala-nabooroyaln1starfighter": "padmeamidala",
+        "anakinskywalkerywing": "anakinskywalker-btlbywing"
     },
     xwsUpgrade: {
         "hansoloscum" : "hansolo-gunner",
