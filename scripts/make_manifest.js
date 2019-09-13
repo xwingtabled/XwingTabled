@@ -16,7 +16,8 @@ let shims = {
         "upsilonclassshuttle": "upsilonclasscommandshuttle",
         "tiesilencer": "tievnsilencer",
         "scavengedyt1300lightfreighter": "scavengedyt1300",
-	"tieininterceptor": "tieinterceptor"
+        "tieininterceptor": "tieinterceptor",
+        "anakinskywalkerywing": "anakinskywalker-btlbywing"
     },
     xwsPilot: {
         "niennumb-t70xwing": "niennunb",
