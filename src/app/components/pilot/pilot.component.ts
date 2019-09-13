@@ -127,12 +127,19 @@ export class PilotComponent implements OnInit {
 
     let shieldStat = this.generateStat("shields");
     
-    if (hullStat.remaining < hullStat.value || shieldStat.remaining == 0) {
+    if (hullStat.remaining < hullStat.value 
+        || shieldStat != null && shieldStat.remaining == 0) {
       this.bigStat = hullStat;
-      this.smallStat = shieldStat;
+      if (shieldStat) {
+        this.smallStat = shieldStat;
+      }
     } else {
-      this.bigStat = shieldStat;
-      this.smallStat = hullStat;
+      if (shieldStat) {
+        this.smallStat = hullStat;
+        this.bigStat = shieldStat;
+      } else {
+        this.bigStat = hullStat;
+      }
     }
 
     if ("charges" in this.pilot) {
