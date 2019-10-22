@@ -173,14 +173,14 @@ export class XwingStateService {
         }
         if ("charges" in pilot) {
           let chargeStat = this.dataService.getFFGCardStat(pilot.ffg, "charge");
-          pilot.charges = chargeStat.value;
+          pilot.charges = parseInt(chargeStat.value);
         }
         pilot.upgrades.forEach(
           (upgrade) => {
             upgrade.side = 0;
             if ("charges" in upgrade) {
               let chargeStat = this.dataService.getFFGCardStat(upgrade.sides[0].ffg, "charge");
-              upgrade.charges = chargeStat.value
+              upgrade.charges = parseInt(chargeStat.value);
             }
           }
         )
