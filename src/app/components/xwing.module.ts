@@ -15,12 +15,17 @@ import { StatComponent } from './stat/stat.component';
 import { BonusStatsComponent } from './bonus-stats/bonus-stats.component';
 import { PhoneUpgradeComponent } from './phone-upgrade/phone-upgrade.component';
 import { SquadronComponent } from './squadron/squadron.component';
+import { FormationComponent } from './formation/formation.component';
+import { FormationPositionComponent } from './formation-position/formation-position.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 @NgModule({
   entryComponents: [
   ],
   imports: [
     CommonModule,
-    IonicModule
+    IonicModule,
+    FontAwesomeModule
   ],
   declarations: [
     XwingIconComponent, 
@@ -35,7 +40,9 @@ import { SquadronComponent } from './squadron/squadron.component';
     StatComponent,
     BonusStatsComponent,
     PhoneUpgradeComponent,
-    SquadronComponent
+    SquadronComponent,
+    FormationComponent,
+    FormationPositionComponent
   ],
   exports: [
     XwingIconComponent, 
@@ -50,7 +57,8 @@ import { SquadronComponent } from './squadron/squadron.component';
     StatComponent,
     BonusStatsComponent,
     PhoneUpgradeComponent,
-    SquadronComponent
+    SquadronComponent,
+    FormationComponent
   ]
 })
 export class XwingModule {}

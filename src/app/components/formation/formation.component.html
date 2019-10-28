@@ -1,0 +1,12 @@
+<div [class]="split ? 'formation split' : 'formation'">
+  <div class="top-row">
+    <formation-position *ngFor="let position of ['left-flank', 'wing-leader', 'right-flank']"
+      [position]="position" 
+      [filled]="isPosition(position)"></formation-position>
+  </div>
+  <div class="bottom-row">
+    <formation-position *ngFor="let position of ['left-support', 'rear-support', 'right-support']"
+      [position]="position" 
+      [filled]="isPosition(position)"></formation-position>&nbsp;
+  </div>
+</div>

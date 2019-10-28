@@ -1,0 +1,6 @@
+<div class="formation-position">
+  <fa-icon [icon]="faCaretSquareUpSolid" *ngIf="position === 'wing-leader' && filled"></fa-icon>
+  <fa-icon [icon]="faCaretSquareUp" *ngIf="position === 'wing-leader' && !filled"></fa-icon>
+  <fa-icon [icon]="faSquareFull" *ngIf="position !== 'wing-leader' && filled"></fa-icon>
+  <fa-icon [icon]="faSquare" *ngIf="position !== 'wing-leader' && !filled"></fa-icon>   
+</div>
